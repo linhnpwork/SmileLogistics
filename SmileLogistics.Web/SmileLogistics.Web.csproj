@@ -56,6 +56,7 @@
   <ItemGroup>
     <Content Include="ajax\modules\functions\transportcompanies.aspx" />
     <Content Include="ajax\modules\functions\transportplaces.aspx" />
+    <Content Include="ajax\modules\functions\routes.aspx" />
     <Content Include="ajax\modules\functions\vehicleloads.aspx" />
     <Content Include="ajax\modules\functions\vehicletypes.aspx" />
     <Content Include="ajax\modules\functions\goodstypes.aspx" />
@@ -207,8 +208,10 @@
     <Content Include="less\themes\night.less" />
     <Content Include="less\themes\spring.less" />
     <Content Include="less\variables.less" />
+    <Content Include="modules\functions\QuotationRoutes.ascx" />
     <Content Include="modules\functions\TransportCompanies.ascx" />
     <Content Include="modules\functions\TransportPlaces.ascx" />
+    <Content Include="modules\functions\Routes.ascx" />
     <Content Include="modules\functions\VehicleLoads.ascx" />
     <Content Include="modules\functions\VehicleTypes.ascx" />
     <Content Include="modules\functions\GoodsTypes.ascx" />
@@ -793,6 +796,13 @@
     <Compile Include="ajax\modules\functions\transportplaces.aspx.designer.cs">
       <DependentUpon>transportplaces.aspx</DependentUpon>
     </Compile>
+    <Compile Include="ajax\modules\functions\routes.aspx.cs">
+      <DependentUpon>routes.aspx</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="ajax\modules\functions\routes.aspx.designer.cs">
+      <DependentUpon>routes.aspx</DependentUpon>
+    </Compile>
     <Compile Include="ajax\modules\functions\vehicleloads.aspx.cs">
       <DependentUpon>vehicleloads.aspx</DependentUpon>
       <SubType>ASPXCodeBehind</SubType>
@@ -873,6 +883,13 @@
     <Compile Include="modules\Default.ascx.designer.cs">
       <DependentUpon>Default.ascx</DependentUpon>
     </Compile>
+    <Compile Include="modules\functions\QuotationRoutes.ascx.cs">
+      <DependentUpon>QuotationRoutes.ascx</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="modules\functions\QuotationRoutes.ascx.designer.cs">
+      <DependentUpon>QuotationRoutes.ascx</DependentUpon>
+    </Compile>
     <Compile Include="modules\functions\TransportCompanies.ascx.cs">
       <DependentUpon>TransportCompanies.ascx</DependentUpon>
       <SubType>ASPXCodeBehind</SubType>
@@ -886,6 +903,13 @@
     </Compile>
     <Compile Include="modules\functions\TransportPlaces.ascx.designer.cs">
       <DependentUpon>TransportPlaces.ascx</DependentUpon>
+    </Compile>
+    <Compile Include="modules\functions\Routes.ascx.cs">
+      <DependentUpon>Routes.ascx</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="modules\functions\Routes.ascx.designer.cs">
+      <DependentUpon>Routes.ascx</DependentUpon>
     </Compile>
     <Compile Include="modules\functions\VehicleLoads.ascx.cs">
       <DependentUpon>VehicleLoads.ascx</DependentUpon>

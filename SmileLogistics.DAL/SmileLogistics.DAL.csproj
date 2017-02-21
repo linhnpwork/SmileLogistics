@@ -48,6 +48,7 @@
     <Compile Include="Entities\Commons.cs" />
     <Compile Include="Entities\TransportCompanies.cs" />
     <Compile Include="Entities\TransportPlaces.cs" />
+    <Compile Include="Entities\Routes.cs" />
     <Compile Include="Entities\VehicleLoads.cs" />
     <Compile Include="Entities\VehicleTypes.cs" />
     <Compile Include="Entities\Sys_Modules.cs" />

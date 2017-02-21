@@ -2193,6 +2193,13 @@ namespace SmileLogistics.DAL.Helpers
                         vehicleTypes.Add(TransportCompany_VehicleType_Entity(type));
                 }
 
+                List<eRoute> routes = new List<eRoute>();
+                if (obj.TransportCompany_Routes.Count > 0)
+                {
+                    foreach (TransportCompany_Route route in obj.TransportCompany_Routes.Where(o => !o.IsDeleted && !o.TransportPlace.IsDeleted))
+                        routes.Add(TransportCompany_Route_Entity(route, false));
+                }
+
                 return new eTransportCompany()
                 {
                     Address = obj.Address,
@@ -2207,6 +2214,7 @@ namespace SmileLogistics.DAL.Helpers
                     sLastestUpdate = obj.LastestUpdated.ToString(GlobalValues.DateFormat_VN),
                     UpdatedBy = Sys_User_GetE(obj.UpdatedBy),
                     VehicleTypes = vehicleTypes.Count == 0 ? null : vehicleTypes,
+                    Routes = routes
                 };
             }
             catch
@@ -2260,6 +2268,244 @@ namespace SmileLogistics.DAL.Helpers
                     TransComp_VehicleTypeID = obj.TransComp_VehicleTypeID,
                     UpdatedBy = Sys_User_GetE(obj.UpdatedBy),
                     VehicleLoadID = obj.VehicleLoadID,
+                };
+            }
+            catch
+            {
+                return null;
+            }
+        }
+
+        #endregion
+
+        #region Routes
+
+        public bool TransportCompany_Route_Delete(TransportCompany_Route route)
+        {
+            try
+            {
+                TransportCompany_Route obj = DB.TransportCompany_Routes.FirstOrDefault(o => o.ID == route.ID);
+                if (obj == null) return false;
+
+                obj.IsDeleted = true;
+                obj.LastestUpdated = DateTime.Now;
+                obj.UpdatedBy = route.UpdatedBy;
+                DB.SubmitChanges();
+
+                return true;
+            }
+            catch
+            {
+                return false;
+            }
+        }
+
+        public int TransportCompany_Route_Update(TransportCompany_Route obj)
+        {
+            try
+            {
+                TransportCompany_Route updateObj = DB.TransportCompany_Routes.FirstOrDefault(o => o.ID == obj.ID);
+                if (updateObj == null) return 3;
+
+                TransportCompany_Route checkObj = DB.TransportCompany_Routes.FirstOrDefault(o =>
+                    !o.IsDeleted &&
+                    o.TransCompID == obj.TransCompID &&
+                    ((o.StartPoint == obj.StartPoint &&
+                    o.EndPoint == obj.EndPoint) ||
+                    (o.StartPoint == obj.EndPoint &&
+                    o.EndPoint == obj.StartPoint)));
+
+                if (checkObj != null && checkObj.ID != updateObj.ID) return 1;
+
+                updateObj.TransCompID = obj.TransCompID;
+                updateObj.StartPoint = obj.StartPoint;
+                updateObj.LastestUpdated = DateTime.Now;
+                updateObj.EndPoint = obj.EndPoint;
+                updateObj.UpdatedBy = obj.UpdatedBy;
+
+                DB.SubmitChanges();
+
+                return 0;
+            }
+            catch (Exception ex)
+            {
+                return int.MinValue;
+            }
+        }
+
+        public int TransportCompany_Route_Create(TransportCompany_Route obj)
+        {
+            try
+            {
+                TransportCompany_Route checkObj = DB.TransportCompany_Routes.FirstOrDefault(o =>
+                    !o.IsDeleted &&
+                    o.TransCompID == obj.TransCompID &&
+                    ((o.StartPoint == obj.StartPoint &&
+                    o.EndPoint == obj.EndPoint) ||
+                    (o.StartPoint == obj.EndPoint &&
+                    o.EndPoint == obj.StartPoint)));
+
+                if (checkObj != null) return 1;
+
+                DB.TransportCompany_Routes.InsertOnSubmit(obj);
+                DB.SubmitChanges();
+
+                return 0;
+            }
+            catch
+            {
+                return int.MinValue;
+            }
+        }
+
+        public int TransportCompany_Route_CheckRoute(int comp, int start, int end)
+        {
+            try
+            {
+                TransportCompany_Route checkObj = DB.TransportCompany_Routes.FirstOrDefault(o =>
+                    !o.IsDeleted &&
+                    o.TransCompID == comp &&
+                    ((o.StartPoint == start &&
+                    o.EndPoint == end) ||
+                    (o.StartPoint == end &&
+                    o.EndPoint == start)));
+
+                if (checkObj == null) return 0;
+
+                return checkObj.ID;
+            }
+            catch
+            {
+                return int.MinValue;
+            }
+        }
+
+        public List<TransportCompany_Route> TransportCompany_Route_Gets(int pageIndex, int pageSize, out int totalPages)
+        {
+            totalPages = 0;
+            try
+            {
+                var all = DB.TransportCompany_Routes.Where(o => !o.IsDeleted);
+                if (all.Count() == 0) return null;
+
+                int startIndex = pageIndex * pageSize;
+                List<TransportCompany_Route> res = all.OrderBy(o => o.TransportCompany.Name).ThenBy(o => o.TransportPlace.Name).ThenBy(o => o.TransportPlace1.Name).Skip(startIndex).Take(pageSize).ToList();
+
+                if (res.Count == 0) return null;
+
+                int div = all.Count() / pageSize;
+                int mod = all.Count() % pageSize;
+                totalPages = div + (mod > 0 ? 1 : 0);
+
+                return res;
+            }
+            catch
+            {
+                return null;
+            }
+        }
+
+        public List<eRoute> TransportCompany_Route_GetEs(int pageIndex, int pageSize, out int totalPages)
+        {
+            totalPages = 0;
+            try
+            {
+                var all = TransportCompany_Route_Gets(pageIndex, pageSize, out totalPages);
+                if (all == null) return null;
+
+                List<eRoute> result = new List<eRoute>();
+                foreach (TransportCompany_Route obj in all)
+                    result.Add(TransportCompany_Route_Entity(obj));
+
+                return result;
+            }
+            catch
+            {
+                return null;
+            }
+        }
+
+        public List<TransportCompany_Route> TransportCompany_Route_Gets()
+        {
+            try
+            {
+                var all = DB.TransportCompany_Routes.Where(o => !o.IsDeleted);
+                if (all.Count() == 0) return null;
+
+                return all.OrderBy(o => o.TransportCompany.Name).ThenBy(o => o.TransportPlace.Name).ThenBy(o => o.TransportPlace1.Name).ToList();
+            }
+            catch
+            {
+                return null;
+            }
+        }
+
+        public List<eRoute> TransportCompany_Route_GetEs()
+        {
+            try
+            {
+                var all = TransportCompany_Route_Gets();
+                if (all == null) return null;
+
+                List<eRoute> result = new List<eRoute>();
+                foreach (TransportCompany_Route obj in all)
+                    result.Add(TransportCompany_Route_Entity(obj));
+
+                return result;
+            }
+            catch
+            {
+                return null;
+            }
+        }
+
+        public TransportCompany_Route TransportCompany_Route_Get(int id)
+        {
+            try
+            {
+                return DB.TransportCompany_Routes.FirstOrDefault(o =>
+                    o.ID == id);
+            }
+            catch
+            {
+                return null;
+            }
+        }
+
+        public eRoute TransportCompany_Route_GetE(int id)
+        {
+            try
+            {
+                return TransportCompany_Route_Entity(TransportCompany_Route_Get(id));
+            }
+            catch
+            {
+                return null;
+            }
+        }
+
+        public eRoute TransportCompany_Route_Entity(TransportCompany_Route obj, bool includeEntity = true)
+        {
+            try
+            {
+                if (obj == null) return null;
+
+                return new eRoute()
+                {
+                    EndPoint = obj.EndPoint,
+                    ID = obj.ID,
+                    StartPoint = obj.StartPoint,
+                    TransCompID = obj.TransCompID,
+
+                    IsDeleted = obj.IsDeleted,
+                    LastestUpdate = obj.LastestUpdated,
+                    sLastestUpdate = obj.LastestUpdated.ToString(GlobalValues.DateFormat_VN),
+                    UpdatedBy = Sys_User_GetE(obj.UpdatedBy),
+                    TransportCompany = !includeEntity ? null : TransportCompany_GetE(obj.TransCompID),
+                    PointStart = //!includeEntity ? null : 
+                        TransportPlace_GetE(obj.StartPoint),
+                    PointEnd = //!includeEntity ? null : 
+                        TransportPlace_GetE(obj.EndPoint),
                 };
             }
             catch

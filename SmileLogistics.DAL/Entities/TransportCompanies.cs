@@ -21,6 +21,7 @@ namespace SmileLogistics.DAL.Entities
         public string sLastestUpdate { get; set; }
         public string StatusName { get; set; }
         public List<eTransportCompany_VehicleType> VehicleTypes { get; set; }
+        public List<eRoute> Routes { get; set; }
     }
 
     public class eTransportCompany_VehicleType
