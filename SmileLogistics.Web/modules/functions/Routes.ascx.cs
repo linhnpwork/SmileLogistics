@@ -44,6 +44,12 @@ namespace SmileLogistics.Web.modules.functions
                     divTransportPlaces1.InnerHtml = html1;
                     divTransportPlaces2.InnerHtml = html2;
                 }
+                else
+                {
+                    string alerMess = "<label class='control-label label-quicklink'><a href='/dia-diem-van-chuyen'>Chưa có dữ liệu Địa điểm vận chuyển! Nhấp chọn chuyển sang trang Quản lý!</a></label>";
+                    divTransportPlaces1.InnerHtml = alerMess;
+                    divTransportPlaces2.InnerHtml = alerMess;
+                }
             }
         }
 
@@ -64,6 +70,10 @@ namespace SmileLogistics.Web.modules.functions
                     html += "</select>";
 
                     divTransportCompanies.InnerHtml = html;
+                }
+                else
+                {
+                    divTransportCompanies.InnerHtml = "<label class='control-label label-quicklink'><a href='/hang-van-chuyen'>Chưa có dữ liệu Hãng vận chuyển! Nhấp chọn chuyển sang trang quản lý!</a></label>";
                 }
             }
         }

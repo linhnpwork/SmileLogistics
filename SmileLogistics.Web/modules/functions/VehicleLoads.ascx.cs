@@ -28,7 +28,7 @@ namespace SmileLogistics.Web.modules.functions
                 List<eVehicleType> all = dalTools.VehicleType_GetEs();
                 if (all != null)
                 {
-                    string html = "<select id=\"info-vehicletypes\" class=\"form-control\" style=\"width: auto;\">";
+                    string html = "<select id=\"info-vehicletypes\" class=\"select-select2 select2-hidden-accessible\" style=\"width: auto;\">";
 
                     foreach (eVehicleType obj in all)
                     {
@@ -38,6 +38,10 @@ namespace SmileLogistics.Web.modules.functions
                     html += "</select>";
 
                     divVehicleTypes.InnerHtml = html;
+                }
+                else
+                {
+                    divVehicleTypes.InnerHtml = "<label class='control-label label-quicklink'><a href='/loai-xe'>Chưa có dữ liệu Loại xe! Nhấp chọn chuyển sang trang Quản lý!</a></label>";
                 }
             }
         }

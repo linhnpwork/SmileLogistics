@@ -2268,6 +2268,8 @@ namespace SmileLogistics.DAL.Helpers
                     TransComp_VehicleTypeID = obj.TransComp_VehicleTypeID,
                     UpdatedBy = Sys_User_GetE(obj.UpdatedBy),
                     VehicleLoadID = obj.VehicleLoadID,
+                    VehicleLoad = VehicleLoad_GetE(obj.VehicleLoadID),
+                    VehicleType = VehicleType_GetE(obj.TransportCompany_VehicleType.VehicleTypeID),
                 };
             }
             catch

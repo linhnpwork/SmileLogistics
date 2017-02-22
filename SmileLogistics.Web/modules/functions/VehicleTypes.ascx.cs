@@ -28,7 +28,7 @@ namespace SmileLogistics.Web.modules.functions
                 List<eGoodsType> all = dalTools.GoodsType_GetEs();
                 if (all != null)
                 {
-                    string html = "<select id=\"info-goodstypes\" class=\"form-control\" style=\"width: auto;\">";
+                    string html = "<select id=\"info-goodstypes\" class=\"select-select2 select2-hidden-accessible\" style=\"width: auto;\">";
 
                     foreach (eGoodsType obj in all)
                     {
@@ -38,6 +38,10 @@ namespace SmileLogistics.Web.modules.functions
                     html += "</select>";
 
                     divGoodsTypes.InnerHtml = html;
+                }
+                else
+                {
+                    divGoodsTypes.InnerHtml = "<label class='control-label label-quicklink'><a href='/loai-hang-hoa'>Chưa có dữ liệu Loại hàng hóa! Nhấp chọn chuyển sang trang Quản lý!</a></label>";
                 }
             }
         }

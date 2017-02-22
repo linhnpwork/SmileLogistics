@@ -20,6 +20,7 @@
     <IISExpressWindowsAuthentication />
     <IISExpressUseClassicPipelineMode />
     <TargetFrameworkProfile />
+    <UseGlobalApplicationHostFile />
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
     <DebugSymbols>true</DebugSymbols>
@@ -39,6 +40,10 @@
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
   <ItemGroup>
+    <Reference Include="Decided.Libs, Version=1.0.0.0, Culture=neutral, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>bin\Decided.Libs.dll</HintPath>
+    </Reference>
     <Reference Include="Microsoft.CSharp" />
     <Reference Include="Newtonsoft.Json, Version=9.0.0.0, Culture=neutral, PublicKeyToken=30ad4fe6b2a6aeed, processorArchitecture=MSIL">
       <HintPath>..\packages\Newtonsoft.Json.9.0.1\lib\net45\Newtonsoft.Json.dll</HintPath>
@@ -87,6 +92,7 @@
     <Content Include="js\ckeditor\samples\plugins\htmlwriter\assets\outputforflash\outputforflash.fla" />
     <Content Include="js\ckeditor\samples\sample_posteddata.php" />
     <Content Include="js\ckeditor\skins\moono\readme.md" />
+    <Content Include="js\vendor\jquery-3.1.1.min.js" />
     <Content Include="less\bootstrap\alerts.less" />
     <Content Include="less\bootstrap\badges.less" />
     <Content Include="less\bootstrap\bootstrap.less" />
@@ -216,7 +222,6 @@
     <Content Include="modules\functions\VehicleTypes.ascx" />
     <Content Include="modules\functions\GoodsTypes.ascx" />
     <Content Include="ProUI.Master" />
-    <Content Include="packages.config" />
     <None Include="Web.Debug.config">
       <DependentUpon>Web.config</DependentUpon>
     </None>
@@ -998,10 +1003,6 @@
     </Compile>
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\..\..\..\DesignBanner\Decided.Apps.DesignBanner\Decided.Libs\Decided.Libs.csproj">
-      <Project>{55995cd7-eaa8-48e2-9b43-98f9b0510234}</Project>
-      <Name>Decided.Libs</Name>
-    </ProjectReference>
     <ProjectReference Include="..\SmileLogistics.DAL\SmileLogistics.DAL.csproj">
       <Project>{66874e8f-bc54-43a8-b57c-de43d3d10846}</Project>
       <Name>SmileLogistics.DAL</Name>

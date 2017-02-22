@@ -5156,7 +5156,7 @@ namespace SmileLogistics.DAL
 		
 		private EntityRef<TransportCompany_Route> _TransportCompany_Route;
 		
-		private EntityRef<VehicleLoad> _VehicleLoad;
+		private EntityRef<TransportCompany_VehicleType_Load> _TransportCompany_VehicleType_Load;
 		
     #region Extensibility Method Definitions
     partial void OnLoaded();
@@ -5193,7 +5193,7 @@ namespace SmileLogistics.DAL
 			this._CustomerQuotation_Routes = new EntitySet<CustomerQuotation_Route>(new Action<CustomerQuotation_Route>(this.attach_CustomerQuotation_Routes), new Action<CustomerQuotation_Route>(this.detach_CustomerQuotation_Routes));
 			this._Sys_User = default(EntityRef<Sys_User>);
 			this._TransportCompany_Route = default(EntityRef<TransportCompany_Route>);
-			this._VehicleLoad = default(EntityRef<VehicleLoad>);
+			this._TransportCompany_VehicleType_Load = default(EntityRef<TransportCompany_VehicleType_Load>);
 			OnCreated();
 		}
 		
@@ -5252,7 +5252,7 @@ namespace SmileLogistics.DAL
 			{
 				if ((this._VehicleLoadID != value))
 				{
-					if (this._VehicleLoad.HasLoadedOrAssignedValue)
+					if (this._TransportCompany_VehicleType_Load.HasLoadedOrAssignedValue)
 					{
 						throw new System.Data.Linq.ForeignKeyReferenceAlreadyHasValueException();
 					}
@@ -5530,26 +5530,26 @@ namespace SmileLogistics.DAL
 			}
 		}
 		
-		[global::System.Data.Linq.Mapping.AssociationAttribute(Name="VehicleLoad_Quotation_Route", Storage="_VehicleLoad", ThisKey="VehicleLoadID", OtherKey="ID", IsForeignKey=true)]
-		public VehicleLoad VehicleLoad
+		[global::System.Data.Linq.Mapping.AssociationAttribute(Name="TransportCompany_VehicleType_Load_Quotation_Route", Storage="_TransportCompany_VehicleType_Load", ThisKey="VehicleLoadID", OtherKey="ID", IsForeignKey=true)]
+		public TransportCompany_VehicleType_Load TransportCompany_VehicleType_Load
 		{
 			get
 			{
-				return this._VehicleLoad.Entity;
+				return this._TransportCompany_VehicleType_Load.Entity;
 			}
 			set
 			{
-				VehicleLoad previousValue = this._VehicleLoad.Entity;
+				TransportCompany_VehicleType_Load previousValue = this._TransportCompany_VehicleType_Load.Entity;
 				if (((previousValue != value) 
-							|| (this._VehicleLoad.HasLoadedOrAssignedValue == false)))
+							|| (this._TransportCompany_VehicleType_Load.HasLoadedOrAssignedValue == false)))
 				{
 					this.SendPropertyChanging();
 					if ((previousValue != null))
 					{
-						this._VehicleLoad.Entity = null;
+						this._TransportCompany_VehicleType_Load.Entity = null;
 						previousValue.Quotation_Routes.Remove(this);
 					}
-					this._VehicleLoad.Entity = value;
+					this._TransportCompany_VehicleType_Load.Entity = value;
 					if ((value != null))
 					{
 						value.Quotation_Routes.Add(this);
@@ -5559,7 +5559,7 @@ namespace SmileLogistics.DAL
 					{
 						this._VehicleLoadID = default(int);
 					}
-					this.SendPropertyChanged("VehicleLoad");
+					this.SendPropertyChanged("TransportCompany_VehicleType_Load");
 				}
 			}
 		}
@@ -8023,6 +8023,8 @@ namespace SmileLogistics.DAL
 		
 		private System.DateTime _LastestUpdated;
 		
+		private EntitySet<Quotation_Route> _Quotation_Routes;
+		
 		private EntityRef<Sys_User> _Sys_User;
 		
 		private EntityRef<TransportCompany_VehicleType> _TransportCompany_VehicleType;
@@ -8049,6 +8051,7 @@ namespace SmileLogistics.DAL
 		
 		public TransportCompany_VehicleType_Load()
 		{
+			this._Quotation_Routes = new EntitySet<Quotation_Route>(new Action<Quotation_Route>(this.attach_Quotation_Routes), new Action<Quotation_Route>(this.detach_Quotation_Routes));
 			this._Sys_User = default(EntityRef<Sys_User>);
 			this._TransportCompany_VehicleType = default(EntityRef<TransportCompany_VehicleType>);
 			this._VehicleLoad = default(EntityRef<VehicleLoad>);
@@ -8187,6 +8190,19 @@ namespace SmileLogistics.DAL
 			}
 		}
 		
+		[global::System.Data.Linq.Mapping.AssociationAttribute(Name="TransportCompany_VehicleType_Load_Quotation_Route", Storage="_Quotation_Routes", ThisKey="ID", OtherKey="VehicleLoadID")]
+		public EntitySet<Quotation_Route> Quotation_Routes
+		{
+			get
+			{
+				return this._Quotation_Routes;
+			}
+			set
+			{
+				this._Quotation_Routes.Assign(value);
+			}
+		}
+		
 		[global::System.Data.Linq.Mapping.AssociationAttribute(Name="Sys_User_TransportCompany_VehicleType_Load", Storage="_Sys_User", ThisKey="UpdatedBy", OtherKey="ID", IsForeignKey=true)]
 		public Sys_User Sys_User
 		{
@@ -8307,6 +8323,18 @@ namespace SmileLogistics.DAL
 			{
 				this.PropertyChanged(this, new PropertyChangedEventArgs(propertyName));
 			}
+		}
+		
+		private void attach_Quotation_Routes(Quotation_Route entity)
+		{
+			this.SendPropertyChanging();
+			entity.TransportCompany_VehicleType_Load = this;
+		}
+		
+		private void detach_Quotation_Routes(Quotation_Route entity)
+		{
+			this.SendPropertyChanging();
+			entity.TransportCompany_VehicleType_Load = null;
 		}
 	}
 	
@@ -8994,8 +9022,6 @@ namespace SmileLogistics.DAL
 		
 		private System.DateTime _LastestUpdated;
 		
-		private EntitySet<Quotation_Route> _Quotation_Routes;
-		
 		private EntitySet<TransportCompany_VehicleType_Load> _TransportCompany_VehicleType_Loads;
 		
 		private EntityRef<Sys_User> _Sys_User;
@@ -9028,7 +9054,6 @@ namespace SmileLogistics.DAL
 		
 		public VehicleLoad()
 		{
-			this._Quotation_Routes = new EntitySet<Quotation_Route>(new Action<Quotation_Route>(this.attach_Quotation_Routes), new Action<Quotation_Route>(this.detach_Quotation_Routes));
 			this._TransportCompany_VehicleType_Loads = new EntitySet<TransportCompany_VehicleType_Load>(new Action<TransportCompany_VehicleType_Load>(this.attach_TransportCompany_VehicleType_Loads), new Action<TransportCompany_VehicleType_Load>(this.detach_TransportCompany_VehicleType_Loads));
 			this._Sys_User = default(EntityRef<Sys_User>);
 			this._VehicleType = default(EntityRef<VehicleType>);
@@ -9223,19 +9248,6 @@ namespace SmileLogistics.DAL
 			}
 		}
 		
-		[global::System.Data.Linq.Mapping.AssociationAttribute(Name="VehicleLoad_Quotation_Route", Storage="_Quotation_Routes", ThisKey="ID", OtherKey="VehicleLoadID")]
-		public EntitySet<Quotation_Route> Quotation_Routes
-		{
-			get
-			{
-				return this._Quotation_Routes;
-			}
-			set
-			{
-				this._Quotation_Routes.Assign(value);
-			}
-		}
-		
 		[global::System.Data.Linq.Mapping.AssociationAttribute(Name="VehicleLoad_TransportCompany_VehicleType_Load", Storage="_TransportCompany_VehicleType_Loads", ThisKey="ID", OtherKey="VehicleLoadID")]
 		public EntitySet<TransportCompany_VehicleType_Load> TransportCompany_VehicleType_Loads
 		{
@@ -9335,18 +9347,6 @@ namespace SmileLogistics.DAL
 			{
 				this.PropertyChanged(this, new PropertyChangedEventArgs(propertyName));
 			}
-		}
-		
-		private void attach_Quotation_Routes(Quotation_Route entity)
-		{
-			this.SendPropertyChanging();
-			entity.VehicleLoad = this;
-		}
-		
-		private void detach_Quotation_Routes(Quotation_Route entity)
-		{
-			this.SendPropertyChanging();
-			entity.VehicleLoad = null;
 		}
 		
 		private void attach_TransportCompany_VehicleType_Loads(TransportCompany_VehicleType_Load entity)

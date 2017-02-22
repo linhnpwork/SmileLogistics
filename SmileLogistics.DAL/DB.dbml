@@ -227,7 +227,7 @@
       <Association Name="Quotation_Route_CustomerQuotation_Route" Member="CustomerQuotation_Routes" ThisKey="ID" OtherKey="QuotationID" Type="CustomerQuotation_Route" />
       <Association Name="Sys_User_Quotation_Route" Member="Sys_User" ThisKey="UpdatedBy" OtherKey="ID" Type="Sys_User" IsForeignKey="true" />
       <Association Name="TransportCompany_Route_Quotation_Route" Member="TransportCompany_Route" ThisKey="RouteID" OtherKey="ID" Type="TransportCompany_Route" IsForeignKey="true" />
-      <Association Name="VehicleLoad_Quotation_Route" Member="VehicleLoad" ThisKey="VehicleLoadID" OtherKey="ID" Type="VehicleLoad" IsForeignKey="true" />
+      <Association Name="TransportCompany_VehicleType_Load_Quotation_Route" Member="TransportCompany_VehicleType_Load" ThisKey="VehicleLoadID" OtherKey="ID" Type="TransportCompany_VehicleType_Load" IsForeignKey="true" />
     </Type>
   </Table>
   <Table Name="dbo.Sys_Modules" Member="Sys_Modules">
@@ -343,6 +343,7 @@
       <Column Name="IsDeleted" Type="System.Boolean" DbType="Bit NOT NULL" CanBeNull="false" />
       <Column Name="UpdatedBy" Type="System.Int32" DbType="Int NOT NULL" CanBeNull="false" />
       <Column Name="LastestUpdated" Type="System.DateTime" DbType="DateTime NOT NULL" CanBeNull="false" />
+      <Association Name="TransportCompany_VehicleType_Load_Quotation_Route" Member="Quotation_Routes" ThisKey="ID" OtherKey="VehicleLoadID" Type="Quotation_Route" />
       <Association Name="Sys_User_TransportCompany_VehicleType_Load" Member="Sys_User" ThisKey="UpdatedBy" OtherKey="ID" Type="Sys_User" IsForeignKey="true" />
       <Association Name="TransportCompany_VehicleType_TransportCompany_VehicleType_Load" Member="TransportCompany_VehicleType" ThisKey="TransComp_VehicleTypeID" OtherKey="ID" Type="TransportCompany_VehicleType" IsForeignKey="true" />
       <Association Name="VehicleLoad_TransportCompany_VehicleType_Load" Member="VehicleLoad" ThisKey="VehicleLoadID" OtherKey="ID" Type="VehicleLoad" IsForeignKey="true" />
@@ -388,7 +389,6 @@
       <Column Name="IsDeleted" Type="System.Boolean" DbType="Bit NOT NULL" CanBeNull="false" />
       <Column Name="UpdatedBy" Type="System.Int32" DbType="Int NOT NULL" CanBeNull="false" />
       <Column Name="LastestUpdated" Type="System.DateTime" DbType="DateTime NOT NULL" CanBeNull="false" />
-      <Association Name="VehicleLoad_Quotation_Route" Member="Quotation_Routes" ThisKey="ID" OtherKey="VehicleLoadID" Type="Quotation_Route" />
       <Association Name="VehicleLoad_TransportCompany_VehicleType_Load" Member="TransportCompany_VehicleType_Loads" ThisKey="ID" OtherKey="VehicleLoadID" Type="TransportCompany_VehicleType_Load" />
       <Association Name="Sys_User_VehicleLoad" Member="Sys_User" ThisKey="UpdatedBy" OtherKey="ID" Type="Sys_User" IsForeignKey="true" />
       <Association Name="VehicleType_VehicleLoad" Member="VehicleType" ThisKey="VehicleTypeID" OtherKey="ID" Type="VehicleType" IsForeignKey="true" />

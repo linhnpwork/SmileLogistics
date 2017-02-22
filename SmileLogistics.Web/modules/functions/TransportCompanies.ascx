@@ -193,7 +193,7 @@
                     html +=
                         "<tr>" +
                             "<td class=\"text-center\" colspan=\"3\">" +
-                                "Không có dữ liệu!" +
+                                "<label class='control-label label-quicklink'><a href='/loai-xe'>Chưa có dữ liệu Loại xe! Nhấp chọn chuyển sang trang Quản lý!</a></label>" +
                             "</td>" +
                         "</tr>";
                 }

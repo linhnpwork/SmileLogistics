@@ -68,12 +68,12 @@
                     </div>
                     <div class="form-group">
                         <label class="col-md-3 control-label">Tuyến đường</label>
-                        <div id="divTransportRoutes" runat="server" class="col-md-9">
+                        <div id="divTransportRoutes" class="col-md-9">
                         </div>
                     </div>
                     <div class="form-group">
                         <label class="col-md-3 control-label">Loại tải trọng</label>
-                        <div id="divVehicleLoads" runat="server" class="col-md-9">
+                        <div id="divVehicleLoads" class="col-md-9">
                         </div>
                     </div>
                     <div class="form-group">
@@ -86,10 +86,10 @@
                         <label class="col-md-3 control-label">Đồng giá 2 chiều?</label>
                         <div class="col-md-9">
                             <label class='switch switch-success'>
-                                <input id="info-issameprice" type='checkbox' checked><span></span></label>
+                                <input id="info-issameprice" onchange="quotationroutes.onchange_issameprice();" type='checkbox' checked><span></span></label>
                         </div>
                     </div>
-                    <div class="form-group">
+                    <div id="div-info-price-roundedtrip" class="form-group">
                         <label class="col-md-3 control-label">Giá chiều về</label>
                         <div class="col-md-9">
                             <input type="text" id="info-price-roundedtrip" class="form-control" placeholder="Giá chiều về">
@@ -100,9 +100,9 @@
                         <div class="col-md-9">
                             <%--<input type="text" id="example-datepicker2" name="example-datepicker2" class="form-control input-datepicker" data-date-format="dd/mm/yy" placeholder="dd/mm/yy">--%>
                             <div class="input-group input-daterange" data-date-format="dd/mm/yyyy">
-                                <input type="text" id="info-expire-start" class="form-control text-center" placeholder="From">
+                                <input type="text" id="info-expire-start" class="form-control text-center" placeholder="Từ ngày">
                                 <span class="input-group-addon"><i class="fa fa-angle-right"></i></span>
-                                <input type="text" id="info-expire-end" class="form-control text-center" placeholder="To">
+                                <input type="text" id="info-expire-end" class="form-control text-center" placeholder="Đến ngày">
                             </div>
                         </div>
                     </div>
@@ -133,6 +133,7 @@
         {
             ajaxPath: '/ajax/modules/functions/quotationroutes.aspx',
             all: null,
+            allComps: null,
             mode: 'create',
             currentpage: 0,
             currentobj: null,
@@ -154,6 +155,14 @@
                     quotationroutes.currentpage = 0;
                 else
                     quotationroutes.currentpage = Number(page);
+
+                var sAllComp = '<%= _AllComps %>';
+                this.allComps = sAllComp == '' ? null : JSON.parse(sAllComp);
+
+                this.loadlist_routes();
+                this.loadlist_loads();
+
+                $('#div-info-price-roundedtrip').hide();
 
                 quotationroutes.loadlist();
             },
@@ -251,11 +260,36 @@
                 var data = new Object();
 
                 data.transcomp = Number($('#modal-info #info-transcomp').val());
-                data.startpoint = Number($('#modal-info #info-transplace-1').val());
-                data.endpoint = Number($('#modal-info #info-transplace-2').val());
+                if (isNaN(data.transcomp))
+                    message += '- Chưa chọn Hãng vận chuyển!<br/>';
 
-                if (data.startpoint == data.endpoint)
-                    message += '- Trùng điểm vận chuyển!<br/>';
+                data.route = Number($('#modal-info #info-transcomp-routes').val());
+                if (isNaN(data.route))
+                    message += '- Chưa chọn Tuyến đường!<br/>';
+
+                data.load = Number($('#modal-info #info-transomp-loads').val());
+                if (isNaN(data.load))
+                    message += '- Chưa chọn Tải trọng!<br/>';
+
+                data.price = Number($('#modal-info #info-price').val());
+                if (isNaN(data.price))
+                    message += '- Chưa nhập Giá vận chuyển!<br/>';
+
+                data.issameprice = $('#modal-info #info-issameprice').prop('checked');
+
+                data.priceroundedtrip = Number($('#modal-info #info-price-roundedtrip').val());
+                if (!data.issameprice && isNaN(data.priceroundedtrip))
+                    message += '- Chưa nhập Giá chiều về!<br/>';
+
+                data.expirestart = $('#modal-info #info-expire-start').val();
+                if (data.expirestart == '')
+                    message += '- Chưa nhập Hiệu lực báo giá Từ!<br/>';
+
+                data.expireend = $('#modal-info #info-expire-end').val();
+                if (data.expireend == '')
+                    message += '- Chưa nhập Hiệu lực báo giá Đến!<br/>';
+
+                data.isusd = $('#modal-info #info-isusd').prop('checked');
 
                 data.id = quotationroutes.mode == "create" ? 0 : quotationroutes.currentobj.ID;
 
@@ -274,10 +308,13 @@
                 $('#modal-info').modal('show');
             },
 
-            getobj: function (id) {
-                if (quotationroutes.all == null) return null;
-                for (var i = 0; i < quotationroutes.all.length; i++)
-                    if (quotationroutes.all[i].ID == id) return quotationroutes.all[i];
+            getobj: function (value, list, field) {
+                if (list == undefined) list = quotationroutes.all;
+                if (field == undefined) field = "ID";
+
+                if (list == null) return null;
+                for (var i = 0; i < list.length; i++)
+                    if (list[i][field] == value) return list[i];
 
                 return null;
             },
@@ -297,7 +334,12 @@
                                                 "<tr>" +
                                                     "<th class=\"text-center\">STT</th>" +
                                                     "<th class=\"text-center\">Hãng vận chuyển</th>" +
-                                                    "<th class=\"text-center\">Chi tiết</th>" +
+                                                    "<th class=\"text-center\">Tuyến đường</th>" +
+                                                    "<th class=\"text-center\">Tải trọng</th>" +
+                                                    "<th class=\"text-center\">Giá vận chuyển</th>" +
+                                                    "<th class=\"text-center\">Đồng giá 2 chiều?</th>" +
+                                                    "<th class=\"text-center\">Giá chiều về</th>" +
+                                                    "<th class=\"text-center\">Sử dụng USD</th>" +
                                                     "<th class=\"text-center\">#</th>" +
                                                 "</tr>" +
                                             "</thead>" +
@@ -306,7 +348,7 @@
                                     if (result.ErrorCode != 0) {
                                         html +=
                                             "<tr>" +
-                                                "<td class=\"text-center\" colspan=\"4\">" +
+                                                "<td class=\"text-center\" colspan=\"9\">" +
                                                     result.Message +
                                                 "</td>" +
                                             "</tr>";
@@ -344,6 +386,74 @@
 
                                     $('[data-toggle="tooltip"]').tooltip();
                                 });
+            },
+
+            loadlist_routes: function () {
+                var compId = Number($('#info-transcomp').val());
+                var comp = this.getobj(compId, this.allComps);
+                if (comp == null) {
+                    $('#divTransportRoutes').html('<label class="control-label label-quicklink"><a href="/hang-van-chuyen">Không tìm thấy Hãng vận chuyển! Chuyển sang trang Quản lý?</a></label>');
+                }
+                else {
+                    if (comp.Routes == null || comp.Routes.length == 0)
+                        $('#divTransportRoutes').html('<label class="control-label label-quicklink"><a href="/tuyen-duong">Không tìm thấy Tuyến đường! Chuyển sang trang Quản lý?</a></label>');
+                    else {
+                        var html = "<select id=\"info-transomp-routes\" class=\"select-select2 select2-hidden-accessible\" style=\"width: auto;\">";
+
+                        for (var i = 0; i < comp.Routes.length; i++) {
+                            var route = comp.Routes[i];
+                            html += "<option value=\"" + route.ID + "\">" + route.PointStart.Name + " <-> " + route.PointEnd.Name + "</option>";
+                        }
+
+                        html += "</select>";
+
+                        $('#divTransportRoutes').html(html);
+                    }
+                }
+
+                this.loadlist_loads();
+            },
+
+            loadlist_loads: function () {
+                var compId = Number($('#info-transcomp').val());
+                var comp = this.getobj(compId, this.allComps);
+                if (comp == null) {
+                    $('#divVehicleLoads').html('<label class="control-label label-quicklink"><a href="/hang-van-chuyen">Không tìm thấy Hãng vận chuyển! Chuyển sang trang Quản lý?</a></label>');
+                }
+                else {
+                    if (comp.VehicleTypes == null || comp.VehicleTypes.length == 0)
+                        $('#divVehicleLoads').html('<label class="control-label label-quicklink"><a href="/hang-van-chuyen">Không tìm thấy Thiết lập Loại xe! Chuyển sang trang Quản lý?</a></label>');
+                    else {
+                        var html = "<select id=\"info-transomp-loads\" class=\"select-select2 select2-hidden-accessible\" style=\"width: auto;\">";
+
+                        for (var i = 0; i < comp.VehicleTypes.length; i++) {
+                            var type = comp.VehicleTypes[i];
+                            if (type.Loads == null || type.Loads.length == 0) continue;
+
+                            for (var j = 0; j < type.Loads.length; j++) {
+                                var load = type.Loads[j];
+                                html += "<option value=\"" + load.ID + "\">" + load.VehicleLoad.Name + "</option>";
+                            }
+                        }
+
+                        html += "</select>";
+
+                        $('#divVehicleLoads').html(html);
+                    }
+                }
+            },
+
+            onchange_comp: function () {
+                this.loadlist_routes();
+                this.loadlist_loads();
+            },
+
+            onchange_issameprice: function () {
+                //div-info-price-roundedtrip
+                if ($('#info-issameprice').prop('checked'))
+                    $('#div-info-price-roundedtrip').hide();
+                else
+                    $('#div-info-price-roundedtrip').show();
             }
         }
 

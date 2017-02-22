@@ -26,7 +26,7 @@ namespace SmileLogistics.Web.modules.functions
 
         private void LoadStatus()
         {
-            string html = "<select id=\"info-statuses\" class=\"form-control\" style=\"width: auto;\">";
+            string html = "<select id=\"info-statuses\" class=\"select-select2 select2-hidden-accessible\" style=\"width: auto;\">";
 
             for (int i = 0; i < GlobalValues.TransportCompanyStatuses.Count; i++)
                 html += "<option value = \"" + GlobalValues.TransportCompanyStatuses[i].ID.ToString() + "\">" + GlobalValues.TransportCompanyStatuses[i].Name + "</option>";

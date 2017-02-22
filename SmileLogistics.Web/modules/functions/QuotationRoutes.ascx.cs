@@ -8,11 +8,13 @@ using SmileLogistics.Web.bases;
 using SmileLogistics.DAL;
 using SmileLogistics.DAL.Entities;
 using SmileLogistics.DAL.Helpers;
+using Newtonsoft.Json;
 
 namespace SmileLogistics.Web.modules.functions
 {
     public partial class QuotationRoutes : BaseControl
     {
+        public string _AllComps = string.Empty;
         protected void Page_Load(object sender, EventArgs e)
         {
             if (!IsPostBack)
@@ -28,7 +30,7 @@ namespace SmileLogistics.Web.modules.functions
                 List<eTransportCompany> all = dalTools.TransportCompany_GetEs();
                 if (all != null)
                 {
-                    string html = "<select id=\"info-transcomp\" class=\"form-control select-select2 select2-hidden-accessible\" style=\"width: auto;\">";
+                    string html = "<select id=\"info-transcomp\" onchange=\"quotationroutes.loadlist_routes();\" class=\"select-select2 select2-hidden-accessible\" style=\"width: auto;\">";
 
                     foreach (eTransportCompany obj in all)
                     {
@@ -38,6 +40,12 @@ namespace SmileLogistics.Web.modules.functions
                     html += "</select>";
 
                     divTransportCompanies.InnerHtml = html;
+
+                    _AllComps = JsonConvert.SerializeObject(all);
+                }
+                else
+                {
+                    divTransportCompanies.InnerHtml = "<label class='control-label label-quicklink'><a href='/hang-van-chuyen'>Chưa có dữ liệu Hãng vận chuyển! Nhấp chọn chuyển sang trang Quản lý!</a></label>";
                 }
             }
         }

@@ -45,6 +45,8 @@ namespace SmileLogistics.DAL.Entities
         public eSys_User UpdatedBy { get; set; }
         public DateTime LastestUpdate { get; set; }
         public string sLastestUpdate { get; set; }
+        public eVehicleType VehicleType { get; set; }
+        public eVehicleLoad VehicleLoad { get; set; }
     }
 
     public class aTransportCompany_VehicleType
