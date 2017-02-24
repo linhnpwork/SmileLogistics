@@ -10,7 +10,7 @@
 namespace SmileLogistics.Web.ajax.modules.functions {
     
     
-    public partial class goodstypes {
+    public partial class tthqfeetypes {
         
         /// <summary>
         /// form1 control.

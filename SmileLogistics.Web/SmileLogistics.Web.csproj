@@ -59,12 +59,13 @@
     <Reference Include="System.Xml.Linq" />
   </ItemGroup>
   <ItemGroup>
+    <Content Include="ajax\modules\functions\quotationroutes.aspx" />
     <Content Include="ajax\modules\functions\transportcompanies.aspx" />
     <Content Include="ajax\modules\functions\transportplaces.aspx" />
     <Content Include="ajax\modules\functions\routes.aspx" />
     <Content Include="ajax\modules\functions\vehicleloads.aspx" />
     <Content Include="ajax\modules\functions\vehicletypes.aspx" />
-    <Content Include="ajax\modules\functions\goodstypes.aspx" />
+    <Content Include="ajax\modules\functions\tthqfeetypes.aspx" />
     <Content Include="css\fonts\fontawesome\fontawesome-webfont.eot" />
     <Content Include="css\fonts\fontawesome\fontawesome-webfont.ttf" />
     <Content Include="css\fonts\fontawesome\fontawesome-webfont.woff" />
@@ -214,6 +215,8 @@
     <Content Include="less\themes\night.less" />
     <Content Include="less\themes\spring.less" />
     <Content Include="less\variables.less" />
+    <Content Include="modules\functions\QuotationCustoms.ascx" />
+    <Content Include="modules\functions\TTHQFeeTypes.ascx" />
     <Content Include="modules\functions\QuotationRoutes.ascx" />
     <Content Include="modules\functions\TransportCompanies.ascx" />
     <Content Include="modules\functions\TransportPlaces.ascx" />
@@ -787,6 +790,13 @@
     <Compile Include="ajax\AjaxAuthentication.aspx.designer.cs">
       <DependentUpon>AjaxAuthentication.aspx</DependentUpon>
     </Compile>
+    <Compile Include="ajax\modules\functions\quotationroutes.aspx.cs">
+      <DependentUpon>quotationroutes.aspx</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="ajax\modules\functions\quotationroutes.aspx.designer.cs">
+      <DependentUpon>quotationroutes.aspx</DependentUpon>
+    </Compile>
     <Compile Include="ajax\modules\functions\transportcompanies.aspx.cs">
       <DependentUpon>transportcompanies.aspx</DependentUpon>
       <SubType>ASPXCodeBehind</SubType>
@@ -822,12 +832,12 @@
     <Compile Include="ajax\modules\functions\vehicletypes.aspx.designer.cs">
       <DependentUpon>vehicletypes.aspx</DependentUpon>
     </Compile>
-    <Compile Include="ajax\modules\functions\goodstypes.aspx.cs">
-      <DependentUpon>goodstypes.aspx</DependentUpon>
+    <Compile Include="ajax\modules\functions\tthqfeetypes.aspx.cs">
+      <DependentUpon>tthqfeetypes.aspx</DependentUpon>
       <SubType>ASPXCodeBehind</SubType>
     </Compile>
-    <Compile Include="ajax\modules\functions\goodstypes.aspx.designer.cs">
-      <DependentUpon>goodstypes.aspx</DependentUpon>
+    <Compile Include="ajax\modules\functions\tthqfeetypes.aspx.designer.cs">
+      <DependentUpon>tthqfeetypes.aspx</DependentUpon>
     </Compile>
     <Compile Include="ajax\modules\systems\sysadmins.aspx.cs">
       <DependentUpon>sysadmins.aspx</DependentUpon>
@@ -887,6 +897,20 @@
     </Compile>
     <Compile Include="modules\Default.ascx.designer.cs">
       <DependentUpon>Default.ascx</DependentUpon>
+    </Compile>
+    <Compile Include="modules\functions\QuotationCustoms.ascx.cs">
+      <DependentUpon>QuotationCustoms.ascx</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="modules\functions\QuotationCustoms.ascx.designer.cs">
+      <DependentUpon>QuotationCustoms.ascx</DependentUpon>
+    </Compile>
+    <Compile Include="modules\functions\TTHQFeeTypes.ascx.cs">
+      <DependentUpon>TTHQFeeTypes.ascx</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="modules\functions\TTHQFeeTypes.ascx.designer.cs">
+      <DependentUpon>TTHQFeeTypes.ascx</DependentUpon>
     </Compile>
     <Compile Include="modules\functions\QuotationRoutes.ascx.cs">
       <DependentUpon>QuotationRoutes.ascx</DependentUpon>

@@ -187,7 +187,7 @@
                                                     "</td>" +
                                                     "<td class=\"text-center\">" + obj.Name + "</td>" +
                                                     "<td class=\"text-center\">" + obj.Description + "</td>" +
-                                                    "<td class=\"text-center\">" + obj.CanAccessSystemMenu + "</td>" +
+                                                    "<td class=\"text-center\">" + (obj.CanAccessSystemMenu ? "<i class=\"gi gi-ok_2\"></i>" : "") + "</td>" +
                                                     "<td class=\"text-center\">" +
                                                         //"<div class=\"btn-group\">" +
                                                             "<a onclick=\"sysrole.startedit('" + obj.ID + "');\" href=\"javascript:void(0)\" data-toggle=\"tooltip\" title=\"Sửa\" class=\"btn btn-xs btn-default\"><i class=\"fa fa-pencil\"></i></a>" +

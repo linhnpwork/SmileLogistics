@@ -1,4 +1,4 @@
-﻿<%@ Page Language="C#" AutoEventWireup="true" CodeBehind="goodstypes.aspx.cs" Inherits="SmileLogistics.Web.ajax.modules.functions.goodstypes" %>
+﻿<%@ Page Language="C#" AutoEventWireup="true" CodeBehind="quotationroutes.aspx.cs" Inherits="SmileLogistics.Web.ajax.modules.functions.quotationroutes" %>
 
 <!DOCTYPE html>
 

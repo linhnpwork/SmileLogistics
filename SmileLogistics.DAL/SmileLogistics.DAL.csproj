@@ -50,6 +50,9 @@
       <DependentUpon>DB.dbml</DependentUpon>
     </Compile>
     <Compile Include="Entities\Commons.cs" />
+    <Compile Include="Entities\CustomsProcess_FeeTypes.cs" />
+    <Compile Include="Entities\QuotationRoutes.cs" />
+    <Compile Include="Entities\QuotationCustoms.cs" />
     <Compile Include="Entities\TransportCompanies.cs" />
     <Compile Include="Entities\TransportPlaces.cs" />
     <Compile Include="Entities\Routes.cs" />

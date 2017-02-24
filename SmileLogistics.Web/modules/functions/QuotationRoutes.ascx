@@ -80,6 +80,7 @@
                         <label class="col-md-3 control-label">Giá</label>
                         <div class="col-md-9">
                             <input type="text" id="info-price" class="form-control" placeholder="Giá">
+                            <span class="help-block">(Dùng dấm chấm '.' để xác định số thập phân!)</span>
                         </div>
                     </div>
                     <div class="form-group">
@@ -93,6 +94,7 @@
                         <label class="col-md-3 control-label">Giá chiều về</label>
                         <div class="col-md-9">
                             <input type="text" id="info-price-roundedtrip" class="form-control" placeholder="Giá chiều về">
+                            <span class="help-block">(Dùng dấm chấm '.' để xác định số thập phân!)</span>
                         </div>
                     </div>
                     <div class="form-group">
@@ -210,9 +212,15 @@
                     return;
                 }
 
-                $('#modal-info #info-transcomp').val(quotationroutes.currentobj.TransCompID);
-                $('#modal-info #info-transplace-1').val(quotationroutes.currentobj.StartPoint);
-                $('#modal-info #info-transplace-2').val(quotationroutes.currentobj.EndPoint);
+                $('#modal-info #info-transcomp').val(quotationroutes.currentobj.Route.TransCompID);
+                $('#modal-info #info-route').val(quotationroutes.currentobj.RouteID);
+                $('#modal-info #info-load').val(quotationroutes.currentobj.VehicleLoadID);
+                $('#modal-info #info-price').val(quotationroutes.currentobj.Price);
+                $('#modal-info #info-issameprice').prop('checked', quotationroutes.currentobj.IsSamePrice);
+                $('#modal-info #info-price-roundedtrip').val(quotationroutes.currentobj.Price_RoundedTrip);
+                $('#modal-info #info-expire-start').val(quotationroutes.currentobj.sExpireStart);
+                $('#modal-info #info-expire-end').val(quotationroutes.currentobj.sExpireEnd);
+                $('#modal-info #info-isusd').prop('checked', quotationroutes.currentobj.IsUSD);
 
                 $('#modal-info .modal-header .modal-title').html('Cập nhật Báo giá Vận chuyển');
                 $('#btn-do-save').html('Lưu');
@@ -267,7 +275,7 @@
                 if (isNaN(data.route))
                     message += '- Chưa chọn Tuyến đường!<br/>';
 
-                data.load = Number($('#modal-info #info-transomp-loads').val());
+                data.load = Number($('#modal-info #info-transcomp-loads').val());
                 if (isNaN(data.load))
                     message += '- Chưa chọn Tải trọng!<br/>';
 
@@ -280,6 +288,7 @@
                 data.priceroundedtrip = Number($('#modal-info #info-price-roundedtrip').val());
                 if (!data.issameprice && isNaN(data.priceroundedtrip))
                     message += '- Chưa nhập Giá chiều về!<br/>';
+                else if (data.issameprice) data.priceroundedtrip = data.price;
 
                 data.expirestart = $('#modal-info #info-expire-start').val();
                 if (data.expirestart == '')
@@ -367,10 +376,15 @@
                                                     "<td class=\"text-center\">" +
                                                         (quotationroutes.currentpage * pageSize + i + 1) +
                                                     "</td>" +
-                                                    "<td class=\"text-center\">" + obj.TransportCompany.Name + "</td>" +
-                                                    "<td class=\"text-center\">" + obj.PointStart.Name + " <i class='gi gi-transfer'></i> " + obj.PointEnd.Name + "</td>" +
+                                                    "<td class=\"text-center\">" + obj.Route.TransportCompany.Name + "</td>" +
+                                                    "<td class=\"text-center\">" + obj.Route.PointStart.Name + " <i class='gi gi-transfer'></i> " + obj.Route.PointEnd.Name + "</td>" +
+                                                    "<td class=\"text-center\">" + obj.Load.VehicleLoad.Name + "</td>" +
+                                                    "<td class=\"text-center\">" + obj.Price.toFixed(2) + "</td>" +
+                                                    "<td class=\"text-center\">" + (obj.IsSamePrice ? "<i class=\"gi gi-ok_2\"></i>" : "") + "</td>" +
+                                                    "<td class=\"text-center\">" + obj.Price_RoundedTrip.toFixed(2) + "</td>" +
+                                                    "<td class=\"text-center\">" + (obj.IsUSD ? "<i class=\"gi gi-ok_2\"></i>" : "") + "</td>" +
                                                     "<td class=\"text-center\">" +
-                                                        //"<div class=\"btn-group\">" +
+                                                        //"<div class=\"btn-group\">" + gi gi-ok_2
                                                             "<a onclick=\"quotationroutes.startedit('" + obj.ID + "');\" href=\"javascript:void(0)\" data-toggle=\"tooltip\" title=\"Sửa\" class=\"btn btn-xs btn-default\"><i class=\"fa fa-pencil\"></i></a>" +
                                                             "<a onclick=\"quotationroutes.startdelete('" + obj.ID + "');\" href=\"javascript:void(0)\" data-toggle=\"tooltip\" title=\"Xóa\" class=\"btn btn-xs btn-danger\"><i class=\"fa fa-times\"></i></a>" +
                                                         //"</div>" +
@@ -398,7 +412,7 @@
                     if (comp.Routes == null || comp.Routes.length == 0)
                         $('#divTransportRoutes').html('<label class="control-label label-quicklink"><a href="/tuyen-duong">Không tìm thấy Tuyến đường! Chuyển sang trang Quản lý?</a></label>');
                     else {
-                        var html = "<select id=\"info-transomp-routes\" class=\"select-select2 select2-hidden-accessible\" style=\"width: auto;\">";
+                        var html = "<select id=\"info-transcomp-routes\" class=\"select-select2 select2-hidden-accessible\" style=\"width: auto;\">";
 
                         for (var i = 0; i < comp.Routes.length; i++) {
                             var route = comp.Routes[i];
@@ -424,7 +438,7 @@
                     if (comp.VehicleTypes == null || comp.VehicleTypes.length == 0)
                         $('#divVehicleLoads').html('<label class="control-label label-quicklink"><a href="/hang-van-chuyen">Không tìm thấy Thiết lập Loại xe! Chuyển sang trang Quản lý?</a></label>');
                     else {
-                        var html = "<select id=\"info-transomp-loads\" class=\"select-select2 select2-hidden-accessible\" style=\"width: auto;\">";
+                        var html = "<select id=\"info-transcomp-loads\" class=\"select-select2 select2-hidden-accessible\" style=\"width: auto;\">";
 
                         for (var i = 0; i < comp.VehicleTypes.length; i++) {
                             var type = comp.VehicleTypes[i];

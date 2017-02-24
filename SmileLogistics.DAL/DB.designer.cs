@@ -45,9 +45,9 @@ namespace SmileLogistics.DAL
     partial void InsertCustomer(Customer instance);
     partial void UpdateCustomer(Customer instance);
     partial void DeleteCustomer(Customer instance);
-    partial void InsertCustomProcess_FeeDetail(CustomProcess_FeeDetail instance);
-    partial void UpdateCustomProcess_FeeDetail(CustomProcess_FeeDetail instance);
-    partial void DeleteCustomProcess_FeeDetail(CustomProcess_FeeDetail instance);
+    partial void InsertCustomsProcess_FeeDetail(CustomsProcess_FeeDetail instance);
+    partial void UpdateCustomsProcess_FeeDetail(CustomsProcess_FeeDetail instance);
+    partial void DeleteCustomsProcess_FeeDetail(CustomsProcess_FeeDetail instance);
     partial void InsertCustomsProcess_FeeType(CustomsProcess_FeeType instance);
     partial void UpdateCustomsProcess_FeeType(CustomsProcess_FeeType instance);
     partial void DeleteCustomsProcess_FeeType(CustomsProcess_FeeType instance);
@@ -66,6 +66,9 @@ namespace SmileLogistics.DAL
     partial void InsertPrepaid(Prepaid instance);
     partial void UpdatePrepaid(Prepaid instance);
     partial void DeletePrepaid(Prepaid instance);
+    partial void InsertQuotation_CustomsProcess(Quotation_CustomsProcess instance);
+    partial void UpdateQuotation_CustomsProcess(Quotation_CustomsProcess instance);
+    partial void DeleteQuotation_CustomsProcess(Quotation_CustomsProcess instance);
     partial void InsertQuotation_Route(Quotation_Route instance);
     partial void UpdateQuotation_Route(Quotation_Route instance);
     partial void DeleteQuotation_Route(Quotation_Route instance);
@@ -171,11 +174,11 @@ namespace SmileLogistics.DAL
 			}
 		}
 		
-		public System.Data.Linq.Table<CustomProcess_FeeDetail> CustomProcess_FeeDetails
+		public System.Data.Linq.Table<CustomsProcess_FeeDetail> CustomsProcess_FeeDetails
 		{
 			get
 			{
-				return this.GetTable<CustomProcess_FeeDetail>();
+				return this.GetTable<CustomsProcess_FeeDetail>();
 			}
 		}
 		
@@ -224,6 +227,14 @@ namespace SmileLogistics.DAL
 			get
 			{
 				return this.GetTable<Prepaid>();
+			}
+		}
+		
+		public System.Data.Linq.Table<Quotation_CustomsProcess> Quotation_CustomsProcesses
+		{
+			get
+			{
+				return this.GetTable<Quotation_CustomsProcess>();
 			}
 		}
 		
@@ -326,6 +337,8 @@ namespace SmileLogistics.DAL
 		
 		private int _CustomerID;
 		
+		private int _QuotationID;
+		
 		private System.DateTime _Expire_Start;
 		
 		private System.DateTime _Expire_End;
@@ -344,6 +357,8 @@ namespace SmileLogistics.DAL
 		
 		private EntitySet<Job> _Jobs;
 		
+		private EntityRef<Quotation_CustomsProcess> _Quotation_CustomsProcess;
+		
 		private EntityRef<Sys_User> _Sys_User;
 		
     #region Extensibility Method Definitions
@@ -354,6 +369,8 @@ namespace SmileLogistics.DAL
     partial void OnIDChanged();
     partial void OnCustomerIDChanging(int value);
     partial void OnCustomerIDChanged();
+    partial void OnQuotationIDChanging(int value);
+    partial void OnQuotationIDChanged();
     partial void OnExpire_StartChanging(System.DateTime value);
     partial void OnExpire_StartChanged();
     partial void OnExpire_EndChanging(System.DateTime value);
@@ -374,6 +391,7 @@ namespace SmileLogistics.DAL
 		{
 			this._CustomerQuotation_CustomsDetails = new EntitySet<CustomerQuotation_CustomsDetail>(new Action<CustomerQuotation_CustomsDetail>(this.attach_CustomerQuotation_CustomsDetails), new Action<CustomerQuotation_CustomsDetail>(this.detach_CustomerQuotation_CustomsDetails));
 			this._Jobs = new EntitySet<Job>(new Action<Job>(this.attach_Jobs), new Action<Job>(this.detach_Jobs));
+			this._Quotation_CustomsProcess = default(EntityRef<Quotation_CustomsProcess>);
 			this._Sys_User = default(EntityRef<Sys_User>);
 			OnCreated();
 		}
@@ -414,6 +432,30 @@ namespace SmileLogistics.DAL
 					this._CustomerID = value;
 					this.SendPropertyChanged("CustomerID");
 					this.OnCustomerIDChanged();
+				}
+			}
+		}
+		
+		[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_QuotationID", DbType="Int NOT NULL")]
+		public int QuotationID
+		{
+			get
+			{
+				return this._QuotationID;
+			}
+			set
+			{
+				if ((this._QuotationID != value))
+				{
+					if (this._Quotation_CustomsProcess.HasLoadedOrAssignedValue)
+					{
+						throw new System.Data.Linq.ForeignKeyReferenceAlreadyHasValueException();
+					}
+					this.OnQuotationIDChanging(value);
+					this.SendPropertyChanging();
+					this._QuotationID = value;
+					this.SendPropertyChanged("QuotationID");
+					this.OnQuotationIDChanged();
 				}
 			}
 		}
@@ -585,6 +627,40 @@ namespace SmileLogistics.DAL
 			set
 			{
 				this._Jobs.Assign(value);
+			}
+		}
+		
+		[global::System.Data.Linq.Mapping.AssociationAttribute(Name="Quotation_CustomsProcess_CustomerQuotation_Custom", Storage="_Quotation_CustomsProcess", ThisKey="QuotationID", OtherKey="ID", IsForeignKey=true)]
+		public Quotation_CustomsProcess Quotation_CustomsProcess
+		{
+			get
+			{
+				return this._Quotation_CustomsProcess.Entity;
+			}
+			set
+			{
+				Quotation_CustomsProcess previousValue = this._Quotation_CustomsProcess.Entity;
+				if (((previousValue != value) 
+							|| (this._Quotation_CustomsProcess.HasLoadedOrAssignedValue == false)))
+				{
+					this.SendPropertyChanging();
+					if ((previousValue != null))
+					{
+						this._Quotation_CustomsProcess.Entity = null;
+						previousValue.CustomerQuotation_Customs.Remove(this);
+					}
+					this._Quotation_CustomsProcess.Entity = value;
+					if ((value != null))
+					{
+						value.CustomerQuotation_Customs.Add(this);
+						this._QuotationID = value.ID;
+					}
+					else
+					{
+						this._QuotationID = default(int);
+					}
+					this.SendPropertyChanged("Quotation_CustomsProcess");
+				}
 			}
 		}
 		
@@ -1057,7 +1133,7 @@ namespace SmileLogistics.DAL
 		
 		private EntityRef<CustomerQuotation_Custom> _CustomerQuotation_Custom;
 		
-		private EntityRef<CustomProcess_FeeDetail> _CustomProcess_FeeDetail;
+		private EntityRef<CustomsProcess_FeeDetail> _CustomsProcess_FeeDetail;
 		
 		private EntityRef<Sys_User> _Sys_User;
 		
@@ -1084,7 +1160,7 @@ namespace SmileLogistics.DAL
 		public CustomerQuotation_CustomsDetail()
 		{
 			this._CustomerQuotation_Custom = default(EntityRef<CustomerQuotation_Custom>);
-			this._CustomProcess_FeeDetail = default(EntityRef<CustomProcess_FeeDetail>);
+			this._CustomsProcess_FeeDetail = default(EntityRef<CustomsProcess_FeeDetail>);
 			this._Sys_User = default(EntityRef<Sys_User>);
 			OnCreated();
 		}
@@ -1144,7 +1220,7 @@ namespace SmileLogistics.DAL
 			{
 				if ((this._FeeDetailID != value))
 				{
-					if (this._CustomProcess_FeeDetail.HasLoadedOrAssignedValue)
+					if (this._CustomsProcess_FeeDetail.HasLoadedOrAssignedValue)
 					{
 						throw new System.Data.Linq.ForeignKeyReferenceAlreadyHasValueException();
 					}
@@ -1275,26 +1351,26 @@ namespace SmileLogistics.DAL
 			}
 		}
 		
-		[global::System.Data.Linq.Mapping.AssociationAttribute(Name="CustomProcess_FeeDetail_CustomerQuotation_CustomsDetail", Storage="_CustomProcess_FeeDetail", ThisKey="FeeDetailID", OtherKey="ID", IsForeignKey=true)]
-		public CustomProcess_FeeDetail CustomProcess_FeeDetail
+		[global::System.Data.Linq.Mapping.AssociationAttribute(Name="CustomsProcess_FeeDetail_CustomerQuotation_CustomsDetail", Storage="_CustomsProcess_FeeDetail", ThisKey="FeeDetailID", OtherKey="ID", IsForeignKey=true)]
+		public CustomsProcess_FeeDetail CustomsProcess_FeeDetail
 		{
 			get
 			{
-				return this._CustomProcess_FeeDetail.Entity;
+				return this._CustomsProcess_FeeDetail.Entity;
 			}
 			set
 			{
-				CustomProcess_FeeDetail previousValue = this._CustomProcess_FeeDetail.Entity;
+				CustomsProcess_FeeDetail previousValue = this._CustomsProcess_FeeDetail.Entity;
 				if (((previousValue != value) 
-							|| (this._CustomProcess_FeeDetail.HasLoadedOrAssignedValue == false)))
+							|| (this._CustomsProcess_FeeDetail.HasLoadedOrAssignedValue == false)))
 				{
 					this.SendPropertyChanging();
 					if ((previousValue != null))
 					{
-						this._CustomProcess_FeeDetail.Entity = null;
+						this._CustomsProcess_FeeDetail.Entity = null;
 						previousValue.CustomerQuotation_CustomsDetails.Remove(this);
 					}
-					this._CustomProcess_FeeDetail.Entity = value;
+					this._CustomsProcess_FeeDetail.Entity = value;
 					if ((value != null))
 					{
 						value.CustomerQuotation_CustomsDetails.Add(this);
@@ -1304,7 +1380,7 @@ namespace SmileLogistics.DAL
 					{
 						this._FeeDetailID = default(int);
 					}
-					this.SendPropertyChanged("CustomProcess_FeeDetail");
+					this.SendPropertyChanged("CustomsProcess_FeeDetail");
 				}
 			}
 		}
@@ -2168,21 +2244,19 @@ namespace SmileLogistics.DAL
 		}
 	}
 	
-	[global::System.Data.Linq.Mapping.TableAttribute(Name="dbo.CustomProcess_FeeDetails")]
-	public partial class CustomProcess_FeeDetail : INotifyPropertyChanging, INotifyPropertyChanged
+	[global::System.Data.Linq.Mapping.TableAttribute(Name="dbo.CustomsProcess_FeeDetails")]
+	public partial class CustomsProcess_FeeDetail : INotifyPropertyChanging, INotifyPropertyChanged
 	{
 		
 		private static PropertyChangingEventArgs emptyChangingEventArgs = new PropertyChangingEventArgs(String.Empty);
 		
 		private int _ID;
 		
+		private int _QuotationID;
+		
 		private int _FeeTypeID;
 		
-		private double _Price;
-		
-		private bool _IsUSD;
-		
-		private System.DateTime _ExpireFrom;
+		private double _IsUSD;
 		
 		private int _UpdatedBy;
 		
@@ -2194,6 +2268,8 @@ namespace SmileLogistics.DAL
 		
 		private EntityRef<CustomsProcess_FeeType> _CustomsProcess_FeeType;
 		
+		private EntityRef<Quotation_CustomsProcess> _Quotation_CustomsProcess;
+		
 		private EntityRef<Sys_User> _Sys_User;
 		
     #region Extensibility Method Definitions
@@ -2202,14 +2278,12 @@ namespace SmileLogistics.DAL
     partial void OnCreated();
     partial void OnIDChanging(int value);
     partial void OnIDChanged();
+    partial void OnQuotationIDChanging(int value);
+    partial void OnQuotationIDChanged();
     partial void OnFeeTypeIDChanging(int value);
     partial void OnFeeTypeIDChanged();
     partial void OnPriceChanging(double value);
     partial void OnPriceChanged();
-    partial void OnIsUSDChanging(bool value);
-    partial void OnIsUSDChanged();
-    partial void OnExpireFromChanging(System.DateTime value);
-    partial void OnExpireFromChanged();
     partial void OnUpdatedByChanging(int value);
     partial void OnUpdatedByChanged();
     partial void OnIsDeletedChanging(bool value);
@@ -2218,10 +2292,11 @@ namespace SmileLogistics.DAL
     partial void OnLastestUpdatedChanged();
     #endregion
 		
-		public CustomProcess_FeeDetail()
+		public CustomsProcess_FeeDetail()
 		{
 			this._CustomerQuotation_CustomsDetails = new EntitySet<CustomerQuotation_CustomsDetail>(new Action<CustomerQuotation_CustomsDetail>(this.attach_CustomerQuotation_CustomsDetails), new Action<CustomerQuotation_CustomsDetail>(this.detach_CustomerQuotation_CustomsDetails));
 			this._CustomsProcess_FeeType = default(EntityRef<CustomsProcess_FeeType>);
+			this._Quotation_CustomsProcess = default(EntityRef<Quotation_CustomsProcess>);
 			this._Sys_User = default(EntityRef<Sys_User>);
 			OnCreated();
 		}
@@ -2242,6 +2317,30 @@ namespace SmileLogistics.DAL
 					this._ID = value;
 					this.SendPropertyChanged("ID");
 					this.OnIDChanged();
+				}
+			}
+		}
+		
+		[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_QuotationID", DbType="Int NOT NULL")]
+		public int QuotationID
+		{
+			get
+			{
+				return this._QuotationID;
+			}
+			set
+			{
+				if ((this._QuotationID != value))
+				{
+					if (this._Quotation_CustomsProcess.HasLoadedOrAssignedValue)
+					{
+						throw new System.Data.Linq.ForeignKeyReferenceAlreadyHasValueException();
+					}
+					this.OnQuotationIDChanging(value);
+					this.SendPropertyChanging();
+					this._QuotationID = value;
+					this.SendPropertyChanged("QuotationID");
+					this.OnQuotationIDChanged();
 				}
 			}
 		}
@@ -2270,28 +2369,8 @@ namespace SmileLogistics.DAL
 			}
 		}
 		
-		[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_Price", DbType="Float NOT NULL")]
+		[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_IsUSD", DbType="Float NOT NULL")]
 		public double Price
-		{
-			get
-			{
-				return this._Price;
-			}
-			set
-			{
-				if ((this._Price != value))
-				{
-					this.OnPriceChanging(value);
-					this.SendPropertyChanging();
-					this._Price = value;
-					this.SendPropertyChanged("Price");
-					this.OnPriceChanged();
-				}
-			}
-		}
-		
-		[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_IsUSD", DbType="Bit NOT NULL")]
-		public bool IsUSD
 		{
 			get
 			{
@@ -2301,31 +2380,11 @@ namespace SmileLogistics.DAL
 			{
 				if ((this._IsUSD != value))
 				{
-					this.OnIsUSDChanging(value);
+					this.OnPriceChanging(value);
 					this.SendPropertyChanging();
 					this._IsUSD = value;
-					this.SendPropertyChanged("IsUSD");
-					this.OnIsUSDChanged();
-				}
-			}
-		}
-		
-		[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_ExpireFrom", DbType="DateTime NOT NULL")]
-		public System.DateTime ExpireFrom
-		{
-			get
-			{
-				return this._ExpireFrom;
-			}
-			set
-			{
-				if ((this._ExpireFrom != value))
-				{
-					this.OnExpireFromChanging(value);
-					this.SendPropertyChanging();
-					this._ExpireFrom = value;
-					this.SendPropertyChanged("ExpireFrom");
-					this.OnExpireFromChanged();
+					this.SendPropertyChanged("Price");
+					this.OnPriceChanged();
 				}
 			}
 		}
@@ -2394,7 +2453,7 @@ namespace SmileLogistics.DAL
 			}
 		}
 		
-		[global::System.Data.Linq.Mapping.AssociationAttribute(Name="CustomProcess_FeeDetail_CustomerQuotation_CustomsDetail", Storage="_CustomerQuotation_CustomsDetails", ThisKey="ID", OtherKey="FeeDetailID")]
+		[global::System.Data.Linq.Mapping.AssociationAttribute(Name="CustomsProcess_FeeDetail_CustomerQuotation_CustomsDetail", Storage="_CustomerQuotation_CustomsDetails", ThisKey="ID", OtherKey="FeeDetailID")]
 		public EntitySet<CustomerQuotation_CustomsDetail> CustomerQuotation_CustomsDetails
 		{
 			get
@@ -2407,7 +2466,7 @@ namespace SmileLogistics.DAL
 			}
 		}
 		
-		[global::System.Data.Linq.Mapping.AssociationAttribute(Name="CustomsProcess_FeeType_CustomProcess_FeeDetail", Storage="_CustomsProcess_FeeType", ThisKey="FeeTypeID", OtherKey="ID", IsForeignKey=true)]
+		[global::System.Data.Linq.Mapping.AssociationAttribute(Name="CustomsProcess_FeeType_CustomsProcess_FeeDetail", Storage="_CustomsProcess_FeeType", ThisKey="FeeTypeID", OtherKey="ID", IsForeignKey=true)]
 		public CustomsProcess_FeeType CustomsProcess_FeeType
 		{
 			get
@@ -2424,12 +2483,12 @@ namespace SmileLogistics.DAL
 					if ((previousValue != null))
 					{
 						this._CustomsProcess_FeeType.Entity = null;
-						previousValue.CustomProcess_FeeDetails.Remove(this);
+						previousValue.CustomsProcess_FeeDetails.Remove(this);
 					}
 					this._CustomsProcess_FeeType.Entity = value;
 					if ((value != null))
 					{
-						value.CustomProcess_FeeDetails.Add(this);
+						value.CustomsProcess_FeeDetails.Add(this);
 						this._FeeTypeID = value.ID;
 					}
 					else
@@ -2441,7 +2500,41 @@ namespace SmileLogistics.DAL
 			}
 		}
 		
-		[global::System.Data.Linq.Mapping.AssociationAttribute(Name="Sys_User_CustomProcess_FeeDetail", Storage="_Sys_User", ThisKey="UpdatedBy", OtherKey="ID", IsForeignKey=true)]
+		[global::System.Data.Linq.Mapping.AssociationAttribute(Name="Quotation_CustomsProcess_CustomsProcess_FeeDetail", Storage="_Quotation_CustomsProcess", ThisKey="QuotationID", OtherKey="ID", IsForeignKey=true)]
+		public Quotation_CustomsProcess Quotation_CustomsProcess
+		{
+			get
+			{
+				return this._Quotation_CustomsProcess.Entity;
+			}
+			set
+			{
+				Quotation_CustomsProcess previousValue = this._Quotation_CustomsProcess.Entity;
+				if (((previousValue != value) 
+							|| (this._Quotation_CustomsProcess.HasLoadedOrAssignedValue == false)))
+				{
+					this.SendPropertyChanging();
+					if ((previousValue != null))
+					{
+						this._Quotation_CustomsProcess.Entity = null;
+						previousValue.CustomsProcess_FeeDetails.Remove(this);
+					}
+					this._Quotation_CustomsProcess.Entity = value;
+					if ((value != null))
+					{
+						value.CustomsProcess_FeeDetails.Add(this);
+						this._QuotationID = value.ID;
+					}
+					else
+					{
+						this._QuotationID = default(int);
+					}
+					this.SendPropertyChanged("Quotation_CustomsProcess");
+				}
+			}
+		}
+		
+		[global::System.Data.Linq.Mapping.AssociationAttribute(Name="Sys_User_CustomsProcess_FeeDetail", Storage="_Sys_User", ThisKey="UpdatedBy", OtherKey="ID", IsForeignKey=true)]
 		public Sys_User Sys_User
 		{
 			get
@@ -2458,12 +2551,12 @@ namespace SmileLogistics.DAL
 					if ((previousValue != null))
 					{
 						this._Sys_User.Entity = null;
-						previousValue.CustomProcess_FeeDetails.Remove(this);
+						previousValue.CustomsProcess_FeeDetails.Remove(this);
 					}
 					this._Sys_User.Entity = value;
 					if ((value != null))
 					{
-						value.CustomProcess_FeeDetails.Add(this);
+						value.CustomsProcess_FeeDetails.Add(this);
 						this._UpdatedBy = value.ID;
 					}
 					else
@@ -2498,13 +2591,13 @@ namespace SmileLogistics.DAL
 		private void attach_CustomerQuotation_CustomsDetails(CustomerQuotation_CustomsDetail entity)
 		{
 			this.SendPropertyChanging();
-			entity.CustomProcess_FeeDetail = this;
+			entity.CustomsProcess_FeeDetail = this;
 		}
 		
 		private void detach_CustomerQuotation_CustomsDetails(CustomerQuotation_CustomsDetail entity)
 		{
 			this.SendPropertyChanging();
-			entity.CustomProcess_FeeDetail = null;
+			entity.CustomsProcess_FeeDetail = null;
 		}
 	}
 	
@@ -2526,7 +2619,7 @@ namespace SmileLogistics.DAL
 		
 		private int _UpdatedBy;
 		
-		private EntitySet<CustomProcess_FeeDetail> _CustomProcess_FeeDetails;
+		private EntitySet<CustomsProcess_FeeDetail> _CustomsProcess_FeeDetails;
 		
 		private EntityRef<Sys_User> _Sys_User;
 		
@@ -2550,7 +2643,7 @@ namespace SmileLogistics.DAL
 		
 		public CustomsProcess_FeeType()
 		{
-			this._CustomProcess_FeeDetails = new EntitySet<CustomProcess_FeeDetail>(new Action<CustomProcess_FeeDetail>(this.attach_CustomProcess_FeeDetails), new Action<CustomProcess_FeeDetail>(this.detach_CustomProcess_FeeDetails));
+			this._CustomsProcess_FeeDetails = new EntitySet<CustomsProcess_FeeDetail>(new Action<CustomsProcess_FeeDetail>(this.attach_CustomsProcess_FeeDetails), new Action<CustomsProcess_FeeDetail>(this.detach_CustomsProcess_FeeDetails));
 			this._Sys_User = default(EntityRef<Sys_User>);
 			OnCreated();
 		}
@@ -2679,16 +2772,16 @@ namespace SmileLogistics.DAL
 			}
 		}
 		
-		[global::System.Data.Linq.Mapping.AssociationAttribute(Name="CustomsProcess_FeeType_CustomProcess_FeeDetail", Storage="_CustomProcess_FeeDetails", ThisKey="ID", OtherKey="FeeTypeID")]
-		public EntitySet<CustomProcess_FeeDetail> CustomProcess_FeeDetails
+		[global::System.Data.Linq.Mapping.AssociationAttribute(Name="CustomsProcess_FeeType_CustomsProcess_FeeDetail", Storage="_CustomsProcess_FeeDetails", ThisKey="ID", OtherKey="FeeTypeID")]
+		public EntitySet<CustomsProcess_FeeDetail> CustomsProcess_FeeDetails
 		{
 			get
 			{
-				return this._CustomProcess_FeeDetails;
+				return this._CustomsProcess_FeeDetails;
 			}
 			set
 			{
-				this._CustomProcess_FeeDetails.Assign(value);
+				this._CustomsProcess_FeeDetails.Assign(value);
 			}
 		}
 		
@@ -2746,13 +2839,13 @@ namespace SmileLogistics.DAL
 			}
 		}
 		
-		private void attach_CustomProcess_FeeDetails(CustomProcess_FeeDetail entity)
+		private void attach_CustomsProcess_FeeDetails(CustomsProcess_FeeDetail entity)
 		{
 			this.SendPropertyChanging();
 			entity.CustomsProcess_FeeType = this;
 		}
 		
-		private void detach_CustomProcess_FeeDetails(CustomProcess_FeeDetail entity)
+		private void detach_CustomsProcess_FeeDetails(CustomsProcess_FeeDetail entity)
 		{
 			this.SendPropertyChanging();
 			entity.CustomsProcess_FeeType = null;
@@ -5120,6 +5213,285 @@ namespace SmileLogistics.DAL
 		}
 	}
 	
+	[global::System.Data.Linq.Mapping.TableAttribute(Name="dbo.Quotation_CustomsProcess")]
+	public partial class Quotation_CustomsProcess : INotifyPropertyChanging, INotifyPropertyChanged
+	{
+		
+		private static PropertyChangingEventArgs emptyChangingEventArgs = new PropertyChangingEventArgs(String.Empty);
+		
+		private int _ID;
+		
+		private long _IsUSD;
+		
+		private System.DateTime _ExpireFrom;
+		
+		private int _UpdatedBy;
+		
+		private bool _IsDeleted;
+		
+		private System.DateTime _LastestUpdated;
+		
+		private EntitySet<CustomerQuotation_Custom> _CustomerQuotation_Customs;
+		
+		private EntitySet<CustomsProcess_FeeDetail> _CustomsProcess_FeeDetails;
+		
+		private EntityRef<Sys_User> _Sys_User;
+		
+    #region Extensibility Method Definitions
+    partial void OnLoaded();
+    partial void OnValidate(System.Data.Linq.ChangeAction action);
+    partial void OnCreated();
+    partial void OnIDChanging(int value);
+    partial void OnIDChanged();
+    partial void OnIsUSDChanging(long value);
+    partial void OnIsUSDChanged();
+    partial void OnExpireFromChanging(System.DateTime value);
+    partial void OnExpireFromChanged();
+    partial void OnUpdatedByChanging(int value);
+    partial void OnUpdatedByChanged();
+    partial void OnIsDeletedChanging(bool value);
+    partial void OnIsDeletedChanged();
+    partial void OnLastestUpdatedChanging(System.DateTime value);
+    partial void OnLastestUpdatedChanged();
+    #endregion
+		
+		public Quotation_CustomsProcess()
+		{
+			this._CustomerQuotation_Customs = new EntitySet<CustomerQuotation_Custom>(new Action<CustomerQuotation_Custom>(this.attach_CustomerQuotation_Customs), new Action<CustomerQuotation_Custom>(this.detach_CustomerQuotation_Customs));
+			this._CustomsProcess_FeeDetails = new EntitySet<CustomsProcess_FeeDetail>(new Action<CustomsProcess_FeeDetail>(this.attach_CustomsProcess_FeeDetails), new Action<CustomsProcess_FeeDetail>(this.detach_CustomsProcess_FeeDetails));
+			this._Sys_User = default(EntityRef<Sys_User>);
+			OnCreated();
+		}
+		
+		[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_ID", AutoSync=AutoSync.OnInsert, DbType="Int NOT NULL IDENTITY", IsPrimaryKey=true, IsDbGenerated=true)]
+		public int ID
+		{
+			get
+			{
+				return this._ID;
+			}
+			set
+			{
+				if ((this._ID != value))
+				{
+					this.OnIDChanging(value);
+					this.SendPropertyChanging();
+					this._ID = value;
+					this.SendPropertyChanged("ID");
+					this.OnIDChanged();
+				}
+			}
+		}
+		
+		[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_IsUSD", DbType="BigInt NOT NULL")]
+		public long IsUSD
+		{
+			get
+			{
+				return this._IsUSD;
+			}
+			set
+			{
+				if ((this._IsUSD != value))
+				{
+					this.OnIsUSDChanging(value);
+					this.SendPropertyChanging();
+					this._IsUSD = value;
+					this.SendPropertyChanged("IsUSD");
+					this.OnIsUSDChanged();
+				}
+			}
+		}
+		
+		[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_ExpireFrom", DbType="DateTime NOT NULL")]
+		public System.DateTime ExpireFrom
+		{
+			get
+			{
+				return this._ExpireFrom;
+			}
+			set
+			{
+				if ((this._ExpireFrom != value))
+				{
+					this.OnExpireFromChanging(value);
+					this.SendPropertyChanging();
+					this._ExpireFrom = value;
+					this.SendPropertyChanged("ExpireFrom");
+					this.OnExpireFromChanged();
+				}
+			}
+		}
+		
+		[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_UpdatedBy", DbType="Int NOT NULL")]
+		public int UpdatedBy
+		{
+			get
+			{
+				return this._UpdatedBy;
+			}
+			set
+			{
+				if ((this._UpdatedBy != value))
+				{
+					if (this._Sys_User.HasLoadedOrAssignedValue)
+					{
+						throw new System.Data.Linq.ForeignKeyReferenceAlreadyHasValueException();
+					}
+					this.OnUpdatedByChanging(value);
+					this.SendPropertyChanging();
+					this._UpdatedBy = value;
+					this.SendPropertyChanged("UpdatedBy");
+					this.OnUpdatedByChanged();
+				}
+			}
+		}
+		
+		[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_IsDeleted", DbType="Bit NOT NULL")]
+		public bool IsDeleted
+		{
+			get
+			{
+				return this._IsDeleted;
+			}
+			set
+			{
+				if ((this._IsDeleted != value))
+				{
+					this.OnIsDeletedChanging(value);
+					this.SendPropertyChanging();
+					this._IsDeleted = value;
+					this.SendPropertyChanged("IsDeleted");
+					this.OnIsDeletedChanged();
+				}
+			}
+		}
+		
+		[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_LastestUpdated", DbType="DateTime NOT NULL")]
+		public System.DateTime LastestUpdated
+		{
+			get
+			{
+				return this._LastestUpdated;
+			}
+			set
+			{
+				if ((this._LastestUpdated != value))
+				{
+					this.OnLastestUpdatedChanging(value);
+					this.SendPropertyChanging();
+					this._LastestUpdated = value;
+					this.SendPropertyChanged("LastestUpdated");
+					this.OnLastestUpdatedChanged();
+				}
+			}
+		}
+		
+		[global::System.Data.Linq.Mapping.AssociationAttribute(Name="Quotation_CustomsProcess_CustomerQuotation_Custom", Storage="_CustomerQuotation_Customs", ThisKey="ID", OtherKey="QuotationID")]
+		public EntitySet<CustomerQuotation_Custom> CustomerQuotation_Customs
+		{
+			get
+			{
+				return this._CustomerQuotation_Customs;
+			}
+			set
+			{
+				this._CustomerQuotation_Customs.Assign(value);
+			}
+		}
+		
+		[global::System.Data.Linq.Mapping.AssociationAttribute(Name="Quotation_CustomsProcess_CustomsProcess_FeeDetail", Storage="_CustomsProcess_FeeDetails", ThisKey="ID", OtherKey="QuotationID")]
+		public EntitySet<CustomsProcess_FeeDetail> CustomsProcess_FeeDetails
+		{
+			get
+			{
+				return this._CustomsProcess_FeeDetails;
+			}
+			set
+			{
+				this._CustomsProcess_FeeDetails.Assign(value);
+			}
+		}
+		
+		[global::System.Data.Linq.Mapping.AssociationAttribute(Name="Sys_User_Quotation_CustomsProcess", Storage="_Sys_User", ThisKey="UpdatedBy", OtherKey="ID", IsForeignKey=true)]
+		public Sys_User Sys_User
+		{
+			get
+			{
+				return this._Sys_User.Entity;
+			}
+			set
+			{
+				Sys_User previousValue = this._Sys_User.Entity;
+				if (((previousValue != value) 
+							|| (this._Sys_User.HasLoadedOrAssignedValue == false)))
+				{
+					this.SendPropertyChanging();
+					if ((previousValue != null))
+					{
+						this._Sys_User.Entity = null;
+						previousValue.Quotation_CustomsProcesses.Remove(this);
+					}
+					this._Sys_User.Entity = value;
+					if ((value != null))
+					{
+						value.Quotation_CustomsProcesses.Add(this);
+						this._UpdatedBy = value.ID;
+					}
+					else
+					{
+						this._UpdatedBy = default(int);
+					}
+					this.SendPropertyChanged("Sys_User");
+				}
+			}
+		}
+		
+		public event PropertyChangingEventHandler PropertyChanging;
+		
+		public event PropertyChangedEventHandler PropertyChanged;
+		
+		protected virtual void SendPropertyChanging()
+		{
+			if ((this.PropertyChanging != null))
+			{
+				this.PropertyChanging(this, emptyChangingEventArgs);
+			}
+		}
+		
+		protected virtual void SendPropertyChanged(String propertyName)
+		{
+			if ((this.PropertyChanged != null))
+			{
+				this.PropertyChanged(this, new PropertyChangedEventArgs(propertyName));
+			}
+		}
+		
+		private void attach_CustomerQuotation_Customs(CustomerQuotation_Custom entity)
+		{
+			this.SendPropertyChanging();
+			entity.Quotation_CustomsProcess = this;
+		}
+		
+		private void detach_CustomerQuotation_Customs(CustomerQuotation_Custom entity)
+		{
+			this.SendPropertyChanging();
+			entity.Quotation_CustomsProcess = null;
+		}
+		
+		private void attach_CustomsProcess_FeeDetails(CustomsProcess_FeeDetail entity)
+		{
+			this.SendPropertyChanging();
+			entity.Quotation_CustomsProcess = this;
+		}
+		
+		private void detach_CustomsProcess_FeeDetails(CustomsProcess_FeeDetail entity)
+		{
+			this.SendPropertyChanging();
+			entity.Quotation_CustomsProcess = null;
+		}
+	}
+	
 	[global::System.Data.Linq.Mapping.TableAttribute(Name="dbo.Quotation_Routes")]
 	public partial class Quotation_Route : INotifyPropertyChanging, INotifyPropertyChanged
 	{
@@ -6375,7 +6747,7 @@ namespace SmileLogistics.DAL
 		
 		private EntitySet<Customer> _Customers;
 		
-		private EntitySet<CustomProcess_FeeDetail> _CustomProcess_FeeDetails;
+		private EntitySet<CustomsProcess_FeeDetail> _CustomsProcess_FeeDetails;
 		
 		private EntitySet<CustomsProcess_FeeType> _CustomsProcess_FeeTypes;
 		
@@ -6388,6 +6760,8 @@ namespace SmileLogistics.DAL
 		private EntitySet<Job> _Jobs;
 		
 		private EntitySet<Prepaid> _Prepaids;
+		
+		private EntitySet<Quotation_CustomsProcess> _Quotation_CustomsProcesses;
 		
 		private EntitySet<Quotation_Route> _Quotation_Routes;
 		
@@ -6444,13 +6818,14 @@ namespace SmileLogistics.DAL
 			this._CustomerQuotation_CustomsDetails = new EntitySet<CustomerQuotation_CustomsDetail>(new Action<CustomerQuotation_CustomsDetail>(this.attach_CustomerQuotation_CustomsDetails), new Action<CustomerQuotation_CustomsDetail>(this.detach_CustomerQuotation_CustomsDetails));
 			this._CustomerQuotation_Routes = new EntitySet<CustomerQuotation_Route>(new Action<CustomerQuotation_Route>(this.attach_CustomerQuotation_Routes), new Action<CustomerQuotation_Route>(this.detach_CustomerQuotation_Routes));
 			this._Customers = new EntitySet<Customer>(new Action<Customer>(this.attach_Customers), new Action<Customer>(this.detach_Customers));
-			this._CustomProcess_FeeDetails = new EntitySet<CustomProcess_FeeDetail>(new Action<CustomProcess_FeeDetail>(this.attach_CustomProcess_FeeDetails), new Action<CustomProcess_FeeDetail>(this.detach_CustomProcess_FeeDetails));
+			this._CustomsProcess_FeeDetails = new EntitySet<CustomsProcess_FeeDetail>(new Action<CustomsProcess_FeeDetail>(this.attach_CustomsProcess_FeeDetails), new Action<CustomsProcess_FeeDetail>(this.detach_CustomsProcess_FeeDetails));
 			this._CustomsProcess_FeeTypes = new EntitySet<CustomsProcess_FeeType>(new Action<CustomsProcess_FeeType>(this.attach_CustomsProcess_FeeTypes), new Action<CustomsProcess_FeeType>(this.detach_CustomsProcess_FeeTypes));
 			this._GoodsTypes = new EntitySet<GoodsType>(new Action<GoodsType>(this.attach_GoodsTypes), new Action<GoodsType>(this.detach_GoodsTypes));
 			this._Job_InOutFees = new EntitySet<Job_InOutFee>(new Action<Job_InOutFee>(this.attach_Job_InOutFees), new Action<Job_InOutFee>(this.detach_Job_InOutFees));
 			this._Job_QuotationRoutes = new EntitySet<Job_QuotationRoute>(new Action<Job_QuotationRoute>(this.attach_Job_QuotationRoutes), new Action<Job_QuotationRoute>(this.detach_Job_QuotationRoutes));
 			this._Jobs = new EntitySet<Job>(new Action<Job>(this.attach_Jobs), new Action<Job>(this.detach_Jobs));
 			this._Prepaids = new EntitySet<Prepaid>(new Action<Prepaid>(this.attach_Prepaids), new Action<Prepaid>(this.detach_Prepaids));
+			this._Quotation_CustomsProcesses = new EntitySet<Quotation_CustomsProcess>(new Action<Quotation_CustomsProcess>(this.attach_Quotation_CustomsProcesses), new Action<Quotation_CustomsProcess>(this.detach_Quotation_CustomsProcesses));
 			this._Quotation_Routes = new EntitySet<Quotation_Route>(new Action<Quotation_Route>(this.attach_Quotation_Routes), new Action<Quotation_Route>(this.detach_Quotation_Routes));
 			this._TransportCompanies = new EntitySet<TransportCompany>(new Action<TransportCompany>(this.attach_TransportCompanies), new Action<TransportCompany>(this.detach_TransportCompanies));
 			this._TransportCompany_Routes = new EntitySet<TransportCompany_Route>(new Action<TransportCompany_Route>(this.attach_TransportCompany_Routes), new Action<TransportCompany_Route>(this.detach_TransportCompany_Routes));
@@ -6791,16 +7166,16 @@ namespace SmileLogistics.DAL
 			}
 		}
 		
-		[global::System.Data.Linq.Mapping.AssociationAttribute(Name="Sys_User_CustomProcess_FeeDetail", Storage="_CustomProcess_FeeDetails", ThisKey="ID", OtherKey="UpdatedBy")]
-		public EntitySet<CustomProcess_FeeDetail> CustomProcess_FeeDetails
+		[global::System.Data.Linq.Mapping.AssociationAttribute(Name="Sys_User_CustomsProcess_FeeDetail", Storage="_CustomsProcess_FeeDetails", ThisKey="ID", OtherKey="UpdatedBy")]
+		public EntitySet<CustomsProcess_FeeDetail> CustomsProcess_FeeDetails
 		{
 			get
 			{
-				return this._CustomProcess_FeeDetails;
+				return this._CustomsProcess_FeeDetails;
 			}
 			set
 			{
-				this._CustomProcess_FeeDetails.Assign(value);
+				this._CustomsProcess_FeeDetails.Assign(value);
 			}
 		}
 		
@@ -6879,6 +7254,19 @@ namespace SmileLogistics.DAL
 			set
 			{
 				this._Prepaids.Assign(value);
+			}
+		}
+		
+		[global::System.Data.Linq.Mapping.AssociationAttribute(Name="Sys_User_Quotation_CustomsProcess", Storage="_Quotation_CustomsProcesses", ThisKey="ID", OtherKey="UpdatedBy")]
+		public EntitySet<Quotation_CustomsProcess> Quotation_CustomsProcesses
+		{
+			get
+			{
+				return this._Quotation_CustomsProcesses;
+			}
+			set
+			{
+				this._Quotation_CustomsProcesses.Assign(value);
 			}
 		}
 		
@@ -7087,13 +7475,13 @@ namespace SmileLogistics.DAL
 			entity.Sys_User = null;
 		}
 		
-		private void attach_CustomProcess_FeeDetails(CustomProcess_FeeDetail entity)
+		private void attach_CustomsProcess_FeeDetails(CustomsProcess_FeeDetail entity)
 		{
 			this.SendPropertyChanging();
 			entity.Sys_User = this;
 		}
 		
-		private void detach_CustomProcess_FeeDetails(CustomProcess_FeeDetail entity)
+		private void detach_CustomsProcess_FeeDetails(CustomsProcess_FeeDetail entity)
 		{
 			this.SendPropertyChanging();
 			entity.Sys_User = null;
@@ -7166,6 +7554,18 @@ namespace SmileLogistics.DAL
 		}
 		
 		private void detach_Prepaids(Prepaid entity)
+		{
+			this.SendPropertyChanging();
+			entity.Sys_User = null;
+		}
+		
+		private void attach_Quotation_CustomsProcesses(Quotation_CustomsProcess entity)
+		{
+			this.SendPropertyChanging();
+			entity.Sys_User = this;
+		}
+		
+		private void detach_Quotation_CustomsProcesses(Quotation_CustomsProcess entity)
 		{
 			this.SendPropertyChanging();
 			entity.Sys_User = null;

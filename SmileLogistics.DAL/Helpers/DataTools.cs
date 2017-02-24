@@ -2517,5 +2517,737 @@ namespace SmileLogistics.DAL.Helpers
         }
 
         #endregion
+
+        #region QuotationRoutes
+
+        public bool Quotation_Route_Delete(Quotation_Route route)
+        {
+            try
+            {
+                Quotation_Route obj = DB.Quotation_Routes.FirstOrDefault(o => o.ID == route.ID);
+                if (obj == null) return false;
+
+                obj.IsDeleted = true;
+                obj.LastestUpdated = DateTime.Now;
+                obj.UpdatedBy = route.UpdatedBy;
+                DB.SubmitChanges();
+
+                return true;
+            }
+            catch
+            {
+                return false;
+            }
+        }
+
+        public int Quotation_Route_Update(Quotation_Route obj)
+        {
+            try
+            {
+                if (obj.Expire_End < DateTime.Now) return 1;
+
+                Quotation_Route updateObj = DB.Quotation_Routes.FirstOrDefault(o => o.ID == obj.ID);
+                if (updateObj == null) return 3;
+
+                updateObj.Expire_End = obj.Expire_End;
+                updateObj.Expire_Start = obj.Expire_Start;
+                updateObj.LastestUpdated = DateTime.Now;
+                updateObj.IsSamePrice = obj.IsSamePrice;
+                updateObj.UpdatedBy = obj.UpdatedBy;
+                updateObj.IsUSD = obj.IsUSD;
+                updateObj.Price = obj.Price;
+                updateObj.Price_RoundedTrip = obj.Price_RoundedTrip;
+                updateObj.RouteID = obj.RouteID;
+                updateObj.VehicleLoadID = obj.VehicleLoadID;
+
+                DB.SubmitChanges();
+
+                return 0;
+            }
+            catch (Exception ex)
+            {
+                return int.MinValue;
+            }
+        }
+
+        public int Quotation_Route_Create(Quotation_Route obj)
+        {
+            try
+            {
+                if (obj.Expire_End < DateTime.Now) return 1;
+
+                DB.Quotation_Routes.InsertOnSubmit(obj);
+                DB.SubmitChanges();
+
+                return 0;
+            }
+            catch
+            {
+                return int.MinValue;
+            }
+        }
+
+        public List<Quotation_Route> Quotation_Route_Gets(int pageIndex, int pageSize, out int totalPages)
+        {
+            totalPages = 0;
+            try
+            {
+                var all = DB.Quotation_Routes.Where(o => !o.IsDeleted);
+                if (all.Count() == 0) return null;
+
+                int startIndex = pageIndex * pageSize;
+                List<Quotation_Route> res = all.OrderBy(o => o.TransportCompany_Route.TransportCompany.Name).ThenBy(o => o.TransportCompany_VehicleType_Load.TransportCompany_VehicleType.VehicleType.Name).ThenBy(o => o.TransportCompany_VehicleType_Load.VehicleLoad.Name).ThenByDescending(o => o.Expire_Start).ThenByDescending(o => o.Expire_End).Skip(startIndex).Take(pageSize).ToList();
+
+                if (res.Count == 0) return null;
+
+                int div = all.Count() / pageSize;
+                int mod = all.Count() % pageSize;
+                totalPages = div + (mod > 0 ? 1 : 0);
+
+                return res;
+            }
+            catch
+            {
+                return null;
+            }
+        }
+
+        public List<eQuotationRoute> Quotation_Route_GetEs(int pageIndex, int pageSize, out int totalPages)
+        {
+            totalPages = 0;
+            try
+            {
+                var all = Quotation_Route_Gets(pageIndex, pageSize, out totalPages);
+                if (all == null) return null;
+
+                List<eQuotationRoute> result = new List<eQuotationRoute>();
+                foreach (Quotation_Route obj in all)
+                    result.Add(Quotation_Route_Entity(obj));
+
+                return result;
+            }
+            catch
+            {
+                return null;
+            }
+        }
+
+        public List<Quotation_Route> Quotation_Route_Gets()
+        {
+            try
+            {
+                var all = DB.Quotation_Routes.Where(o => !o.IsDeleted);
+                if (all.Count() == 0) return null;
+
+                return all.OrderBy(o => o.TransportCompany_Route.TransportCompany.Name).ThenBy(o => o.TransportCompany_VehicleType_Load.TransportCompany_VehicleType.VehicleType.Name).ThenBy(o => o.TransportCompany_VehicleType_Load.VehicleLoad.Name).ThenByDescending(o => o.Expire_Start).ThenByDescending(o => o.Expire_End).ToList();
+            }
+            catch
+            {
+                return null;
+            }
+        }
+
+        public List<eQuotationRoute> Quotation_Route_GetEs()
+        {
+            try
+            {
+                var all = Quotation_Route_Gets();
+                if (all == null) return null;
+
+                List<eQuotationRoute> result = new List<eQuotationRoute>();
+                foreach (Quotation_Route obj in all)
+                    result.Add(Quotation_Route_Entity(obj));
+
+                return result;
+            }
+            catch
+            {
+                return null;
+            }
+        }
+
+        public Quotation_Route Quotation_Route_Get(int id)
+        {
+            try
+            {
+                return DB.Quotation_Routes.FirstOrDefault(o =>
+                    o.ID == id);
+            }
+            catch
+            {
+                return null;
+            }
+        }
+
+        public eQuotationRoute Quotation_Route_GetE(int id)
+        {
+            try
+            {
+                return Quotation_Route_Entity(Quotation_Route_Get(id));
+            }
+            catch
+            {
+                return null;
+            }
+        }
+
+        public eQuotationRoute Quotation_Route_Entity(Quotation_Route obj, bool includeEntity = true)
+        {
+            try
+            {
+                if (obj == null) return null;
+
+                return new eQuotationRoute()
+                {
+                    Expire_End = obj.Expire_End,
+                    Expire_Start = obj.Expire_Start,
+                    ID = obj.ID,
+                    IsSamePrice = obj.IsSamePrice,
+                    IsUSD = obj.IsUSD,
+                    Price = obj.Price,
+                    Price_RoundedTrip = obj.Price_RoundedTrip,
+                    RouteID = obj.RouteID,
+                    VehicleLoadID = obj.VehicleLoadID,
+
+                    IsDeleted = obj.IsDeleted,
+                    LastestUpdate = obj.LastestUpdated,
+                    sLastestUpdate = obj.LastestUpdated.ToString(GlobalValues.DateFormat_VN),
+                    UpdatedBy = Sys_User_GetE(obj.UpdatedBy),
+                    Load = TransportCompany_VehicleType_Load_Entity(obj.TransportCompany_VehicleType_Load),
+                    Route = TransportCompany_Route_Entity(obj.TransportCompany_Route),
+                    sExpireEnd = obj.Expire_End.ToString(GlobalValues.DateFormat_VN),
+                    sExpireStart = obj.Expire_Start.ToString(GlobalValues.DateFormat_VN),
+                };
+            }
+            catch
+            {
+                return null;
+            }
+        }
+
+        #endregion
+
+        #region CustomsProcess_FeeTypes
+
+        public bool CustomsProcess_FeeType_Delete(CustomsProcess_FeeType CustomsProcess_FeeType)
+        {
+            try
+            {
+                CustomsProcess_FeeType obj = DB.CustomsProcess_FeeTypes.FirstOrDefault(o => o.ID == CustomsProcess_FeeType.ID);
+                if (obj == null) return false;
+
+                obj.IsDeleted = true;
+                obj.LastestUpdated = DateTime.Now;
+                obj.UpdatedBy = CustomsProcess_FeeType.UpdatedBy;
+                DB.SubmitChanges();
+
+                return true;
+            }
+            catch
+            {
+                return false;
+            }
+        }
+
+        public int CustomsProcess_FeeType_Update(CustomsProcess_FeeType obj)
+        {
+            try
+            {
+                CustomsProcess_FeeType updateObj = DB.CustomsProcess_FeeTypes.FirstOrDefault(o => o.ID == obj.ID);
+                if (updateObj == null) return 3;
+
+                CustomsProcess_FeeType checkObj = DB.CustomsProcess_FeeTypes.FirstOrDefault(o => !o.IsDeleted && o.Name.ToLower() == obj.Name.ToLower());
+                if (checkObj != null && checkObj.ID != updateObj.ID) return 1;
+
+                updateObj.Description = obj.Description;
+                updateObj.LastestUpdated = DateTime.Now;
+                updateObj.Name = obj.Name;
+                updateObj.UpdatedBy = obj.UpdatedBy;
+
+                DB.SubmitChanges();
+
+                return 0;
+            }
+            catch (Exception ex)
+            {
+                return int.MinValue;
+            }
+        }
+
+        public int CustomsProcess_FeeType_Create(CustomsProcess_FeeType obj)
+        {
+            try
+            {
+                CustomsProcess_FeeType checkObj = DB.CustomsProcess_FeeTypes.FirstOrDefault(o => !o.IsDeleted && o.Name.ToLower() == obj.Name.ToLower());
+                if (checkObj != null) return 1;
+
+                DB.CustomsProcess_FeeTypes.InsertOnSubmit(obj);
+                DB.SubmitChanges();
+
+                return 0;
+            }
+            catch
+            {
+                return int.MinValue;
+            }
+        }
+
+        public int CustomsProcess_FeeType_CheckName(string name)
+        {
+            try
+            {
+                CustomsProcess_FeeType obj = DB.CustomsProcess_FeeTypes.FirstOrDefault(o => !o.IsDeleted && o.Name.ToLower() == name.ToLower());
+                if (obj == null) return 0;
+
+                return obj.ID;
+            }
+            catch
+            {
+                return int.MinValue;
+            }
+        }
+
+        public List<CustomsProcess_FeeType> CustomsProcess_FeeType_Gets(int pageIndex, int pageSize, out int totalPages)
+        {
+            totalPages = 0;
+            try
+            {
+                var all = DB.CustomsProcess_FeeTypes.Where(o => !o.IsDeleted);
+                if (all.Count() == 0) return null;
+
+                int startIndex = pageIndex * pageSize;
+                List<CustomsProcess_FeeType> res = all.OrderBy(o => o.Name).Skip(startIndex).Take(pageSize).ToList();
+
+                if (res.Count == 0) return null;
+
+                int div = all.Count() / pageSize;
+                int mod = all.Count() % pageSize;
+                totalPages = div + (mod > 0 ? 1 : 0);
+
+                return res;
+            }
+            catch
+            {
+                return null;
+            }
+        }
+
+        public List<eCustomsProcess_FeeType> CustomsProcess_FeeType_GetEs(int pageIndex, int pageSize, out int totalPages)
+        {
+            totalPages = 0;
+            try
+            {
+                var all = CustomsProcess_FeeType_Gets(pageIndex, pageSize, out totalPages);
+                if (all == null) return null;
+
+                List<eCustomsProcess_FeeType> result = new List<eCustomsProcess_FeeType>();
+                foreach (CustomsProcess_FeeType obj in all)
+                    result.Add(CustomsProcess_FeeType_Entity(obj));
+
+                return result;
+            }
+            catch
+            {
+                return null;
+            }
+        }
+
+        public List<CustomsProcess_FeeType> CustomsProcess_FeeType_Gets(bool isLoadDeleted = false)
+        {
+            try
+            {
+                var all =
+                    isLoadDeleted ? DB.CustomsProcess_FeeTypes :
+                    DB.CustomsProcess_FeeTypes.Where(o => !o.IsDeleted);
+
+                if (all.Count() == 0) return null;
+
+                return all.OrderBy(o => o.Name).ToList();
+            }
+            catch
+            {
+                return null;
+            }
+        }
+
+        public List<eCustomsProcess_FeeType> CustomsProcess_FeeType_GetEs(bool isLoadDeleted = false)
+        {
+            try
+            {
+                var all = CustomsProcess_FeeType_Gets(isLoadDeleted);
+                if (all == null) return null;
+
+                List<eCustomsProcess_FeeType> result = new List<eCustomsProcess_FeeType>();
+                foreach (CustomsProcess_FeeType obj in all)
+                    result.Add(CustomsProcess_FeeType_Entity(obj));
+
+                return result;
+            }
+            catch
+            {
+                return null;
+            }
+        }
+
+        public CustomsProcess_FeeType CustomsProcess_FeeType_Get(int id)
+        {
+            try
+            {
+                return DB.CustomsProcess_FeeTypes.FirstOrDefault(o =>
+                    o.ID == id);
+            }
+            catch
+            {
+                return null;
+            }
+        }
+
+        public eCustomsProcess_FeeType CustomsProcess_FeeType_GetE(int id)
+        {
+            try
+            {
+                return CustomsProcess_FeeType_Entity(CustomsProcess_FeeType_Get(id));
+            }
+            catch
+            {
+                return null;
+            }
+        }
+
+        public eCustomsProcess_FeeType CustomsProcess_FeeType_Entity(CustomsProcess_FeeType obj)
+        {
+            try
+            {
+                if (obj == null) return null;
+
+                return new eCustomsProcess_FeeType()
+                {
+                    Description = obj.Description,
+                    ID = obj.ID,
+                    IsDeleted = obj.IsDeleted,
+                    LastestUpdate = obj.LastestUpdated,
+                    Name = obj.Name,
+                    sLastestUpdate = obj.LastestUpdated.ToString(GlobalValues.DateFormat_VN),
+                    UpdatedBy = Sys_User_GetE(obj.UpdatedBy)
+                };
+            }
+            catch
+            {
+                return null;
+            }
+        }
+
+        #endregion
+
+        #region Quotation_CustomsProcess
+
+        public bool Quotation_CustomsProcess_Delete(Quotation_CustomsProcess Quotation_CustomsProcess)
+        {
+            try
+            {
+                Quotation_CustomsProcess obj = DB.Quotation_CustomsProcesses.FirstOrDefault(o => o.ID == Quotation_CustomsProcess.ID);
+                if (obj == null) return false;
+
+                obj.IsDeleted = true;
+                obj.LastestUpdated = DateTime.Now;
+                obj.UpdatedBy = Quotation_CustomsProcess.UpdatedBy;
+                DB.SubmitChanges();
+
+                return true;
+            }
+            catch
+            {
+                return false;
+            }
+        }
+
+        public int Quotation_CustomsProcess_Update(Quotation_CustomsProcess obj, List<eCustomsProcess_FeeDetail> feeDetails = null)
+        {
+            try
+            {
+                if (obj.ExpireFrom < DateTime.Now) return 1;
+
+                Quotation_CustomsProcess updateObj = DB.Quotation_CustomsProcesses.FirstOrDefault(o => o.ID == obj.ID);
+                if (updateObj == null) return 3;
+
+                updateObj.ExpireFrom = obj.ExpireFrom;
+                updateObj.IsUSD = obj.IsUSD;
+                updateObj.LastestUpdated = DateTime.Now;
+                updateObj.UpdatedBy = obj.UpdatedBy;
+
+                DB.SubmitChanges();
+
+                Quotation_CustomsProcess_UpdateFeeDetails(obj, feeDetails);
+
+                return 0;
+            }
+            catch (Exception ex)
+            {
+                return int.MinValue;
+            }
+        }
+
+        public int Quotation_CustomsProcess_Create(Quotation_CustomsProcess obj, List<eCustomsProcess_FeeDetail> feeDetails = null)
+        {
+            try
+            {
+                if (obj.ExpireFrom < DateTime.Now) return 1;
+
+                DB.Quotation_CustomsProcesses.InsertOnSubmit(obj);
+                DB.SubmitChanges();
+
+                Quotation_CustomsProcess_UpdateFeeDetails(obj, feeDetails);
+
+                return 0;
+            }
+            catch
+            {
+                return int.MinValue;
+            }
+        }
+
+        public int Quotation_CustomsProcess_UpdateFeeDetails(Quotation_CustomsProcess obj, List<eCustomsProcess_FeeDetail> feeDetails)
+        {
+            try
+            {
+                if (obj == null) return 0;
+
+                foreach (eCustomsProcess_FeeDetail detail in feeDetails)
+                {
+                    CustomsProcess_FeeDetail dbType = DB.CustomsProcess_FeeDetails.FirstOrDefault(o =>
+                        o.FeeTypeID == detail.FeeTypeID &&
+                        o.QuotationID == obj.ID);
+
+                    if (dbType == null)//Chưa có
+                    {
+                        dbType = new CustomsProcess_FeeDetail()
+                        {
+                            IsDeleted = false,
+                            LastestUpdated = DateTime.Now,
+                            QuotationID = obj.ID,
+                            UpdatedBy = obj.UpdatedBy,
+                            FeeTypeID = detail.FeeTypeID,
+                        };
+
+                        DB.CustomsProcess_FeeDetails.InsertOnSubmit(dbType);
+                        DB.SubmitChanges();
+                    }
+                    else //Đã có
+                    {
+                        dbType.Price = detail.Price;
+                        DB.SubmitChanges();
+                    }
+                }
+
+                return 0;
+            }
+            catch
+            {
+                return int.MinValue;
+            }
+        }
+
+        public List<Quotation_CustomsProcess> Quotation_CustomsProcess_Gets(int pageIndex, int pageSize, out int totalPages)
+        {
+            totalPages = 0;
+            try
+            {
+                var all = DB.Quotation_CustomsProcesses.Where(o => !o.IsDeleted);
+                if (all.Count() == 0) return null;
+
+                int startIndex = pageIndex * pageSize;
+                List<Quotation_CustomsProcess> res = all.OrderByDescending(o => o.LastestUpdated).Skip(startIndex).Take(pageSize).ToList();
+
+                if (res.Count == 0) return null;
+
+                int div = all.Count() / pageSize;
+                int mod = all.Count() % pageSize;
+                totalPages = div + (mod > 0 ? 1 : 0);
+
+                return res;
+            }
+            catch
+            {
+                return null;
+            }
+        }
+
+        public List<eQuotation_CustomsProcess> Quotation_CustomsProcess_GetEs(int pageIndex, int pageSize, out int totalPages)
+        {
+            totalPages = 0;
+            try
+            {
+                var all = Quotation_CustomsProcess_Gets(pageIndex, pageSize, out totalPages);
+                if (all == null) return null;
+
+                List<eQuotation_CustomsProcess> result = new List<eQuotation_CustomsProcess>();
+                foreach (Quotation_CustomsProcess obj in all)
+                    result.Add(Quotation_CustomsProcess_Entity(obj));
+
+                return result;
+            }
+            catch
+            {
+                return null;
+            }
+        }
+
+        public List<Quotation_CustomsProcess> Quotation_CustomsProcess_Gets()
+        {
+            try
+            {
+                var all = DB.Quotation_CustomsProcesses.Where(o => !o.IsDeleted);
+                if (all.Count() == 0) return null;
+
+                return all.OrderByDescending(o => o.LastestUpdated).ToList();
+            }
+            catch
+            {
+                return null;
+            }
+        }
+
+        public List<eQuotation_CustomsProcess> Quotation_CustomsProcess_GetEs()
+        {
+            try
+            {
+                var all = Quotation_CustomsProcess_Gets();
+                if (all == null) return null;
+
+                List<eQuotation_CustomsProcess> result = new List<eQuotation_CustomsProcess>();
+                foreach (Quotation_CustomsProcess obj in all)
+                    result.Add(Quotation_CustomsProcess_Entity(obj));
+
+                return result;
+            }
+            catch
+            {
+                return null;
+            }
+        }
+
+        public Quotation_CustomsProcess Quotation_CustomsProcess_Get(int id)
+        {
+            try
+            {
+                return DB.Quotation_CustomsProcesses.FirstOrDefault(o =>
+                    o.ID == id);
+            }
+            catch
+            {
+                return null;
+            }
+        }
+
+        public eQuotation_CustomsProcess Quotation_CustomsProcess_GetE(int id)
+        {
+            try
+            {
+                return Quotation_CustomsProcess_Entity(Quotation_CustomsProcess_Get(id));
+            }
+            catch
+            {
+                return null;
+            }
+        }
+
+        public eQuotation_CustomsProcess Quotation_CustomsProcess_Entity(Quotation_CustomsProcess obj)
+        {
+            try
+            {
+                if (obj == null) return null;
+                List<eQuotation_CustomsProcess_VehicleType> vehicleTypes = new List<eQuotation_CustomsProcess_VehicleType>();
+                if (obj.Quotation_CustomsProcess_VehicleTypes.Count > 0)
+                {
+                    foreach (Quotation_CustomsProcess_VehicleType type in obj.Quotation_CustomsProcess_VehicleTypes.Where(o => !o.IsDeleted && !o.VehicleType.IsDeleted))
+                        vehicleTypes.Add(Quotation_CustomsProcess_VehicleType_Entity(type));
+                }
+
+                List<eRoute> routes = new List<eRoute>();
+                if (obj.Quotation_CustomsProcess_Routes.Count > 0)
+                {
+                    foreach (Quotation_CustomsProcess_Route route in obj.Quotation_CustomsProcess_Routes.Where(o => !o.IsDeleted && !o.TransportPlace.IsDeleted))
+                        routes.Add(Quotation_CustomsProcess_Route_Entity(route, false));
+                }
+
+                return new eQuotation_CustomsProcess()
+                {
+                    Address = obj.Address,
+                    Email = obj.Email,
+                    ID = obj.ID,
+                    IsDeleted = obj.IsDeleted,
+                    LastestUpdate = obj.LastestUpdated,
+                    Name = obj.Name,
+                    PhoneNumber = obj.PhoneNumber,
+                    Status = obj.Status,
+                    StatusName = GlobalValues.Quotation_CustomsProcessStatuses.FirstOrDefault(o => o.ID == obj.Status).Name,
+                    sLastestUpdate = obj.LastestUpdated.ToString(GlobalValues.DateFormat_VN),
+                    UpdatedBy = Sys_User_GetE(obj.UpdatedBy),
+                    VehicleTypes = vehicleTypes.Count == 0 ? null : vehicleTypes,
+                    Routes = routes
+                };
+            }
+            catch
+            {
+                return null;
+            }
+        }
+
+        public eQuotation_CustomsProcess_VehicleType Quotation_CustomsProcess_VehicleType_Entity(Quotation_CustomsProcess_VehicleType obj)
+        {
+            try
+            {
+                if (obj == null) return null;
+                List<eQuotation_CustomsProcess_VehicleType_Load> vehicleLoads = new List<eQuotation_CustomsProcess_VehicleType_Load>();
+                if (obj.Quotation_CustomsProcess_VehicleType_Loads.Count > 0)
+                {
+                    foreach (Quotation_CustomsProcess_VehicleType_Load load in obj.Quotation_CustomsProcess_VehicleType_Loads.Where(o => !o.IsDeleted && !o.VehicleLoad.IsDeleted))
+                        vehicleLoads.Add(Quotation_CustomsProcess_VehicleType_Load_Entity(load));
+                }
+
+                return new eQuotation_CustomsProcess_VehicleType()
+                {
+                    ID = obj.ID,
+                    IsDeleted = obj.IsDeleted,
+                    LastestUpdate = obj.LastestUpdated,
+                    sLastestUpdate = obj.LastestUpdated.ToString(GlobalValues.DateFormat_VN),
+                    TransCompID = obj.TransCompID,
+                    UpdatedBy = Sys_User_GetE(obj.UpdatedBy),
+                    VehicleTypeID = obj.VehicleTypeID,
+                    Loads = vehicleLoads,
+                };
+            }
+            catch
+            {
+                return null;
+            }
+        }
+
+        public eQuotation_CustomsProcess_VehicleType_Load Quotation_CustomsProcess_VehicleType_Load_Entity(Quotation_CustomsProcess_VehicleType_Load obj)
+        {
+            try
+            {
+                if (obj == null) return null;
+
+                return new eQuotation_CustomsProcess_VehicleType_Load()
+                {
+                    ID = obj.ID,
+                    IsDeleted = obj.IsDeleted,
+                    LastestUpdate = obj.LastestUpdated,
+                    sLastestUpdate = obj.LastestUpdated.ToString(GlobalValues.DateFormat_VN),
+                    TransComp_VehicleTypeID = obj.TransComp_VehicleTypeID,
+                    UpdatedBy = Sys_User_GetE(obj.UpdatedBy),
+                    VehicleLoadID = obj.VehicleLoadID,
+                    VehicleLoad = VehicleLoad_GetE(obj.VehicleLoadID),
+                    VehicleType = VehicleType_GetE(obj.Quotation_CustomsProcess_VehicleType.VehicleTypeID),
+                };
+            }
+            catch
+            {
+                return null;
+            }
+        }
+
+        #endregion
     }
 }

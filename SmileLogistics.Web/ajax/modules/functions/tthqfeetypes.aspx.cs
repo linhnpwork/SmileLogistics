@@ -14,7 +14,7 @@ using SmileLogistics.DAL.Entities;
 
 namespace SmileLogistics.Web.ajax.modules.functions
 {
-    public partial class goodstypes : BasePage
+    public partial class tthqfeetypes : BasePage
     {
         protected void Page_Load(object sender, EventArgs e)
         {
@@ -57,21 +57,21 @@ namespace SmileLogistics.Web.ajax.modules.functions
             using (DALTools dalTools = new DALTools())
             {
                 int id = int.Parse(sId);
-                GoodsType obj = dalTools.GoodsType_Get(id);
+                CustomsProcess_FeeType obj = dalTools.CustomsProcess_FeeType_Get(id);
                 if (obj == null)
                 {
                     DoResponse(JsonConvert.SerializeObject(new GlobalValues.ResponseData()
                     {
                         Data = null,
                         ErrorCode = -1,
-                        Message = "Không tìm thấy Loại hàng hóa!",
+                        Message = "Không tìm thấy Loại phí TTHQ!",
                     }));
 
                     return;
                 }
 
                 obj.UpdatedBy = CurrentSys_User.ID;
-                if (!dalTools.GoodsType_Delete(obj))
+                if (!dalTools.CustomsProcess_FeeType_Delete(obj))
                     DoResponse(JsonConvert.SerializeObject(new GlobalValues.ResponseData()
                     {
                         Data = null,
@@ -121,7 +121,7 @@ namespace SmileLogistics.Web.ajax.modules.functions
 
             using (DALTools dalTools = new DALTools())
             {
-                int check = dalTools.GoodsType_CheckCode(data.code.ToString());
+                int check = dalTools.CustomsProcess_FeeType_CheckName(data.name.ToString());
                 if (check != 0 && check.ToString() != data.id.ToString())
                 {
                     DoResponse(JsonConvert.SerializeObject(new GlobalValues.ResponseData()
@@ -134,17 +134,16 @@ namespace SmileLogistics.Web.ajax.modules.functions
                     return;
                 }
 
-                GoodsType obj = new GoodsType()
+                CustomsProcess_FeeType obj = new CustomsProcess_FeeType()
                 {
                     ID = int.Parse(data.id.ToString()),
-                    Code = data.code.ToString(),
                     Description = data.description.ToString(),
                     Name = data.name.ToString(),
                     UpdatedBy = CurrentSys_User.ID,
                     LastestUpdated = DateTime.Now,
                 };
 
-                int result = dalTools.GoodsType_Update(obj);
+                int result = dalTools.CustomsProcess_FeeType_Update(obj);
                 if (result != 0)
                     DoResponse(JsonConvert.SerializeObject(new GlobalValues.ResponseData()
                     {
@@ -195,7 +194,7 @@ namespace SmileLogistics.Web.ajax.modules.functions
 
             using (DALTools dalTools = new DALTools())
             {
-                int check = dalTools.GoodsType_CheckCode(data.code.ToString());
+                int check = dalTools.CustomsProcess_FeeType_CheckName(data.name.ToString());
                 if (check != 0)
                 {
                     DoResponse(JsonConvert.SerializeObject(new GlobalValues.ResponseData()
@@ -208,9 +207,8 @@ namespace SmileLogistics.Web.ajax.modules.functions
                     return;
                 }
 
-                GoodsType obj = new GoodsType()
+                CustomsProcess_FeeType obj = new CustomsProcess_FeeType()
                 {
-                    Code = data.code.ToString(),
                     Description = data.description.ToString(),
                     Name = data.name.ToString(),
                     IsDeleted = false,
@@ -218,7 +216,7 @@ namespace SmileLogistics.Web.ajax.modules.functions
                     LastestUpdated = DateTime.Now,
                 };
 
-                int result = dalTools.GoodsType_Create(obj);
+                int result = dalTools.CustomsProcess_FeeType_Create(obj);
                 if (result != 0)
                     DoResponse(JsonConvert.SerializeObject(new GlobalValues.ResponseData()
                     {
@@ -246,7 +244,7 @@ namespace SmileLogistics.Web.ajax.modules.functions
             using (DALTools dalTools = new DALTools())
             {
                 int totalPages = 0;
-                List<eGoodsType> all = dalTools.GoodsType_GetEs(pageIndex, GlobalValues.DefaultPagingSize, out totalPages);
+                List<eCustomsProcess_FeeType> all = dalTools.CustomsProcess_FeeType_GetEs(pageIndex, GlobalValues.DefaultPagingSize, out totalPages);
 
                 if (all == null || all.Count == 0)
                     DoResponse(JsonConvert.SerializeObject(new GlobalValues.ResponseData()
