@@ -40,10 +40,6 @@
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
   <ItemGroup>
-    <Reference Include="Decided.Libs, Version=1.0.0.0, Culture=neutral, processorArchitecture=MSIL">
-      <SpecificVersion>False</SpecificVersion>
-      <HintPath>bin\Decided.Libs.dll</HintPath>
-    </Reference>
     <Reference Include="Microsoft.CSharp" />
     <Reference Include="Newtonsoft.Json, Version=9.0.0.0, Culture=neutral, PublicKeyToken=30ad4fe6b2a6aeed, processorArchitecture=MSIL">
       <HintPath>..\packages\Newtonsoft.Json.9.0.1\lib\net45\Newtonsoft.Json.dll</HintPath>
@@ -59,11 +55,15 @@
     <Reference Include="System.Xml.Linq" />
   </ItemGroup>
   <ItemGroup>
+    <Content Include="ajax\modules\functions\customers.aspx" />
+    <Content Include="ajax\modules\functions\jobs.aspx" />
+    <Content Include="ajax\modules\functions\quotationcustoms.aspx" />
     <Content Include="ajax\modules\functions\quotationroutes.aspx" />
     <Content Include="ajax\modules\functions\transportcompanies.aspx" />
     <Content Include="ajax\modules\functions\transportplaces.aspx" />
     <Content Include="ajax\modules\functions\routes.aspx" />
     <Content Include="ajax\modules\functions\vehicleloads.aspx" />
+    <Content Include="ajax\modules\functions\goodstypes.aspx" />
     <Content Include="ajax\modules\functions\vehicletypes.aspx" />
     <Content Include="ajax\modules\functions\tthqfeetypes.aspx" />
     <Content Include="css\fonts\fontawesome\fontawesome-webfont.eot" />
@@ -215,8 +215,11 @@
     <Content Include="less\themes\night.less" />
     <Content Include="less\themes\spring.less" />
     <Content Include="less\variables.less" />
+    <Content Include="modules\functions\Customers.ascx" />
+    <Content Include="modules\functions\JobDetail.ascx" />
+    <Content Include="modules\functions\Jobs.ascx" />
     <Content Include="modules\functions\QuotationCustoms.ascx" />
-    <Content Include="modules\functions\TTHQFeeTypes.ascx" />
+    <Content Include="modules\functions\CustomsProcess_FeeTypes.ascx" />
     <Content Include="modules\functions\QuotationRoutes.ascx" />
     <Content Include="modules\functions\TransportCompanies.ascx" />
     <Content Include="modules\functions\TransportPlaces.ascx" />
@@ -790,6 +793,27 @@
     <Compile Include="ajax\AjaxAuthentication.aspx.designer.cs">
       <DependentUpon>AjaxAuthentication.aspx</DependentUpon>
     </Compile>
+    <Compile Include="ajax\modules\functions\customers.aspx.cs">
+      <DependentUpon>customers.aspx</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="ajax\modules\functions\customers.aspx.designer.cs">
+      <DependentUpon>customers.aspx</DependentUpon>
+    </Compile>
+    <Compile Include="ajax\modules\functions\jobs.aspx.cs">
+      <DependentUpon>jobs.aspx</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="ajax\modules\functions\jobs.aspx.designer.cs">
+      <DependentUpon>jobs.aspx</DependentUpon>
+    </Compile>
+    <Compile Include="ajax\modules\functions\quotationcustoms.aspx.cs">
+      <DependentUpon>quotationcustoms.aspx</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="ajax\modules\functions\quotationcustoms.aspx.designer.cs">
+      <DependentUpon>quotationcustoms.aspx</DependentUpon>
+    </Compile>
     <Compile Include="ajax\modules\functions\quotationroutes.aspx.cs">
       <DependentUpon>quotationroutes.aspx</DependentUpon>
       <SubType>ASPXCodeBehind</SubType>
@@ -824,6 +848,13 @@
     </Compile>
     <Compile Include="ajax\modules\functions\vehicleloads.aspx.designer.cs">
       <DependentUpon>vehicleloads.aspx</DependentUpon>
+    </Compile>
+    <Compile Include="ajax\modules\functions\goodstypes.aspx.cs">
+      <DependentUpon>goodstypes.aspx</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="ajax\modules\functions\goodstypes.aspx.designer.cs">
+      <DependentUpon>goodstypes.aspx</DependentUpon>
     </Compile>
     <Compile Include="ajax\modules\functions\vehicletypes.aspx.cs">
       <DependentUpon>vehicletypes.aspx</DependentUpon>
@@ -898,6 +929,27 @@
     <Compile Include="modules\Default.ascx.designer.cs">
       <DependentUpon>Default.ascx</DependentUpon>
     </Compile>
+    <Compile Include="modules\functions\Customers.ascx.cs">
+      <DependentUpon>Customers.ascx</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="modules\functions\Customers.ascx.designer.cs">
+      <DependentUpon>Customers.ascx</DependentUpon>
+    </Compile>
+    <Compile Include="modules\functions\JobDetail.ascx.cs">
+      <DependentUpon>JobDetail.ascx</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="modules\functions\JobDetail.ascx.designer.cs">
+      <DependentUpon>JobDetail.ascx</DependentUpon>
+    </Compile>
+    <Compile Include="modules\functions\Jobs.ascx.cs">
+      <DependentUpon>Jobs.ascx</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="modules\functions\Jobs.ascx.designer.cs">
+      <DependentUpon>Jobs.ascx</DependentUpon>
+    </Compile>
     <Compile Include="modules\functions\QuotationCustoms.ascx.cs">
       <DependentUpon>QuotationCustoms.ascx</DependentUpon>
       <SubType>ASPXCodeBehind</SubType>
@@ -905,12 +957,12 @@
     <Compile Include="modules\functions\QuotationCustoms.ascx.designer.cs">
       <DependentUpon>QuotationCustoms.ascx</DependentUpon>
     </Compile>
-    <Compile Include="modules\functions\TTHQFeeTypes.ascx.cs">
-      <DependentUpon>TTHQFeeTypes.ascx</DependentUpon>
+    <Compile Include="modules\functions\CustomsProcess_FeeTypes.ascx.cs">
+      <DependentUpon>CustomsProcess_FeeTypes.ascx</DependentUpon>
       <SubType>ASPXCodeBehind</SubType>
     </Compile>
-    <Compile Include="modules\functions\TTHQFeeTypes.ascx.designer.cs">
-      <DependentUpon>TTHQFeeTypes.ascx</DependentUpon>
+    <Compile Include="modules\functions\CustomsProcess_FeeTypes.ascx.designer.cs">
+      <DependentUpon>CustomsProcess_FeeTypes.ascx</DependentUpon>
     </Compile>
     <Compile Include="modules\functions\QuotationRoutes.ascx.cs">
       <DependentUpon>QuotationRoutes.ascx</DependentUpon>
@@ -1027,6 +1079,10 @@
     </Compile>
   </ItemGroup>
   <ItemGroup>
+    <ProjectReference Include="..\..\..\..\DesignBanner\Decided.Apps.DesignBanner\Decided.Libs\Decided.Libs.csproj">
+      <Project>{55995cd7-eaa8-48e2-9b43-98f9b0510234}</Project>
+      <Name>Decided.Libs</Name>
+    </ProjectReference>
     <ProjectReference Include="..\SmileLogistics.DAL\SmileLogistics.DAL.csproj">
       <Project>{66874e8f-bc54-43a8-b57c-de43d3d10846}</Project>
       <Name>SmileLogistics.DAL</Name>

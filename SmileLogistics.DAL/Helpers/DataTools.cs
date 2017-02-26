@@ -184,6 +184,7 @@ namespace SmileLogistics.DAL.Helpers
                 updateObj.ParentID = obj.ParentID;
                 updateObj.Path = obj.Path;
                 updateObj.Name = obj.Name;
+                updateObj.ShowInMenu = obj.ShowInMenu;
 
                 DB.SubmitChanges();
 
@@ -243,11 +244,13 @@ namespace SmileLogistics.DAL.Helpers
             }
         }
 
-        public List<Sys_Module> Sys_Module_Gets(int parentId)
+        public List<Sys_Module> Sys_Module_Gets(int parentId, bool showAll = true)
         {
             try
             {
-                var all = DB.Sys_Modules.Where(o => !o.IsDeleted && o.ParentID == parentId);
+                var all = !showAll ?
+                    DB.Sys_Modules.Where(o => !o.IsDeleted && o.ParentID == parentId && o.ShowInMenu) :
+                    DB.Sys_Modules.Where(o => !o.IsDeleted && o.ParentID == parentId);
                 if (all.Count() == 0) return null;
 
                 return all.OrderBy(o => o.Name).ToList();
@@ -258,11 +261,11 @@ namespace SmileLogistics.DAL.Helpers
             }
         }
 
-        public List<eSys_Module> Sys_Module_GetEs(int parentId)
+        public List<eSys_Module> Sys_Module_GetEs(int parentId, bool showAll = true)
         {
             try
             {
-                var all = Sys_Module_Gets(parentId);
+                var all = Sys_Module_Gets(parentId, showAll);
                 if (all == null) return null;
 
                 List<eSys_Module> result = new List<eSys_Module>();
@@ -277,11 +280,11 @@ namespace SmileLogistics.DAL.Helpers
             }
         }
 
-        public List<Sys_Module> Sys_Module_BuildTreeAll(int parentId)
+        public List<Sys_Module> Sys_Module_BuildTreeAll(int parentId, bool showAll = true)
         {
             try
             {
-                List<Sys_Module> roots = Sys_Module_Gets(parentId);
+                List<Sys_Module> roots = Sys_Module_Gets(parentId, showAll);
                 if (roots == null) return null;
 
                 List<Sys_Module> treeAll = new List<Sys_Module>();
@@ -304,11 +307,11 @@ namespace SmileLogistics.DAL.Helpers
             }
         }
 
-        public List<eSys_Module> Sys_Module_BuildTreeAllE(int parentId)
+        public List<eSys_Module> Sys_Module_BuildTreeAllE(int parentId, bool showAll = true)
         {
             try
             {
-                List<Sys_Module> all = Sys_Module_BuildTreeAll(parentId);
+                List<Sys_Module> all = Sys_Module_BuildTreeAll(parentId, showAll);
                 if (all == null) return null;
 
                 List<eSys_Module> result = new List<eSys_Module>();
@@ -392,6 +395,7 @@ namespace SmileLogistics.DAL.Helpers
                     IsDeleted = obj.IsDeleted,
                     ParentName = parent == null ? "ROOT" : parent.Name,
                     Children = children,
+                    ShowInMenu = obj.ShowInMenu,
                 };
             }
             catch
@@ -1922,6 +1926,7 @@ namespace SmileLogistics.DAL.Helpers
                 updateObj.LastestUpdated = DateTime.Now;
                 updateObj.Name = obj.Name;
                 updateObj.PhoneNumber = obj.PhoneNumber;
+                updateObj.PercentSecondPackage = obj.PercentSecondPackage;
                 updateObj.UpdatedBy = obj.UpdatedBy;
                 updateObj.Status = obj.Status;
 
@@ -2209,6 +2214,7 @@ namespace SmileLogistics.DAL.Helpers
                     LastestUpdate = obj.LastestUpdated,
                     Name = obj.Name,
                     PhoneNumber = obj.PhoneNumber,
+                    PercentSecondPackage = obj.PercentSecondPackage,
                     Status = obj.Status,
                     StatusName = GlobalValues.TransportCompanyStatuses.FirstOrDefault(o => o.ID == obj.Status).Name,
                     sLastestUpdate = obj.LastestUpdated.ToString(GlobalValues.DateFormat_VN),
@@ -2941,6 +2947,32 @@ namespace SmileLogistics.DAL.Helpers
 
         #region Quotation_CustomsProcess
 
+        public eCustomsProcess_FeeDetail CustomsProcess_FeeDetail_Entity(CustomsProcess_FeeDetail obj, bool includedRelation = true)
+        {
+            try
+            {
+                if (obj == null) return null;
+
+                return new eCustomsProcess_FeeDetail()
+                {
+                    FeeTypeID = obj.FeeTypeID,
+                    Price = obj.Price,
+                    QuotationID = obj.QuotationID,
+                    ID = obj.ID,
+                    IsDeleted = obj.IsDeleted,
+                    LastestUpdate = obj.LastestUpdated,
+                    sLastestUpdate = obj.LastestUpdated.ToString(GlobalValues.DateFormat_VN),
+                    UpdatedBy = Sys_User_GetE(obj.UpdatedBy),
+                    FeeType = CustomsProcess_FeeType_GetE(obj.FeeTypeID),
+                    Quotation = !includedRelation ? null : Quotation_CustomsProcess_GetE(obj.QuotationID)
+                };
+            }
+            catch
+            {
+                return null;
+            }
+        }
+
         public bool Quotation_CustomsProcess_Delete(Quotation_CustomsProcess Quotation_CustomsProcess)
         {
             try
@@ -2961,12 +2993,10 @@ namespace SmileLogistics.DAL.Helpers
             }
         }
 
-        public int Quotation_CustomsProcess_Update(Quotation_CustomsProcess obj, List<eCustomsProcess_FeeDetail> feeDetails = null)
+        public int Quotation_CustomsProcess_Update(Quotation_CustomsProcess obj, List<aCustomsProcess_FeeType> feeDetails = null)
         {
             try
             {
-                if (obj.ExpireFrom < DateTime.Now) return 1;
-
                 Quotation_CustomsProcess updateObj = DB.Quotation_CustomsProcesses.FirstOrDefault(o => o.ID == obj.ID);
                 if (updateObj == null) return 3;
 
@@ -2987,12 +3017,10 @@ namespace SmileLogistics.DAL.Helpers
             }
         }
 
-        public int Quotation_CustomsProcess_Create(Quotation_CustomsProcess obj, List<eCustomsProcess_FeeDetail> feeDetails = null)
+        public int Quotation_CustomsProcess_Create(Quotation_CustomsProcess obj, List<aCustomsProcess_FeeType> feeDetails = null)
         {
             try
             {
-                if (obj.ExpireFrom < DateTime.Now) return 1;
-
                 DB.Quotation_CustomsProcesses.InsertOnSubmit(obj);
                 DB.SubmitChanges();
 
@@ -3006,16 +3034,16 @@ namespace SmileLogistics.DAL.Helpers
             }
         }
 
-        public int Quotation_CustomsProcess_UpdateFeeDetails(Quotation_CustomsProcess obj, List<eCustomsProcess_FeeDetail> feeDetails)
+        public int Quotation_CustomsProcess_UpdateFeeDetails(Quotation_CustomsProcess obj, List<aCustomsProcess_FeeType> feeDetails)
         {
             try
             {
                 if (obj == null) return 0;
 
-                foreach (eCustomsProcess_FeeDetail detail in feeDetails)
+                foreach (aCustomsProcess_FeeType detail in feeDetails)
                 {
                     CustomsProcess_FeeDetail dbType = DB.CustomsProcess_FeeDetails.FirstOrDefault(o =>
-                        o.FeeTypeID == detail.FeeTypeID &&
+                        o.FeeTypeID == detail.ID &&
                         o.QuotationID == obj.ID);
 
                     if (dbType == null)//Chưa có
@@ -3026,7 +3054,8 @@ namespace SmileLogistics.DAL.Helpers
                             LastestUpdated = DateTime.Now,
                             QuotationID = obj.ID,
                             UpdatedBy = obj.UpdatedBy,
-                            FeeTypeID = detail.FeeTypeID,
+                            FeeTypeID = detail.ID,
+                            Price = detail.Value,
                         };
 
                         DB.CustomsProcess_FeeDetails.InsertOnSubmit(dbType);
@@ -3034,7 +3063,9 @@ namespace SmileLogistics.DAL.Helpers
                     }
                     else //Đã có
                     {
-                        dbType.Price = detail.Price;
+                        dbType.Price = detail.Value;
+                        dbType.LastestUpdated = DateTime.Now;
+                        dbType.UpdatedBy = obj.UpdatedBy;
                         DB.SubmitChanges();
                     }
                 }
@@ -3156,90 +3187,536 @@ namespace SmileLogistics.DAL.Helpers
             try
             {
                 if (obj == null) return null;
-                List<eQuotation_CustomsProcess_VehicleType> vehicleTypes = new List<eQuotation_CustomsProcess_VehicleType>();
-                if (obj.Quotation_CustomsProcess_VehicleTypes.Count > 0)
+                List<eCustomsProcess_FeeDetail> feeTypes = new List<eCustomsProcess_FeeDetail>();
+                if (obj.CustomsProcess_FeeDetails.Count > 0)
                 {
-                    foreach (Quotation_CustomsProcess_VehicleType type in obj.Quotation_CustomsProcess_VehicleTypes.Where(o => !o.IsDeleted && !o.VehicleType.IsDeleted))
-                        vehicleTypes.Add(Quotation_CustomsProcess_VehicleType_Entity(type));
-                }
-
-                List<eRoute> routes = new List<eRoute>();
-                if (obj.Quotation_CustomsProcess_Routes.Count > 0)
-                {
-                    foreach (Quotation_CustomsProcess_Route route in obj.Quotation_CustomsProcess_Routes.Where(o => !o.IsDeleted && !o.TransportPlace.IsDeleted))
-                        routes.Add(Quotation_CustomsProcess_Route_Entity(route, false));
+                    foreach (CustomsProcess_FeeDetail type in obj.CustomsProcess_FeeDetails)
+                        feeTypes.Add(CustomsProcess_FeeDetail_Entity(type, false));
                 }
 
                 return new eQuotation_CustomsProcess()
                 {
-                    Address = obj.Address,
+                    ExpireFrom = obj.ExpireFrom,
+                    ID = obj.ID,
+                    IsDeleted = obj.IsDeleted,
+                    IsUSD = obj.IsUSD,
+                    LastestUpdate = obj.LastestUpdated,
+                    sExpireFrom = obj.ExpireFrom.ToString(GlobalValues.DateFormat_VN),
+                    sLastestUpdate = obj.LastestUpdated.ToString(GlobalValues.DateFormat_VN),
+                    UpdatedBy = Sys_User_GetE(obj.UpdatedBy),
+                    FeeDetails = feeTypes,
+                };
+            }
+            catch
+            {
+                return null;
+            }
+        }
+
+        #endregion
+
+        #region Customers
+
+        public bool Customer_Delete(Customer customer)
+        {
+            try
+            {
+                Customer obj = DB.Customers.FirstOrDefault(o => o.ID == customer.ID);
+                if (obj == null) return false;
+
+                obj.IsDeleted = true;
+                obj.LastestUpdated = DateTime.Now;
+                obj.UpdatedBy = customer.UpdatedBy;
+                DB.SubmitChanges();
+
+                return true;
+            }
+            catch
+            {
+                return false;
+            }
+        }
+
+        public int Customer_Update(Customer obj)
+        {
+            try
+            {
+                Customer updateObj = DB.Customers.FirstOrDefault(o => o.ID == obj.ID);
+                if (updateObj == null) return 3;
+
+                Customer checkObj = DB.Customers.FirstOrDefault(o => !o.IsDeleted && o.Name.ToLower() == obj.Name.ToLower());
+                if (checkObj != null && checkObj.ID != updateObj.ID) return 1;
+
+                updateObj.Email = obj.Email;
+                updateObj.PhoneNumber = obj.PhoneNumber;
+                updateObj.Address = obj.Address;
+                updateObj.LastestUpdated = DateTime.Now;
+                updateObj.Name = obj.Name;
+                updateObj.UpdatedBy = obj.UpdatedBy;
+
+                DB.SubmitChanges();
+
+                return 0;
+            }
+            catch (Exception ex)
+            {
+                return int.MinValue;
+            }
+        }
+
+        public int Customer_Create(Customer obj)
+        {
+            try
+            {
+                Customer checkObj = DB.Customers.FirstOrDefault(o => !o.IsDeleted && o.Name.ToLower() == obj.Name.ToLower());
+                if (checkObj != null) return 1;
+
+                obj.Prepaids = 0;
+
+                DB.Customers.InsertOnSubmit(obj);
+                DB.SubmitChanges();
+
+                return 0;
+            }
+            catch
+            {
+                return int.MinValue;
+            }
+        }
+
+        public int Customer_CheckName(string name)
+        {
+            try
+            {
+                Customer obj = DB.Customers.FirstOrDefault(o => !o.IsDeleted && o.Name.ToLower() == name.ToLower());
+                if (obj == null) return 0;
+
+                return obj.ID;
+            }
+            catch
+            {
+                return int.MinValue;
+            }
+        }
+
+        public List<Customer> Customer_Gets(int pageIndex, int pageSize, out int totalPages)
+        {
+            totalPages = 0;
+            try
+            {
+                var all = DB.Customers.Where(o => !o.IsDeleted);
+                if (all.Count() == 0) return null;
+
+                int startIndex = pageIndex * pageSize;
+                List<Customer> res = all.OrderBy(o => o.Name).Skip(startIndex).Take(pageSize).ToList();
+
+                if (res.Count == 0) return null;
+
+                int div = all.Count() / pageSize;
+                int mod = all.Count() % pageSize;
+                totalPages = div + (mod > 0 ? 1 : 0);
+
+                return res;
+            }
+            catch
+            {
+                return null;
+            }
+        }
+
+        public List<eCustomer> Customer_GetEs(int pageIndex, int pageSize, out int totalPages)
+        {
+            totalPages = 0;
+            try
+            {
+                var all = Customer_Gets(pageIndex, pageSize, out totalPages);
+                if (all == null) return null;
+
+                List<eCustomer> result = new List<eCustomer>();
+                foreach (Customer obj in all)
+                    result.Add(Customer_Entity(obj));
+
+                return result;
+            }
+            catch
+            {
+                return null;
+            }
+        }
+
+        public List<Customer> Customer_Gets()
+        {
+            try
+            {
+                var all = DB.Customers.Where(o => !o.IsDeleted);
+                if (all.Count() == 0) return null;
+
+                return all.OrderBy(o => o.Name).ToList();
+            }
+            catch
+            {
+                return null;
+            }
+        }
+
+        public List<eCustomer> Customer_GetEs()
+        {
+            try
+            {
+                var all = Customer_Gets();
+                if (all == null) return null;
+
+                List<eCustomer> result = new List<eCustomer>();
+                foreach (Customer obj in all)
+                    result.Add(Customer_Entity(obj));
+
+                return result;
+            }
+            catch
+            {
+                return null;
+            }
+        }
+
+        public Customer Customer_Get(int id)
+        {
+            try
+            {
+                return DB.Customers.FirstOrDefault(o =>
+                    o.ID == id);
+            }
+            catch
+            {
+                return null;
+            }
+        }
+
+        public eCustomer Customer_GetE(int id)
+        {
+            try
+            {
+                return Customer_Entity(Customer_Get(id));
+            }
+            catch
+            {
+                return null;
+            }
+        }
+
+        public eCustomer Customer_Entity(Customer obj)
+        {
+            try
+            {
+                if (obj == null) return null;
+
+                return new eCustomer()
+                {
                     Email = obj.Email,
+                    PhoneNumber = obj.PhoneNumber,
+                    Address = obj.Address,
                     ID = obj.ID,
                     IsDeleted = obj.IsDeleted,
                     LastestUpdate = obj.LastestUpdated,
                     Name = obj.Name,
-                    PhoneNumber = obj.PhoneNumber,
+                    sLastestUpdate = obj.LastestUpdated.ToString(GlobalValues.DateFormat_VN),
+                    UpdatedBy = Sys_User_GetE(obj.UpdatedBy)
+                };
+            }
+            catch
+            {
+                return null;
+            }
+        }
+
+        #endregion
+
+        #region Jobs
+
+        public bool Job_Delete(Job job)
+        {
+            try
+            {
+                Job obj = DB.Jobs.FirstOrDefault(o => o.ID == job.ID);
+                if (obj == null) return false;
+
+                obj.IsDeleted = true;
+                obj.LastestUpdated = DateTime.Now;
+                obj.UpdatedBy = job.UpdatedBy;
+                DB.SubmitChanges();
+
+                return true;
+            }
+            catch
+            {
+                return false;
+            }
+        }
+
+        public int Job_Update_Status(Job obj)
+        {
+            try
+            {
+                Job updateObj = DB.Jobs.FirstOrDefault(o => o.ID == obj.ID);
+                if (updateObj == null) return 3;
+
+                updateObj.IsConsigned = obj.IsConsigned;
+                updateObj.ConsignedDate = obj.ConsignedDate;
+                updateObj.IsInformTransportComp = obj.IsInformTransportComp;
+                updateObj.IsPayedForTransportComp = obj.IsPayedForTransportComp;
+                updateObj.LastestUpdated = DateTime.Now;
+                updateObj.UpdatedBy = obj.UpdatedBy;
+
+                DB.SubmitChanges();
+
+                return 0;
+            }
+            catch (Exception ex)
+            {
+                return int.MinValue;
+            }
+        }
+
+        public int Job_Update(Job obj)
+        {
+            try
+            {
+                Job updateObj = DB.Jobs.FirstOrDefault(o => o.ID == obj.ID);
+                if (updateObj == null) return 3;
+
+                Job checkObj = DB.Jobs.FirstOrDefault(o => !o.IsDeleted && o.JobID.ToLower() == obj.JobID.ToLower());
+                if (checkObj != null && checkObj.ID != updateObj.ID) return 1;
+
+                updateObj.Type = obj.Type;
+                updateObj.JobID = obj.JobID;
+                updateObj.InvoiceNO = obj.InvoiceNO;
+                updateObj.BillLadingNO = obj.BillLadingNO;
+                updateObj.TKHQNO = obj.TKHQNO;
+                updateObj.CustomerID = obj.CustomerID;
+                updateObj.LastestUpdated = DateTime.Now;
+                updateObj.UpdatedBy = obj.UpdatedBy;
+
+                DB.SubmitChanges();
+
+                return 0;
+            }
+            catch (Exception ex)
+            {
+                return int.MinValue;
+            }
+        }
+
+        public int Job_Create(ref Job obj)
+        {
+            try
+            {
+                string id = obj.JobID;
+                Job checkObj = DB.Jobs.FirstOrDefault(o => !o.IsDeleted && o.JobID.ToLower() == id.ToLower());
+                if (checkObj != null) return 1;
+
+                obj.AttachedFiles = string.Empty;
+                obj.ConsignedDate = DateTime.MaxValue;
+                obj.CustomerPrepaids = 0;
+                obj.IsConsigned = false;
+                obj.IsInformTransportComp = false;
+                obj.IsPaidFromCustomer = false;
+                obj.IsPayedForTransportComp = false;
+                obj.IsUrgent = false;
+                obj.ProcessedDate = DateTime.Now;
+                obj.Status = 0;
+                obj.AgentPrepaids = 0;
+
+                DB.Jobs.InsertOnSubmit(obj);
+                DB.SubmitChanges();
+
+                return 0;
+            }
+            catch
+            {
+                return int.MinValue;
+            }
+        }
+
+        public int Job_CheckJobID(string jobID)
+        {
+            try
+            {
+                Job obj = DB.Jobs.FirstOrDefault(o => !o.IsDeleted && o.JobID.ToLower() == jobID.ToLower());
+                if (obj == null) return 0;
+
+                return obj.ID;
+            }
+            catch
+            {
+                return int.MinValue;
+            }
+        }
+
+        public List<Job> Job_Gets(int pageIndex, int pageSize, out int totalPages)
+        {
+            totalPages = 0;
+            try
+            {
+                var all = DB.Jobs.Where(o => !o.IsDeleted);
+                if (all.Count() == 0) return null;
+
+                int startIndex = pageIndex * pageSize;
+                List<Job> res = all.OrderByDescending(o => o.ProcessedDate).Skip(startIndex).Take(pageSize).ToList();
+
+                if (res.Count == 0) return null;
+
+                int div = all.Count() / pageSize;
+                int mod = all.Count() % pageSize;
+                totalPages = div + (mod > 0 ? 1 : 0);
+
+                return res;
+            }
+            catch
+            {
+                return null;
+            }
+        }
+
+        public List<eJob> Job_GetEs(int pageIndex, int pageSize, out int totalPages)
+        {
+            totalPages = 0;
+            try
+            {
+                var all = Job_Gets(pageIndex, pageSize, out totalPages);
+                if (all == null) return null;
+
+                List<eJob> result = new List<eJob>();
+                foreach (Job obj in all)
+                    result.Add(Job_Entity(obj));
+
+                return result;
+            }
+            catch
+            {
+                return null;
+            }
+        }
+
+        public List<Job> Job_Gets()
+        {
+            try
+            {
+                var all = DB.Jobs.Where(o => !o.IsDeleted);
+                if (all.Count() == 0) return null;
+
+                return all.OrderByDescending(o => o.ProcessedDate).ToList();
+            }
+            catch
+            {
+                return null;
+            }
+        }
+
+        public List<eJob> Job_GetEs()
+        {
+            try
+            {
+                var all = Job_Gets();
+                if (all == null) return null;
+
+                List<eJob> result = new List<eJob>();
+                foreach (Job obj in all)
+                    result.Add(Job_Entity(obj));
+
+                return result;
+            }
+            catch
+            {
+                return null;
+            }
+        }
+
+        public Job Job_Get(int id)
+        {
+            try
+            {
+                return DB.Jobs.FirstOrDefault(o =>
+                    o.ID == id);
+            }
+            catch
+            {
+                return null;
+            }
+        }
+
+        public eJob Job_GetE(int id)
+        {
+            try
+            {
+                return Job_Entity(Job_Get(id));
+            }
+            catch
+            {
+                return null;
+            }
+        }
+
+        public Job Job_Get(string jobID)
+        {
+            try
+            {
+                return DB.Jobs.FirstOrDefault(o =>
+                    !o.IsDeleted &&
+                    o.JobID.ToLower().Trim() == jobID.ToLower().Trim());
+            }
+            catch
+            {
+                return null;
+            }
+        }
+
+        public eJob Job_GetE(string jobID)
+        {
+            try
+            {
+                return Job_Entity(Job_Get(jobID));
+            }
+            catch
+            {
+                return null;
+            }
+        }
+
+        public eJob Job_Entity(Job obj)
+        {
+            try
+            {
+                if (obj == null) return null;
+
+                return new eJob()
+                {
+                    AttachedFiles = obj.AttachedFiles,
+                    BillLadingNO = obj.BillLadingNO,
+                    ConsignedDate = obj.ConsignedDate,
+                    CustomerID = obj.CustomerID == null ? int.MinValue : (int)obj.CustomerID,
+                    CustomerPrepaids = obj.CustomerPrepaids,
+                    ID = obj.ID,
+                    InvoiceNO = obj.InvoiceNO,
+                    IsConsigned = obj.IsConsigned,
+                    IsInformTransportComp = obj.IsInformTransportComp,
+                    IsPaidFromCustomer = obj.IsPaidFromCustomer,
+                    IsPayedForTransportComp = obj.IsPayedForTransportComp,
+                    IsUrgent = obj.IsUrgent,
+                    JobID = obj.JobID,
+                    ProcessedDate = obj.ProcessedDate,
                     Status = obj.Status,
-                    StatusName = GlobalValues.Quotation_CustomsProcessStatuses.FirstOrDefault(o => o.ID == obj.Status).Name,
-                    sLastestUpdate = obj.LastestUpdated.ToString(GlobalValues.DateFormat_VN),
-                    UpdatedBy = Sys_User_GetE(obj.UpdatedBy),
-                    VehicleTypes = vehicleTypes.Count == 0 ? null : vehicleTypes,
-                    Routes = routes
-                };
-            }
-            catch
-            {
-                return null;
-            }
-        }
+                    TKHQNO = obj.TKHQNO,
+                    Type = obj.Type,
+                    Quotation_CustomProcID = obj.Quotation_CustomProcID == null ? int.MinValue : (int)obj.Quotation_CustomProcID,
 
-        public eQuotation_CustomsProcess_VehicleType Quotation_CustomsProcess_VehicleType_Entity(Quotation_CustomsProcess_VehicleType obj)
-        {
-            try
-            {
-                if (obj == null) return null;
-                List<eQuotation_CustomsProcess_VehicleType_Load> vehicleLoads = new List<eQuotation_CustomsProcess_VehicleType_Load>();
-                if (obj.Quotation_CustomsProcess_VehicleType_Loads.Count > 0)
-                {
-                    foreach (Quotation_CustomsProcess_VehicleType_Load load in obj.Quotation_CustomsProcess_VehicleType_Loads.Where(o => !o.IsDeleted && !o.VehicleLoad.IsDeleted))
-                        vehicleLoads.Add(Quotation_CustomsProcess_VehicleType_Load_Entity(load));
-                }
-
-                return new eQuotation_CustomsProcess_VehicleType()
-                {
-                    ID = obj.ID,
                     IsDeleted = obj.IsDeleted,
                     LastestUpdate = obj.LastestUpdated,
                     sLastestUpdate = obj.LastestUpdated.ToString(GlobalValues.DateFormat_VN),
-                    TransCompID = obj.TransCompID,
                     UpdatedBy = Sys_User_GetE(obj.UpdatedBy),
-                    VehicleTypeID = obj.VehicleTypeID,
-                    Loads = vehicleLoads,
-                };
-            }
-            catch
-            {
-                return null;
-            }
-        }
-
-        public eQuotation_CustomsProcess_VehicleType_Load Quotation_CustomsProcess_VehicleType_Load_Entity(Quotation_CustomsProcess_VehicleType_Load obj)
-        {
-            try
-            {
-                if (obj == null) return null;
-
-                return new eQuotation_CustomsProcess_VehicleType_Load()
-                {
-                    ID = obj.ID,
-                    IsDeleted = obj.IsDeleted,
-                    LastestUpdate = obj.LastestUpdated,
-                    sLastestUpdate = obj.LastestUpdated.ToString(GlobalValues.DateFormat_VN),
-                    TransComp_VehicleTypeID = obj.TransComp_VehicleTypeID,
-                    UpdatedBy = Sys_User_GetE(obj.UpdatedBy),
-                    VehicleLoadID = obj.VehicleLoadID,
-                    VehicleLoad = VehicleLoad_GetE(obj.VehicleLoadID),
-                    VehicleType = VehicleType_GetE(obj.Quotation_CustomsProcess_VehicleType.VehicleTypeID),
+                    sConsignedTime = !obj.IsConsigned ? string.Empty : obj.ConsignedDate.ToString("HH:mm:ss"),
+                    sConsignedDate = !obj.IsConsigned ? string.Empty : obj.ConsignedDate.ToString(GlobalValues.DateFormat_VN),
+                    sProcessedDate = obj.ProcessedDate.ToString(GlobalValues.DateFormat_VN),
+                    sStatus = GlobalValues.JobStatus.FirstOrDefault(o => o.ID == obj.Status).Name,
+                    Customer = obj.CustomerID == null ? null : Customer_GetE((int)obj.CustomerID),
                 };
             }
             catch

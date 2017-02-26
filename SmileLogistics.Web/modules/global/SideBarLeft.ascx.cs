@@ -95,7 +95,7 @@ namespace SmileLogistics.Web.modules.global
                 {
                     string html = string.Empty;
 
-                    List<eSys_Module> root = dalTools.Sys_Module_GetEs(parentId);
+                    List<eSys_Module> root = dalTools.Sys_Module_GetEs(parentId, false);
                     if (root == null || root.Count == 0) return string.Empty;
 
                     foreach (eSys_Module obj in root)

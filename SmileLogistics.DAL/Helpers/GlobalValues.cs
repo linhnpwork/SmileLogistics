@@ -287,6 +287,48 @@ namespace SmileLogistics.DAL.Helpers
 
         #region DAL defines
 
+        private static List<Commons.eStatus> _JobStatus = null;
+        public static List<Commons.eStatus> JobStatus
+        {
+            get
+            {
+                if (_JobStatus == null)
+                {
+                    _JobStatus = new List<Commons.eStatus>()
+                    {
+                        new Commons.eStatus() { ID = 0, Name = "Đang xử lý"},
+                        new Commons.eStatus() { ID = 1, Name = "Chờ Kế toán duyệt"},
+                        new Commons.eStatus() { ID = 2, Name = "Chờ Giám đốc duyệt"},
+                        new Commons.eStatus() { ID = 3, Name = "Chuyển Kế toán bổ sung"},
+                        new Commons.eStatus() { ID = 4, Name = "Chuyển nhân viên bổ sung duyệt"},
+                        new Commons.eStatus() { ID = 10, Name = "Hoàn tất"},
+                    };
+                }
+
+                return _JobStatus;
+            }
+            set { _JobStatus = value; }
+        }
+
+        private static List<Commons.eStatus> _JobTypes = null;
+        public static List<Commons.eStatus> JobTypes
+        {
+            get
+            {
+                if (_JobTypes == null)
+                {
+                    _JobTypes = new List<Commons.eStatus>()
+                    {
+                        new Commons.eStatus() { ID = 0, Name = "Nhập"},
+                        new Commons.eStatus() { ID = 1, Name = "Xuất"},
+                    };
+                }
+
+                return _JobTypes;
+            }
+            set { _JobTypes = value; }
+        }
+
         private static List<Commons.eStatus> _Sys_UserStatuses = null;
         public static List<Commons.eStatus> Sys_UserStatuses
         {

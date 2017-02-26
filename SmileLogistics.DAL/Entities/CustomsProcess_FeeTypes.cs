@@ -17,4 +17,10 @@ namespace SmileLogistics.DAL.Entities
         public DateTime LastestUpdate { get; set; }
         public string sLastestUpdate { get; set; }
     }
+
+    public class aCustomsProcess_FeeType
+    {
+        public int ID { get; set; }
+        public double Value { get; set; }
+    }
 }

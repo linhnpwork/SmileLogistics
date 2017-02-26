@@ -379,9 +379,9 @@
                                                     "<td class=\"text-center\">" + obj.Route.TransportCompany.Name + "</td>" +
                                                     "<td class=\"text-center\">" + obj.Route.PointStart.Name + " <i class='gi gi-transfer'></i> " + obj.Route.PointEnd.Name + "</td>" +
                                                     "<td class=\"text-center\">" + obj.Load.VehicleLoad.Name + "</td>" +
-                                                    "<td class=\"text-center\">" + obj.Price.toFixed(2) + "</td>" +
+                                                    "<td class=\"text-center\">" + globalhelpers.Format_Money(obj.Price.toFixed(2)) + "</td>" +
                                                     "<td class=\"text-center\">" + (obj.IsSamePrice ? "<i class=\"gi gi-ok_2\"></i>" : "") + "</td>" +
-                                                    "<td class=\"text-center\">" + obj.Price_RoundedTrip.toFixed(2) + "</td>" +
+                                                    "<td class=\"text-center\">" + globalhelpers.Format_Money(obj.Price_RoundedTrip.toFixed(2)) + "</td>" +
                                                     "<td class=\"text-center\">" + (obj.IsUSD ? "<i class=\"gi gi-ok_2\"></i>" : "") + "</td>" +
                                                     "<td class=\"text-center\">" +
                                                         //"<div class=\"btn-group\">" + gi gi-ok_2

@@ -99,6 +99,13 @@
                         </div>
                     </div>
                     <div class="form-group">
+                        <label class="col-md-3 control-label">Hiển thị ở Menu?</label>
+                        <div class="col-md-9">
+                            <label class='switch switch-success'>
+                                <input id="info-showinmenu" type='checkbox' checked><span></span></label>
+                        </div>
+                    </div>
+                    <div class="form-group">
                         <label class="col-md-3 control-label" for="example-select2">Icon</label>
                         <div class="col-md-9">
                             <a id="info-icon" href="#collapseExample" class="btn btn-sm btn-success collapsed" role="button" data-toggle="collapse" aria-expanded="false" aria-controls="collapseExample">Chọn ...</a>
@@ -1316,6 +1323,7 @@
                 $('#modal-info #info-parent').val(sysmodule.currentobj.ParentID);
                 $('#modal-info #info-alias').val(sysmodule.currentobj.Alias);
                 $('#modal-info #info-path').val(sysmodule.currentobj.Path);
+                $('#modal-info #info-showinmenu').prop('checked', sysmodule.currentobj.ShowInMenu);
                 $('#modal-info #info-icon').html('<i class="' + sysmodule.currentobj.IconClass + '"></i>&nbsp;[' + sysmodule.currentobj.IconClass + ']');
 
                 sysmodule.clearactions();
@@ -1412,6 +1420,8 @@
                 data.actions = sysmodule.getSelectedActions();
                 if (data.actions == '')
                     message += '- Phải có ít nhất 1 Tính năng!<br/>';
+
+                data.showinmenu = $('#modal-info #info-showinmenu').prop('checked');
 
                 var icon = $('#modal-info #info-icon').html();
                 if (icon == 'Chọn ...')

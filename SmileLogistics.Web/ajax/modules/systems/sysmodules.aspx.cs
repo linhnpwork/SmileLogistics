@@ -129,6 +129,7 @@ namespace SmileLogistics.Web.ajax.modules.systems
                     Path = data.path.ToString(),
                     Name = data.name.ToString(),
                     IsDeleted = false,
+                    ShowInMenu = bool.Parse(data.showinmenu.ToString()),
                 };
 
                 int result = dalTools.Sys_Module_Update(obj);
@@ -249,6 +250,7 @@ namespace SmileLogistics.Web.ajax.modules.systems
                     Path = data.path.ToString(),
                     Name = data.name.ToString(),
                     IsDeleted = false,
+                    ShowInMenu = bool.Parse(data.showinmenu.ToString()),
                 };
 
                 int result = dalTools.Sys_Module_Create(obj);

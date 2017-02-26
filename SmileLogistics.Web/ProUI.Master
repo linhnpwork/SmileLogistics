@@ -140,14 +140,14 @@
                                 <div class="form-group">
                                     <label class="col-md-4 control-label" for="user-settings-email">Email</label>
                                     <div class="col-md-8">
-                                        <input type="email" id="user-settings-email" name="user-settings-email" class="form-control" value="admin@example.com">
+                                        <input type="email" id="user-settings-email" name="user-settings-email" class="form-control" value="admin@example.com" />
                                     </div>
                                 </div>
                                 <div class="form-group">
                                     <label class="col-md-4 control-label" for="user-settings-notifications">Email Notifications</label>
                                     <div class="col-md-8">
                                         <label class="switch switch-primary">
-                                            <input type="checkbox" id="user-settings-notifications" name="user-settings-notifications" value="1" checked>
+                                            <input type="checkbox" id="user-settings-notifications" name="user-settings-notifications" value="1" checked />
                                             <span></span>
                                         </label>
                                     </div>
@@ -158,13 +158,13 @@
                                 <div class="form-group">
                                     <label class="col-md-4 control-label" for="user-settings-password">New Password</label>
                                     <div class="col-md-8">
-                                        <input type="password" id="user-settings-password" name="user-settings-password" class="form-control" placeholder="Please choose a complex one..">
+                                        <input type="password" id="user-settings-password" name="user-settings-password" class="form-control" placeholder="Please choose a complex one.." />
                                     </div>
                                 </div>
                                 <div class="form-group">
                                     <label class="col-md-4 control-label" for="user-settings-repassword">Confirm New Password</label>
                                     <div class="col-md-8">
-                                        <input type="password" id="user-settings-repassword" name="user-settings-repassword" class="form-control" placeholder="..and confirm it!">
+                                        <input type="password" id="user-settings-repassword" name="user-settings-repassword" class="form-control" placeholder="..and confirm it!" />
                                     </div>
                                 </div>
                             </fieldset>

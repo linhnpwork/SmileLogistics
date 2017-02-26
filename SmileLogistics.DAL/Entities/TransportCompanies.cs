@@ -14,6 +14,7 @@ namespace SmileLogistics.DAL.Entities
         public string Email { get; set; }
         public string PhoneNumber { get; set; }
         public int Status { get; set; }
+        public double PercentSecondPackage { get; set; }
 
         public bool IsDeleted { get; set; }
         public eSys_User UpdatedBy { get; set; }

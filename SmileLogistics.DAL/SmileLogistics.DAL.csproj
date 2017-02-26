@@ -31,10 +31,6 @@
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
   <ItemGroup>
-    <Reference Include="Decided.Libs, Version=1.0.0.0, Culture=neutral, processorArchitecture=MSIL">
-      <SpecificVersion>False</SpecificVersion>
-      <HintPath>bin\Debug\Decided.Libs.dll</HintPath>
-    </Reference>
     <Reference Include="System" />
     <Reference Include="System.Core" />
     <Reference Include="Microsoft.CSharp" />
@@ -51,12 +47,14 @@
     </Compile>
     <Compile Include="Entities\Commons.cs" />
     <Compile Include="Entities\CustomsProcess_FeeTypes.cs" />
+    <Compile Include="Entities\Customers.cs" />
     <Compile Include="Entities\QuotationRoutes.cs" />
     <Compile Include="Entities\QuotationCustoms.cs" />
     <Compile Include="Entities\TransportCompanies.cs" />
     <Compile Include="Entities\TransportPlaces.cs" />
     <Compile Include="Entities\Routes.cs" />
     <Compile Include="Entities\VehicleLoads.cs" />
+    <Compile Include="Entities\Jobs.cs" />
     <Compile Include="Entities\VehicleTypes.cs" />
     <Compile Include="Entities\Sys_Modules.cs" />
     <Compile Include="Entities\Sys_Roles.cs" />
@@ -85,6 +83,12 @@
   </ItemGroup>
   <ItemGroup>
     <Service Include="{3259AA49-8AA1-44D3-9025-A0B520596A8C}" />
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\..\..\..\DesignBanner\Decided.Apps.DesignBanner\Decided.Libs\Decided.Libs.csproj">
+      <Project>{55995cd7-eaa8-48e2-9b43-98f9b0510234}</Project>
+      <Name>Decided.Libs</Name>
+    </ProjectReference>
   </ItemGroup>
   <ItemGroup>
     <None Include="DB.dbml.layout">

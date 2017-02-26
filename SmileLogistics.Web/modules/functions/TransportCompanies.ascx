@@ -100,6 +100,13 @@
                             </div>
                         </div>
                         <div class="form-group">
+                            <label class="col-md-3 control-label">% giảm giá cho các lô hàng thứ 2 trở đi</label>
+                            <div class="col-md-9">
+                                <input type="text" id="info-percentsecondpackage" class="form-control" placeholder="% giảm giá" value="0">
+                                <span class="help-block">(Dùng dấm chấm '.' để xác định số thập phân!)</span>
+                            </div>
+                        </div>
+                        <div class="form-group">
                             <label class="col-md-3 control-label">Trạng thái</label>
                             <div id="divStatuses" runat="server" class="col-md-9">
                             </div>
@@ -282,6 +289,7 @@
                 $('#modal-info #info-email').val(transportcompanies.currentobj.Email);
                 $('#modal-info #info-phone').val(transportcompanies.currentobj.PhoneNumber);
                 $('#modal-info #info-statuses').val(transportcompanies.currentobj.Status);
+                $('#modal-info #info-percentsecondpackage').val(transportcompanies.currentobj.PercentSecondPackage);
 
                 this.generateobjdata_types();
 
@@ -371,6 +379,9 @@
                 data.address = $('#modal-info #info-address').val();
                 data.email = $('#modal-info #info-email').val();
                 data.phone = $('#modal-info #info-phone').val();
+                data.percentsecondpackage = Number($('#modal-info #info-percentsecondpackage').val());
+                if (isNaN(data.percentsecondpackage))
+                    message += '- % giảm giá không hợp lệ!<br/>';
 
                 data.status = Number($('#modal-info #info-statuses').val());
 
@@ -470,6 +481,7 @@
                                                     "<th class=\"text-center\">Địa chỉ</th>" +
                                                     "<th class=\"text-center\">Số điện thoại</th>" +
                                                     "<th class=\"text-center\">Email</th>" +
+                                                    "<th class=\"text-center\">% giảm giá</th>" +
                                                     "<th class=\"text-center\">Trạng thái</th>" +
                                                     "<th class=\"text-center\">#</th>" +
                                                 "</tr>" +
@@ -479,7 +491,7 @@
                                     if (result.ErrorCode != 0) {
                                         html +=
                                             "<tr>" +
-                                                "<td class=\"text-center\" colspan=\"7\">" +
+                                                "<td class=\"text-center\" colspan=\"8\">" +
                                                     result.Message +
                                                 "</td>" +
                                             "</tr>";
@@ -502,6 +514,7 @@
                                                     "<td class=\"text-center\">" + obj.Address + "</td>" +
                                                     "<td class=\"text-center\">" + obj.PhoneNumber + "</td>" +
                                                     "<td class=\"text-center\">" + obj.Email + "</td>" +
+                                                    "<td class=\"text-center\">" + obj.PercentSecondPackage.toFixed(2) + "</td>" +
                                                     "<td class=\"text-center\">" + obj.StatusName + "</td>" +
                                                     "<td class=\"text-center\">" +
                                                         //"<div class=\"btn-group\">" +

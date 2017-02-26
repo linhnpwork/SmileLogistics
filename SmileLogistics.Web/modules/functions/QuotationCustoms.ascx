@@ -65,7 +65,7 @@
                 <h3 class="modal-title">Thêm mới Báo giá TTHQ</h3>
             </div>
             <div class="modal-body">
-                <div id="clickable-wizard-vehiclecompany" class="form-horizontal form-bordered ui-formwizard">
+                <div id="clickable-wizard-feetypes" class="form-horizontal form-bordered ui-formwizard">
                     <div id="tab-info" class="step ui-formwizard-content">
                         <div class="form-group">
                             <div class="col-xs-12">
@@ -151,24 +151,23 @@
                 var sTypes = '<%= _FeeTypes %>';
                 quotationcustoms.allTypes = sTypes == '' ? null : JSON.parse(sTypes);
 
-                quotationcustoms.initvehicletypes();
+                quotationcustoms.initfeetypes();
 
                 quotationcustoms.loadlist();
 
-                var s = $("#clickable-wizard-vehiclecompany");
+                var s = $("#clickable-wizard-feetypes");
                 s.formwizard({ disableUIStyles: !0, inDuration: 0, outDuration: 0 });
                 $(".clickable-steps a").on("click", function ()
                 { var r = $(this).data("gotostep"); s.formwizard("show", r) });
             },
 
-            initvehicletypes: function () {
+            initfeetypes: function () {
                 var html =
-                    "<table id=\"tblList_VehicleTypes\" class=\"table table-vcenter table-striped table-condensed table-hover table-bordered\">" +
+                    "<table id=\"tblList_FeeTypes\" class=\"table table-vcenter table-striped table-condensed table-hover table-bordered\">" +
                         "<thead>" +
                             "<tr>" +
-                                "<th class=\"text-center\">#</th>" +
-                                "<th class=\"text-center\">Loại xe</th>" +
-                                "<th class=\"text-center\">Tải trọng khả dụng</th>" +
+                                "<th class=\"text-center\" width=\"60%\">Tên</th>" +
+                                "<th class=\"text-center\">Phí</th>" +
                             "</tr>" +
                         "</thead>" +
                         "<tbody>";
@@ -176,46 +175,41 @@
                 if (this.allTypes == null || this.allTypes.length == 0) {
                     html +=
                         "<tr>" +
-                            "<td class=\"text-center\" colspan=\"3\">" +
-                                "<label class='control-label label-quicklink'><a href='/loai-xe'>Chưa có dữ liệu Loại xe! Nhấp chọn chuyển sang trang Quản lý!</a></label>" +
+                            "<td class=\"text-center\" colspan=\"2\">" +
+                                "<label class='control-label label-quicklink'><a href='/loai-phi-tthq'>Chưa có dữ liệu Loại phí! Nhấp chọn chuyển sang trang Quản lý!</a></label>" +
                             "</td>" +
                         "</tr>";
                 }
                 else {
+                    var total = 0;
                     for (var i = 0; i < this.allTypes.length; i++) {
                         var obj = this.allTypes[i];
+                        var detail = this.currentobj == null ? null : this.getobj(obj.ID, this.currentobj.FeeDetails, "FeeTypeID");
+                        if (detail == null && obj.IsDeleted) continue;
 
-                        var htmlLoads = "";
-                        if (obj.VehicleLoads != null && obj.VehicleLoads.length > 0) {
-                            for (var j = 0; j < obj.VehicleLoads.length; j++) {
-                                var load = obj.VehicleLoads[j];
-
-                                htmlLoads +=
-                                    "<div class=\"form-group\">" +
-                                        "<label class=\"col-sm-3\"><label class='switch switch-success'><input id=\"row-vehicleload-" + load.ID + "\" class='inputswitch switch-vehicleload' type='checkbox' checked><span></span></label></label>" +
-                                        "<div class=\"col-sm-9 load-name\">" +
-                                            load.Name +
-                                        "</div>" +
-                                    "</div>";
-                            }
-                        }
+                        total++;
 
                         html +=
-                            "<tr id=\"row-vehicletype-" + obj.ID + "\" class=\"row-vehicletype\" dat-id=\"" + obj.ID + "\">" +
-                                "<td class=\"text-center\">" +
-                                    "<label class='switch switch-success'><input id=\"vehicletype-select-" + obj.ID + "\" class='inputswitch switch-vehicletype' type='checkbox' checked><span></span></label>" +
-                                "</td>" +
+                            "<tr id=\"row-feetype-" + obj.ID + "\" class=\"row-feetype\" dat-id=\"" + obj.ID + "\">" +
                                 "<td class=\"text-center\">" + obj.Name + "</td>" +
                                 "<td class=\"text-left\">" +
-                                    htmlLoads +
+                                    "<input type=\"text\" id=\"info-detail-" + obj.ID + "\" class=\"form-control\" placeholder=\"Phí\" value=\"" + (detail == null ? "0" : detail.Price) + "\">" +
                                 "</td>" +
                             "</tr>";
                     }
+
+                    if (total == 0)
+                        html +=
+                        "<tr>" +
+                            "<td class=\"text-center\" colspan=\"2\">" +
+                                "<label class='control-label label-quicklink'><a href='/loai-phi-tthq'>Chưa có dữ liệu Loại phí! Nhấp chọn chuyển sang trang Quản lý!</a></label>" +
+                            "</td>" +
+                        "</tr>";
                 }
 
                 html += "</tbody></table>";
 
-                $('#divVehicleTypes').html(html);
+                $('#divFeeTypes').html(html);
             },
 
             //-----------------------------------------------------------------------------------------------
@@ -261,13 +255,10 @@
                     return;
                 }
 
-                $('#modal-info #info-name').val(quotationcustoms.currentobj.Name);
-                $('#modal-info #info-address').val(quotationcustoms.currentobj.Address);
-                $('#modal-info #info-email').val(quotationcustoms.currentobj.Email);
-                $('#modal-info #info-phone').val(quotationcustoms.currentobj.PhoneNumber);
-                $('#modal-info #info-statuses').val(quotationcustoms.currentobj.Status);
+                $('#modal-info #info-isusd').prop('checked', quotationcustoms.currentobj.IsUSD);
+                $('#modal-info #info-expirefrom').val(quotationcustoms.currentobj.sExpireFrom);
 
-                this.generateobjdata_types();
+                this.initfeetypes();
 
                 $('#modal-info .modal-header .modal-title').html('Cập nhật Báo giá TTHQ');
                 $('#btn-do-save').html('Lưu');
@@ -276,10 +267,6 @@
 
             generateobjdata_types: function () {
                 if (this.allTypes == null || this.allTypes.length == 0) return;
-                if (this.currentobj.VehicleTypes == null || this.currentobj.VehicleTypes.length == 0) {
-                    $('.inputswitch').prop('checked', false);
-                    return;
-                }
 
                 for (var i = 0; i < this.allTypes.length; i++) {
                     var type = this.allTypes[i];
@@ -348,42 +335,29 @@
             validateForm: function () {
                 var message = '';
                 var data = new Object();
-                data.name = $('#modal-info #info-name').val();
-                if (data.name == '')
-                    message += '- Tên không hợp lệ!<br/>';
+                data.isusd = $('#modal-info #info-isusd').prop('checked');
+                data.expirefrom = $('#modal-info #info-expirefrom').val();
+                if (data.expirefrom == '')
+                    message += '- Ngày bắt đầu hiệu lực không hợp lệ!<br/>';
 
-                data.address = $('#modal-info #info-address').val();
-                data.email = $('#modal-info #info-email').val();
-                data.phone = $('#modal-info #info-phone').val();
+                data.feetypes = new Array();
 
-                data.status = Number($('#modal-info #info-statuses').val());
-
-                data.vehicletypes = new Array();
-
-                var types = $('#divVehicleTypes .row-vehicletype');
+                var types = $('#divFeeTypes .row-feetype');
                 for (var i = 0; i < types.length; i++) {
                     var typeDOM = types[i];
                     var typeId = Number($(typeDOM).attr('dat-id'));
-                    var type = this.getobjType(typeId);
+                    var type = this.getobj(typeId, this.allTypes);
+
                     if (type != null) {
-                        var checked = $('#vehicletype-select-' + type.ID).prop('checked');
+                        var value = Number($('#info-detail-' + type.ID).val());
+                        if (isNaN(value))
+                            message += '- Loại phí <b>' + type.Name + '</b> không hợp lệ!<br/>';
+
                         var typeObj = new Object();
                         typeObj.ID = typeId;
-                        typeObj.Loads = null;
-                        if (checked) {
-                            typeObj.Loads = new Array();
-                            for (var j = 0; j < type.VehicleLoads.length; j++) {
-                                var load = type.VehicleLoads[j];
-                                var loadDOM = $('#row-vehicleload-' + load.ID);
-                                if (loadDOM.prop('checked')) {
-                                    var loadObj = new Object();
-                                    loadObj.ID = load.ID;
-                                    typeObj.Loads.push(loadObj);
-                                }
-                            }
+                        typeObj.Value = value;
 
-                            data.vehicletypes.push(typeObj);
-                        }
+                        data.feetypes.push(typeObj);
                     }
                 }
 
@@ -404,34 +378,13 @@
                 $('#modal-info').modal('show');
             },
 
-            getobj: function (id) {
-                if (quotationcustoms.all == null) return null;
-                for (var i = 0; i < quotationcustoms.all.length; i++)
-                    if (quotationcustoms.all[i].ID == id) return quotationcustoms.all[i];
+            getobj: function (value, list, field) {
+                if (field == undefined) field = "ID";
+                if (list == undefined) list = quotationcustoms.all;
 
-                return null;
-            },
-
-            getobjType: function (id) {
-                if (this.allTypes == null) return null;
-                for (var i = 0; i < this.allTypes.length; i++)
-                    if (this.allTypes[i].ID == id) return this.allTypes[i];
-
-                return null;
-            },
-
-            getobjVType: function (list, id) {
                 if (list == null) return null;
                 for (var i = 0; i < list.length; i++)
-                    if (list[i].VehicleTypeID == id) return list[i];
-
-                return null;
-            },
-
-            getobjVLoad: function (list, id) {
-                if (list == null) return null;
-                for (var i = 0; i < list.length; i++)
-                    if (list[i].VehicleLoadID == id) return list[i];
+                    if (list[i][field] == value) return list[i];
 
                 return null;
             },
@@ -450,11 +403,9 @@
                                             "<thead>" +
                                                 "<tr>" +
                                                     "<th class=\"text-center\">STT</th>" +
-                                                    "<th class=\"text-center\">Tên</th>" +
-                                                    "<th class=\"text-center\">Địa chỉ</th>" +
-                                                    "<th class=\"text-center\">Số điện thoại</th>" +
-                                                    "<th class=\"text-center\">Email</th>" +
-                                                    "<th class=\"text-center\">Trạng thái</th>" +
+                                                    "<th class=\"text-center\">Ngày bắt đầu hiệu lực</th>" +
+                                                    "<th class=\"text-center\">Sử dụng USD</th>" +
+                                                    "<th class=\"text-center\">Thông tin</th>" +
                                                     "<th class=\"text-center\">#</th>" +
                                                 "</tr>" +
                                             "</thead>" +
@@ -463,7 +414,7 @@
                                     if (result.ErrorCode != 0) {
                                         html +=
                                             "<tr>" +
-                                                "<td class=\"text-center\" colspan=\"7\">" +
+                                                "<td class=\"text-center\" colspan=\"5\">" +
                                                     result.Message +
                                                 "</td>" +
                                             "</tr>";
@@ -476,17 +427,28 @@
 
                                         for (var i = 0; i < quotationcustoms.all.length; i++) {
                                             var obj = quotationcustoms.all[i];
+                                            var htmlFees = "";
+                                            if (obj.FeeDetails != null && obj.FeeDetails.length > 0) {
+                                                for (var j = 0; j < obj.FeeDetails.length; j++) {
+                                                    var fee = obj.FeeDetails[j];
+                                                    htmlFees +=
+                                                        "<div class=\"form-group\">" +
+                                                            "<label class=\"col-md-4 control-label\">" + fee.FeeType.Name + "</label>" +
+                                                            "<div class=\"col-md-8 text-left\">" +
+                                                                "<p class=\"form-control-static\">" + globalhelpers.Format_Money(fee.Price.toFixed(2)) + "</p>" +
+                                                            "</div>" +
+                                                        "</div>";
+                                                }
+                                            }
 
                                             html +=
                                                 "<tr>" +
                                                     "<td class=\"text-center\">" +
                                                         (quotationcustoms.currentpage * pageSize + i + 1) +
                                                     "</td>" +
-                                                    "<td class=\"text-center\">" + obj.Name + "</td>" +
-                                                    "<td class=\"text-center\">" + obj.Address + "</td>" +
-                                                    "<td class=\"text-center\">" + obj.PhoneNumber + "</td>" +
-                                                    "<td class=\"text-center\">" + obj.Email + "</td>" +
-                                                    "<td class=\"text-center\">" + obj.StatusName + "</td>" +
+                                                    "<td class=\"text-center\">" + obj.sExpireFrom + "</td>" +
+                                                    "<td class=\"text-center\">" + (obj.IsUSD ? "<i class=\"gi gi-ok_2\"></i>" : "") + "</td>" +
+                                                    "<td class=\"text-center\">" + htmlFees + "</td>" +
                                                     "<td class=\"text-center\">" +
                                                         //"<div class=\"btn-group\">" +
                                                             "<a onclick=\"quotationcustoms.startedit('" + obj.ID + "');\" href=\"javascript:void(0)\" data-toggle=\"tooltip\" title=\"Sửa\" class=\"btn btn-xs btn-default\"><i class=\"fa fa-pencil\"></i></a>" +

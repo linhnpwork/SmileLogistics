@@ -313,7 +313,7 @@
                                                     "<td class=\"text-center\">" + obj.Description + "</td>" +
                                                     "<td class=\"text-center\">" + obj.GoodsType.Name + "</td>" +
                                                     "<td class=\"text-center\">" +
-                                                        //"<div class=\"btn-group\">" +
+                                                        //"<div class=\"btn-group btn-group-xs\">" +
                                                             "<a onclick=\"vehicletypes.startedit('" + obj.ID + "');\" href=\"javascript:void(0)\" data-toggle=\"tooltip\" title=\"Sửa\" class=\"btn btn-xs btn-default\"><i class=\"fa fa-pencil\"></i></a>" +
                                                             "<a onclick=\"vehicletypes.startdelete('" + obj.ID + "');\" href=\"javascript:void(0)\" data-toggle=\"tooltip\" title=\"Xóa\" class=\"btn btn-xs btn-danger\"><i class=\"fa fa-times\"></i></a>" +
                                                         //"</div>" +
