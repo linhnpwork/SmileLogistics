@@ -1491,6 +1491,8 @@ namespace SmileLogistics.DAL
 		
 		private double _Total_Out;
 		
+		private double _DecreasePercentFromSecondCont;
+		
 		private EntitySet<CustomerQuotation_CustomsDetail> _CustomerQuotation_CustomsDetails;
 		
 		private EntitySet<Job> _Jobs;
@@ -1527,6 +1529,8 @@ namespace SmileLogistics.DAL
     partial void OnTotal_InChanged();
     partial void OnTotal_OutChanging(double value);
     partial void OnTotal_OutChanged();
+    partial void OnDecreasePercentFromSecondContChanging(double value);
+    partial void OnDecreasePercentFromSecondContChanged();
     #endregion
 		
 		public CustomerQuotation_Custom()
@@ -1786,6 +1790,26 @@ namespace SmileLogistics.DAL
 			}
 		}
 		
+		[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_DecreasePercentFromSecondCont", DbType="Float NOT NULL")]
+		public double DecreasePercentFromSecondCont
+		{
+			get
+			{
+				return this._DecreasePercentFromSecondCont;
+			}
+			set
+			{
+				if ((this._DecreasePercentFromSecondCont != value))
+				{
+					this.OnDecreasePercentFromSecondContChanging(value);
+					this.SendPropertyChanging();
+					this._DecreasePercentFromSecondCont = value;
+					this.SendPropertyChanged("DecreasePercentFromSecondCont");
+					this.OnDecreasePercentFromSecondContChanged();
+				}
+			}
+		}
+		
 		[global::System.Data.Linq.Mapping.AssociationAttribute(Name="CustomerQuotation_Custom_CustomerQuotation_CustomsDetail", Storage="_CustomerQuotation_CustomsDetails", ThisKey="ID", OtherKey="QuotationID")]
 		public EntitySet<CustomerQuotation_CustomsDetail> CustomerQuotation_CustomsDetails
 		{
@@ -1951,6 +1975,8 @@ namespace SmileLogistics.DAL
 		
 		private double _Total_Out;
 		
+		private int _Order;
+		
 		private EntityRef<CustomerQuotation_Custom> _CustomerQuotation_Custom;
 		
 		private EntityRef<CustomsProcess_FeeDetail> _CustomsProcess_FeeDetail;
@@ -1981,6 +2007,8 @@ namespace SmileLogistics.DAL
     partial void OnTotal_InChanged();
     partial void OnTotal_OutChanging(double value);
     partial void OnTotal_OutChanged();
+    partial void OnOrderChanging(int value);
+    partial void OnOrderChanged();
     #endregion
 		
 		public CustomerQuotation_CustomsDetail()
@@ -2199,6 +2227,26 @@ namespace SmileLogistics.DAL
 					this._Total_Out = value;
 					this.SendPropertyChanged("Total_Out");
 					this.OnTotal_OutChanged();
+				}
+			}
+		}
+		
+		[global::System.Data.Linq.Mapping.ColumnAttribute(Name="[Order]", Storage="_Order", DbType="Int NOT NULL")]
+		public int Order
+		{
+			get
+			{
+				return this._Order;
+			}
+			set
+			{
+				if ((this._Order != value))
+				{
+					this.OnOrderChanging(value);
+					this.SendPropertyChanging();
+					this._Order = value;
+					this.SendPropertyChanged("Order");
+					this.OnOrderChanged();
 				}
 			}
 		}
@@ -4839,8 +4887,6 @@ namespace SmileLogistics.DAL
 		
 		private double _USDRate;
 		
-		private int _Order;
-		
 		private double _Loads;
 		
 		private double _PromotionByTransComp;
@@ -4849,11 +4895,19 @@ namespace SmileLogistics.DAL
 		
 		private double _Total_In;
 		
+		private System.Nullable<int> _PlaceStart;
+		
+		private System.Nullable<int> _PlaceEnd;
+		
 		private EntityRef<CustomerQuotation_Route> _CustomerQuotation_Route;
 		
 		private EntityRef<Job> _Job;
 		
 		private EntityRef<Sys_User> _Sys_User;
+		
+		private EntityRef<TransportPlace> _TransportPlace;
+		
+		private EntityRef<TransportPlace> _TransportPlace1;
 		
     #region Extensibility Method Definitions
     partial void OnLoaded();
@@ -4883,8 +4937,6 @@ namespace SmileLogistics.DAL
     partial void OnUpdatedByChanged();
     partial void OnUSDRateChanging(double value);
     partial void OnUSDRateChanged();
-    partial void OnOrderChanging(int value);
-    partial void OnOrderChanged();
     partial void OnLoadsChanging(double value);
     partial void OnLoadsChanged();
     partial void OnPromotionByTransCompChanging(double value);
@@ -4893,6 +4945,10 @@ namespace SmileLogistics.DAL
     partial void OnTotal_OutChanged();
     partial void OnTotal_InChanging(double value);
     partial void OnTotal_InChanged();
+    partial void OnPlaceStartChanging(System.Nullable<int> value);
+    partial void OnPlaceStartChanged();
+    partial void OnPlaceEndChanging(System.Nullable<int> value);
+    partial void OnPlaceEndChanged();
     #endregion
 		
 		public Job_QuotationRoute()
@@ -4900,6 +4956,8 @@ namespace SmileLogistics.DAL
 			this._CustomerQuotation_Route = default(EntityRef<CustomerQuotation_Route>);
 			this._Job = default(EntityRef<Job>);
 			this._Sys_User = default(EntityRef<Sys_User>);
+			this._TransportPlace = default(EntityRef<TransportPlace>);
+			this._TransportPlace1 = default(EntityRef<TransportPlace>);
 			OnCreated();
 		}
 		
@@ -5155,26 +5213,6 @@ namespace SmileLogistics.DAL
 			}
 		}
 		
-		[global::System.Data.Linq.Mapping.ColumnAttribute(Name="[Order]", Storage="_Order", DbType="Int NOT NULL")]
-		public int Order
-		{
-			get
-			{
-				return this._Order;
-			}
-			set
-			{
-				if ((this._Order != value))
-				{
-					this.OnOrderChanging(value);
-					this.SendPropertyChanging();
-					this._Order = value;
-					this.SendPropertyChanged("Order");
-					this.OnOrderChanged();
-				}
-			}
-		}
-		
 		[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_Loads", DbType="Float NOT NULL")]
 		public double Loads
 		{
@@ -5251,6 +5289,54 @@ namespace SmileLogistics.DAL
 					this._Total_In = value;
 					this.SendPropertyChanged("Total_In");
 					this.OnTotal_InChanged();
+				}
+			}
+		}
+		
+		[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_PlaceStart", DbType="Int")]
+		public System.Nullable<int> PlaceStart
+		{
+			get
+			{
+				return this._PlaceStart;
+			}
+			set
+			{
+				if ((this._PlaceStart != value))
+				{
+					if (this._TransportPlace.HasLoadedOrAssignedValue)
+					{
+						throw new System.Data.Linq.ForeignKeyReferenceAlreadyHasValueException();
+					}
+					this.OnPlaceStartChanging(value);
+					this.SendPropertyChanging();
+					this._PlaceStart = value;
+					this.SendPropertyChanged("PlaceStart");
+					this.OnPlaceStartChanged();
+				}
+			}
+		}
+		
+		[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_PlaceEnd", DbType="Int")]
+		public System.Nullable<int> PlaceEnd
+		{
+			get
+			{
+				return this._PlaceEnd;
+			}
+			set
+			{
+				if ((this._PlaceEnd != value))
+				{
+					if (this._TransportPlace1.HasLoadedOrAssignedValue)
+					{
+						throw new System.Data.Linq.ForeignKeyReferenceAlreadyHasValueException();
+					}
+					this.OnPlaceEndChanging(value);
+					this.SendPropertyChanging();
+					this._PlaceEnd = value;
+					this.SendPropertyChanged("PlaceEnd");
+					this.OnPlaceEndChanged();
 				}
 			}
 		}
@@ -5353,6 +5439,74 @@ namespace SmileLogistics.DAL
 						this._UpdatedBy = default(int);
 					}
 					this.SendPropertyChanged("Sys_User");
+				}
+			}
+		}
+		
+		[global::System.Data.Linq.Mapping.AssociationAttribute(Name="TransportPlace_Job_QuotationRoute", Storage="_TransportPlace", ThisKey="PlaceStart", OtherKey="ID", IsForeignKey=true)]
+		public TransportPlace TransportPlace
+		{
+			get
+			{
+				return this._TransportPlace.Entity;
+			}
+			set
+			{
+				TransportPlace previousValue = this._TransportPlace.Entity;
+				if (((previousValue != value) 
+							|| (this._TransportPlace.HasLoadedOrAssignedValue == false)))
+				{
+					this.SendPropertyChanging();
+					if ((previousValue != null))
+					{
+						this._TransportPlace.Entity = null;
+						previousValue.Job_QuotationRoutes.Remove(this);
+					}
+					this._TransportPlace.Entity = value;
+					if ((value != null))
+					{
+						value.Job_QuotationRoutes.Add(this);
+						this._PlaceStart = value.ID;
+					}
+					else
+					{
+						this._PlaceStart = default(Nullable<int>);
+					}
+					this.SendPropertyChanged("TransportPlace");
+				}
+			}
+		}
+		
+		[global::System.Data.Linq.Mapping.AssociationAttribute(Name="TransportPlace_Job_QuotationRoute1", Storage="_TransportPlace1", ThisKey="PlaceEnd", OtherKey="ID", IsForeignKey=true)]
+		public TransportPlace TransportPlace1
+		{
+			get
+			{
+				return this._TransportPlace1.Entity;
+			}
+			set
+			{
+				TransportPlace previousValue = this._TransportPlace1.Entity;
+				if (((previousValue != value) 
+							|| (this._TransportPlace1.HasLoadedOrAssignedValue == false)))
+				{
+					this.SendPropertyChanging();
+					if ((previousValue != null))
+					{
+						this._TransportPlace1.Entity = null;
+						previousValue.Job_QuotationRoutes1.Remove(this);
+					}
+					this._TransportPlace1.Entity = value;
+					if ((value != null))
+					{
+						value.Job_QuotationRoutes1.Add(this);
+						this._PlaceEnd = value.ID;
+					}
+					else
+					{
+						this._PlaceEnd = default(Nullable<int>);
+					}
+					this.SendPropertyChanged("TransportPlace1");
 				}
 			}
 		}
@@ -10307,6 +10461,10 @@ namespace SmileLogistics.DAL
 		
 		private int _UpdatedBy;
 		
+		private EntitySet<Job_QuotationRoute> _Job_QuotationRoutes;
+		
+		private EntitySet<Job_QuotationRoute> _Job_QuotationRoutes1;
+		
 		private EntitySet<TransportCompany_Route> _TransportCompany_Routes;
 		
 		private EntitySet<TransportCompany_Route> _TransportCompany_Routes1;
@@ -10337,6 +10495,8 @@ namespace SmileLogistics.DAL
 		
 		public TransportPlace()
 		{
+			this._Job_QuotationRoutes = new EntitySet<Job_QuotationRoute>(new Action<Job_QuotationRoute>(this.attach_Job_QuotationRoutes), new Action<Job_QuotationRoute>(this.detach_Job_QuotationRoutes));
+			this._Job_QuotationRoutes1 = new EntitySet<Job_QuotationRoute>(new Action<Job_QuotationRoute>(this.attach_Job_QuotationRoutes1), new Action<Job_QuotationRoute>(this.detach_Job_QuotationRoutes1));
 			this._TransportCompany_Routes = new EntitySet<TransportCompany_Route>(new Action<TransportCompany_Route>(this.attach_TransportCompany_Routes), new Action<TransportCompany_Route>(this.detach_TransportCompany_Routes));
 			this._TransportCompany_Routes1 = new EntitySet<TransportCompany_Route>(new Action<TransportCompany_Route>(this.attach_TransportCompany_Routes1), new Action<TransportCompany_Route>(this.detach_TransportCompany_Routes1));
 			this._Sys_User = default(EntityRef<Sys_User>);
@@ -10507,6 +10667,32 @@ namespace SmileLogistics.DAL
 			}
 		}
 		
+		[global::System.Data.Linq.Mapping.AssociationAttribute(Name="TransportPlace_Job_QuotationRoute", Storage="_Job_QuotationRoutes", ThisKey="ID", OtherKey="PlaceStart")]
+		public EntitySet<Job_QuotationRoute> Job_QuotationRoutes
+		{
+			get
+			{
+				return this._Job_QuotationRoutes;
+			}
+			set
+			{
+				this._Job_QuotationRoutes.Assign(value);
+			}
+		}
+		
+		[global::System.Data.Linq.Mapping.AssociationAttribute(Name="TransportPlace_Job_QuotationRoute1", Storage="_Job_QuotationRoutes1", ThisKey="ID", OtherKey="PlaceEnd")]
+		public EntitySet<Job_QuotationRoute> Job_QuotationRoutes1
+		{
+			get
+			{
+				return this._Job_QuotationRoutes1;
+			}
+			set
+			{
+				this._Job_QuotationRoutes1.Assign(value);
+			}
+		}
+		
 		[global::System.Data.Linq.Mapping.AssociationAttribute(Name="TransportPlace_TransportCompany_Route", Storage="_TransportCompany_Routes", ThisKey="ID", OtherKey="StartPoint")]
 		public EntitySet<TransportCompany_Route> TransportCompany_Routes
 		{
@@ -10585,6 +10771,30 @@ namespace SmileLogistics.DAL
 			{
 				this.PropertyChanged(this, new PropertyChangedEventArgs(propertyName));
 			}
+		}
+		
+		private void attach_Job_QuotationRoutes(Job_QuotationRoute entity)
+		{
+			this.SendPropertyChanging();
+			entity.TransportPlace = this;
+		}
+		
+		private void detach_Job_QuotationRoutes(Job_QuotationRoute entity)
+		{
+			this.SendPropertyChanging();
+			entity.TransportPlace = null;
+		}
+		
+		private void attach_Job_QuotationRoutes1(Job_QuotationRoute entity)
+		{
+			this.SendPropertyChanging();
+			entity.TransportPlace1 = this;
+		}
+		
+		private void detach_Job_QuotationRoutes1(Job_QuotationRoute entity)
+		{
+			this.SendPropertyChanging();
+			entity.TransportPlace1 = null;
 		}
 		
 		private void attach_TransportCompany_Routes(TransportCompany_Route entity)

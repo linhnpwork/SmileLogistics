@@ -35,6 +35,8 @@ namespace SmileLogistics.DAL.Entities
         public DateTime LastestUpdate { get; set; }
         public string sLastestUpdate { get; set; }
         public List<eTransportCompany_VehicleType_Load> Loads { get; set; }
+
+        public string sVehicleTypeName { get; set; }
     }
 
     public class eTransportCompany_VehicleType_Load

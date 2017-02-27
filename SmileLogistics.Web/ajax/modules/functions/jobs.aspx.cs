@@ -331,10 +331,14 @@ namespace SmileLogistics.Web.ajax.modules.functions
             try { pageIndex = int.Parse(sPageIndex); }
             catch { pageIndex = 0; }
 
+            string sFilter = Request.Form["filter"].ToString();
+
+            eJobFilter filter = JsonConvert.DeserializeObject<eJobFilter>(sFilter);
+
             using (DALTools dalTools = new DALTools())
             {
                 int totalPages = 0;
-                List<eJob> all = dalTools.Job_GetEs(pageIndex, GlobalValues.DefaultPagingSize, out totalPages);
+                List<eJob> all = dalTools.Job_GetEs(filter,pageIndex, GlobalValues.DefaultPagingSize, out totalPages);
 
                 if (all == null || all.Count == 0)
                     DoResponse(JsonConvert.SerializeObject(new GlobalValues.ResponseData()

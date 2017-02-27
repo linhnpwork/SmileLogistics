@@ -74,12 +74,11 @@
                         <label class="col-md-3 control-label">Đã giao hàng?</label>
                         <div class="col-md-9">
                             <label class='switch switch-success'>
-                                <input id="info-isconsigned" type='checkbox'><span></span>
-
+                                <input id="info-isconsigned" onchange="jobs.onchange_isconsigned(this);" type='checkbox'><span></span>
                             </label>
                         </div>
                     </div>
-                    <div class="form-group">
+                    <div id="div-info-consigned" class="form-group">
                         <label class="col-md-3 control-label">Thời gian giao hàng</label>
                         <div class="col-md-4">
                             <div class="input-group bootstrap-timepicker">
@@ -118,7 +117,7 @@
                 <div class="block-title">
                     <h2>Báo giá <strong>Vận chuyển</strong></h2>
                     <div class="block-options pull-right">
-                        <a onclick="vehicletypes.startAdd();" class="btn btn-sm btn-success" data-toggle="tooltip" title="Thêm mới"><i class="gi gi-plus"></i></a>
+                        <a onclick="jobs.startAdd_quotation_route();" class="btn btn-sm btn-success" data-toggle="tooltip" title="Thêm mới"><i class="gi gi-plus"></i></a>
                     </div>
                 </div>
                 <div class="form-horizontal">
@@ -176,25 +175,34 @@
         </div>
     </div>
 </div>
-<%--<div id="modal-info" class="modal fade" tabindex="-1" role="dialog" aria-hidden="true" style="display: none;">
+<div id="modal-info-quotation-route" class="modal fade" tabindex="-1" role="dialog" aria-hidden="true" style="display: none;">
     <div class="modal-dialog modal-lg">
         <div class="modal-content">
             <div class="modal-header">
                 <button type="button" class="close" data-dismiss="modal" aria-hidden="true">×</button>
-                <h3 class="modal-title">Thêm mới JOB</h3>
+                <h3 class="modal-title">Thêm mới Báo giá Vận chuyển</h3>
             </div>
             <div class="modal-body">
                 <div class="form-horizontal form-bordered">
                     <div class="form-group">
-                        <label class="col-md-3 control-label">Tên</label>
-                        <div class="col-md-9">
-                            <input type="text" id="info-name" class="form-control" placeholder="Tên">
+                        <label class="col-md-3 control-label">Từ</label>
+                        <div id="divQuotationRoute_Place_Start" runat="server" class="col-md-3">
+                        </div>
+                        <label class="col-md-3 control-label">đến</label>
+                        <div id="divQuotationRoute_Place_End" runat="server" class="col-md-3">
                         </div>
                     </div>
                     <div class="form-group">
-                        <label class="col-md-3 control-label">Mã</label>
-                        <div class="col-md-9">
-                            <input type="text" id="info-code" class="form-control" placeholder="Code">
+                        <label class="col-md-3 control-label">Hãng vận chuyển</label>
+                        <div id="divQuotationRoute_TransportComps" class="col-md-9">
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label class="col-md-3 control-label">Loại xe</label>
+                        <div id="divQuotationRoute_Vehicle_Types" class="col-md-3">
+                        </div>
+                        <label class="col-md-3 control-label">Tải trọng</label>
+                        <div id="divQuotationRoute_Vehicle_Loads" class="col-md-3">
                         </div>
                     </div>
                     <div class="form-group">
@@ -217,7 +225,7 @@
             </div>
         </div>
     </div>
-</div>--%>
+</div>
 <script type="text/javascript">
     var jobs =
         {
@@ -225,6 +233,7 @@
             mode: 'create',
             currentobj: null,
             currentjobID: '',
+            allComps: null,
 
             alert: function (content) {
                 $('#divModalAlert').show();
@@ -254,9 +263,94 @@
                     $('.block-related-edit').hide();
                     this.startAdd();
                 }
+
+                var sComps = '<%= _AllCompanies %>';
+                if (sComps == '')
+                    this.allComps = null;
+                else
+                    this.allComps = JSON.parse(sComps);
+
+                this.generate_companies();
             },
 
             //-----------------------------------------------------------------------------------------------
+
+            generate_vehicleloads: function () {
+                var compId = Number($('#info-quotation-route-transcomps').val());
+                var comp = this.getobj(compId, this.allComps);
+                if (comp == null) return;
+
+                var typeId = Number($('#info-quotation-route-vehicletypes').val());
+                var type = this.getobj(typeId, comp.VehicleTypes);
+                if (type == null) return;
+
+                if (type.Loads == null || type.Loads.length == 0) {
+                    $('#divQuotationRoute_Vehicle_Loads').html('<label class="control-label label-quicklink"><a href="/hang-van-chuyen">Chưa có dữ liệu Tải trọng xe của hãng! Nhấp chọn chuyển sang trang Quản lý!</a></label>');
+                }
+                else {
+                    var html = "<select id=\"info-quotation-route-vehicleloads\" class=\"form-control\" style=\"width: auto;\">";
+
+                    for (var i = 0; i < type.Loads.length; i++) {
+                        var load = type.Loads[i];
+                        html += "<option value=\"" + load.ID + "\">" + load.VehicleLoad.Name + "</option>";
+                    }
+
+                    html += "</select>";
+
+                    $('#divQuotationRoute_Vehicle_Loads').html(html);
+                }
+            },
+
+            generate_vehicletypes: function () {
+                var compId = Number($('#info-quotation-route-transcomps').val());
+                var comp = this.getobj(compId, this.allComps);
+                if (comp == null) return;
+
+                if (comp.VehicleTypes == null || comp.VehicleTypes.length == 0) {
+                    $('#divQuotationRoute_Vehicle_Types').html('<label class="control-label label-quicklink"><a href="/hang-van-chuyen">Chưa có dữ liệu Loại xe của hãng! Nhấp chọn chuyển sang trang Quản lý!</a></label>');
+                    $('#divQuotationRoute_Vehicle_Loads').html('');
+                }
+                else {
+                    var html = "<select id=\"info-quotation-route-vehicletypes\" onchange=\"jobs.generate_vehicleloads();\" class=\"form-control\" style=\"width: auto;\">";
+
+                    for (var i = 0; i < comp.VehicleTypes.length; i++) {
+                        var type = comp.VehicleTypes[i];
+                        html += "<option value=\"" + type.ID + "\">" + type.sVehicleTypeName + "</option>";
+                    }
+
+                    html += "</select>";
+
+                    $('#divQuotationRoute_Vehicle_Types').html(html);
+
+                    this.generate_vehicleloads();
+                }
+            },
+
+            generate_companies: function () {
+                if (this.allComps == null || this.allComps.length == 0) {
+                    $('#divQuotationRoute_TransportComps').html('<label class="control-label label-quicklink"><a href="/hang-van-chuyen">Chưa có dữ liệu Hãng vận chuyển! Nhấp chọn chuyển sang trang Quản lý!</a></label>');
+                    $('#divQuotationRoute_Vehicle_Types').html('');
+                    $('#divQuotationRoute_Vehicle_Loads').html('');
+                }
+                else {
+                    var html = "<select id=\"info-quotation-route-transcomps\" onchange=\"jobs.generate_vehicletypes();\" class=\"select-select2 select2-hidden-accessible\" style=\"width: auto;\">";
+
+                    for (var i = 0; i < this.allComps.length; i++) {
+                        var comp = this.allComps[i];
+                        html += "<option value=\"" + comp.ID + "\">" + comp.Name + "</option>";
+                    }
+
+                    html += "</select>";
+
+                    $('#divQuotationRoute_TransportComps').html(html);
+
+                    this.generate_vehicletypes();
+                }
+            },
+
+            startAdd_quotation_route: function () {
+                $('#modal-info-quotation-route').modal('show');
+            },
 
             onchange_type: function () {
                 var id = this.generateJobID();
@@ -277,13 +371,29 @@
 
                 //Status
                 $('#info-isconsigned').prop('checked', jobs.currentobj.IsConsigned);
-                $('#info-consigned-time').val(jobs.currentobj.sConsignedTime);
-                $('#info-consigned-date').val(jobs.currentobj.sConsignedDate);
+                if (jobs.currentobj.IsConsigned) {
+                    $('#div-info-consigned').show();
+                    $('#info-consigned-time').val(jobs.currentobj.sConsignedTime);
+                    $('#info-consigned-date').val(jobs.currentobj.sConsignedDate);
+                }
+                else {
+                    $('#div-info-consigned').hide();
+                    $('#info-consigned-time').val('');
+                    $('#info-consigned-date').val('');
+                }
+
                 $('#info-isinformtranscomp').prop('checked', jobs.currentobj.IsInformTransportComp);
                 $('#info-ispayedfortranscomp').prop('checked', jobs.currentobj.IsPayedForTransportComp);
 
                 $('#btn-do-save').html('Lưu');
                 $('#modal-info').modal('show');
+            },
+
+            onchange_isconsigned: function (ctrl) {
+                if ($(ctrl).prop('checked'))
+                    $('#div-info-consigned').show();
+                else
+                    $('#div-info-consigned').hide();
             },
 
             dosave_status: function () {
@@ -363,7 +473,7 @@
                     if (result.ErrorCode == 0) {
                         if (jobs.mode == 'create')
                             location.href = '/<%= CurrentSys_Module.Alias %>/?job=' + result.Data;
-                    }
+                }
                 };
 
                 var form = new FormData();

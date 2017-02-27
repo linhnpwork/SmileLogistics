@@ -300,7 +300,7 @@ namespace SmileLogistics.DAL.Helpers
                         new Commons.eStatus() { ID = 1, Name = "Chờ Kế toán duyệt"},
                         new Commons.eStatus() { ID = 2, Name = "Chờ Giám đốc duyệt"},
                         new Commons.eStatus() { ID = 3, Name = "Chuyển Kế toán bổ sung"},
-                        new Commons.eStatus() { ID = 4, Name = "Chuyển nhân viên bổ sung duyệt"},
+                        new Commons.eStatus() { ID = 4, Name = "Chuyển nhân viên bổ sung"},
                         new Commons.eStatus() { ID = 10, Name = "Hoàn tất"},
                     };
                 }

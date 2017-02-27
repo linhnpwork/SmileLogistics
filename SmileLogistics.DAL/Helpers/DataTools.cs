@@ -2251,6 +2251,7 @@ namespace SmileLogistics.DAL.Helpers
                     UpdatedBy = Sys_User_GetE(obj.UpdatedBy),
                     VehicleTypeID = obj.VehicleTypeID,
                     Loads = vehicleLoads,
+                    sVehicleTypeName = obj.VehicleType.Name,
                 };
             }
             catch
@@ -3209,7 +3210,7 @@ namespace SmileLogistics.DAL.Helpers
                     FeeDetails = feeTypes,
                 };
             }
-            catch(Exception ex)
+            catch (Exception ex)
             {
                 return null;
             }
@@ -3553,12 +3554,46 @@ namespace SmileLogistics.DAL.Helpers
             }
         }
 
-        public List<Job> Job_Gets(int pageIndex, int pageSize, out int totalPages)
+        public List<Job> Job_Gets(eJobFilter filter, int pageIndex, int pageSize, out int totalPages)
         {
             totalPages = 0;
             try
             {
                 var all = DB.Jobs.Where(o => !o.IsDeleted);
+
+                if (filter != null)
+                {
+                    if (!string.IsNullOrEmpty(filter.BillLadingNO))
+                        all = all.Where(o => o.BillLadingNO.ToLower().IndexOf(filter.BillLadingNO.ToLower()) > -1);
+
+                    if (!string.IsNullOrEmpty(filter.InvoiceNO))
+                        all = all.Where(o => o.InvoiceNO.ToLower().IndexOf(filter.InvoiceNO.ToLower()) > -1);
+
+                    if (!string.IsNullOrEmpty(filter.JobID))
+                        all = all.Where(o => o.JobID.ToLower().IndexOf(filter.JobID.ToLower()) > -1);
+
+                    if (!string.IsNullOrEmpty(filter.TKHQNO))
+                        all = all.Where(o => o.TKHQNO.ToLower().IndexOf(filter.TKHQNO.ToLower()) > -1);
+
+                    if (filter.Customer != -1)
+                        all = all.Where(o => o.CustomerID == filter.Customer);
+
+                    if (filter.InformTransComp != -1)
+                        all = all.Where(o => o.IsInformTransportComp == (filter.InformTransComp == 1));
+
+                    if (filter.IsPaidCustomer != -1)
+                        all = all.Where(o => o.IsPaidFromCustomer == (filter.IsPaidCustomer == 1));
+
+                    if (filter.IsPaidTransComp != -1)
+                        all = all.Where(o => o.IsPayedForTransportComp == (filter.IsPaidTransComp == 1));
+
+                    if (filter.Status != -1)
+                        all = all.Where(o => o.Status == filter.Status);
+
+                    if (filter.Type != -1)
+                        all = all.Where(o => o.Type == filter.Type);
+                }
+
                 if (all.Count() == 0) return null;
 
                 int startIndex = pageIndex * pageSize;
@@ -3578,12 +3613,12 @@ namespace SmileLogistics.DAL.Helpers
             }
         }
 
-        public List<eJob> Job_GetEs(int pageIndex, int pageSize, out int totalPages)
+        public List<eJob> Job_GetEs(eJobFilter filter, int pageIndex, int pageSize, out int totalPages)
         {
             totalPages = 0;
             try
             {
-                var all = Job_Gets(pageIndex, pageSize, out totalPages);
+                var all = Job_Gets(filter, pageIndex, pageSize, out totalPages);
                 if (all == null) return null;
 
                 List<eJob> result = new List<eJob>();
@@ -3709,6 +3744,13 @@ namespace SmileLogistics.DAL.Helpers
                     TKHQNO = obj.TKHQNO,
                     Type = obj.Type,
                     Quotation_CustomProcID = obj.Quotation_CustomProcID == null ? int.MinValue : (int)obj.Quotation_CustomProcID,
+                    AgentPrepaids = obj.AgentPrepaids,
+                    Total_Customs_In = obj.Total_Customs_In,
+                    Total_Customs_Out = obj.Total_Customs_Out,
+                    Total_In = obj.Total_In,
+                    Total_Out = obj.Total_Out,
+                    Total_Transport_In = obj.Total_Transport_In,
+                    Total_Transport_Out = obj.Total_Transport_Out,
 
                     IsDeleted = obj.IsDeleted,
                     LastestUpdate = obj.LastestUpdated,

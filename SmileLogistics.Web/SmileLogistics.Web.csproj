@@ -782,7 +782,6 @@
     <Content Include="modules\systems\RolePermission.ascx" />
     <Content Include="modules\systems\Roles.ascx" />
     <Content Include="pages\503.html" />
-    <Content Include="Test.aspx" />
     <Content Include="uploads\avatars\636094479081782984.jpg" />
     <Content Include="uploads\avatars\636094490267608737.png" />
     <Content Include="uploads\avatars\636095334553935082.jpg" />
@@ -1081,13 +1080,6 @@
     </Compile>
     <Compile Include="ProUI.Master.designer.cs">
       <DependentUpon>ProUI.Master</DependentUpon>
-    </Compile>
-    <Compile Include="Test.aspx.cs">
-      <DependentUpon>Test.aspx</DependentUpon>
-      <SubType>ASPXCodeBehind</SubType>
-    </Compile>
-    <Compile Include="Test.aspx.designer.cs">
-      <DependentUpon>Test.aspx</DependentUpon>
     </Compile>
   </ItemGroup>
   <ItemGroup>

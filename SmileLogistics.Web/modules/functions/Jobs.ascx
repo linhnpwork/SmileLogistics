@@ -40,6 +40,73 @@
         </div>
         <div class="form-horizontal">
             <div id="divTableList" class="table-responsive">
+                <table id="tblList" class="table table-vcenter table-striped table-condensed table-hover table-bordered">
+                    <thead>
+                        <tr class="row-header-filter">
+                            <th class="text-center"></th>
+                            <th id="divFilterTypes" runat="server" class="text-center"></th>
+                            <th class="text-center">
+                                <input id="filter-jobid" type="text" class="form-control" placeholder="Job ID"></th>
+                            <th class="text-center">
+                                <input id="filter-invoiceno" type="text" class="form-control" placeholder="Invoice NO"></th>
+                            <th class="text-center">
+                                <input id="filter-billladingno" type="text" class="form-control" placeholder="BillLading ID"></th>
+                            <th class="text-center">
+                                <input id="filter-tkhq" type="text" class="form-control" placeholder="TKHQ"></th>
+                            <th id="divFilterCustomers" runat="server" class="text-center"></th>
+                            <th class="text-center"></th>
+                            <th class="text-center">
+                                <select id="filter-paid-customers" class="form-control">
+                                    <option value="-1">Tất cả</option>
+                                    <option value="0">Chưa thanh toán</option>
+                                    <option value="1">Đã thanh toán</option>
+                                </select>
+                            </th>
+                            <th class="text-center">
+                                <select id="filter-inform-transcomp" class="form-control">
+                                    <option value="-1">Tất cả</option>
+                                    <option value="0">Chưa báo</option>
+                                    <option value="1">Đã báo</option>
+                                </select>
+                            </th>
+                            <th class="text-center">
+                                <select id="filter-paid-transcomp" class="form-control">
+                                    <option value="-1">Tất cả</option>
+                                    <option value="0">Chưa thanh toán</option>
+                                    <option value="1">Đã thanh toán</option>
+                                </select>
+                            </th>
+                            <th class="text-center"></th>
+                            <th id="divFilterStatuses" runat="server" class="text-center"></th>
+                            <th class="text-center"><a onclick="jobs.filter();" class="btn btn-sm btn-success" data-toggle="tooltip" title="Lọc"><i class="hi hi-search"></i></a></th>
+                        </tr>
+                        <tr>
+                            <th rowspan="2" class="text-center">STT</th>
+                            <th rowspan="2" class="text-center">Loại</th>
+                            <th colspan="4" class="text-center">Thông tin JOB</th>
+                            <th colspan="3" class="text-center">Khách hàng</th>
+                            <th colspan="2" class="text-center">Nhà xe</th>
+                            <th rowspan="2" class="text-center">Ngày giao hàng</th>
+                            <th rowspan="2" class="text-center">Trạng thái</th>
+                            <th rowspan="2" class="text-center">#</th>
+                        </tr>
+                        <tr>
+                            <th class="text-center">JobID</th>
+                            <th class="text-center">Invoice NO</th>
+                            <th class="text-center">BillLading NO</th>
+                            <th class="text-center">TKHQ</th>
+
+                            <th class="text-center">Tên KH</th>
+                            <th class="text-center">Đã chi tạm ứng</th>
+                            <th class="text-center">Thanh toán</th>
+
+                            <th class="text-center">Đã báo</th>
+                            <th class="text-center">Thanh toán</th>
+                        </tr>
+                    </thead>
+                    <tbody id="tbodyList">
+                    </tbody>
+                </table>
             </div>
             <div id="divPaging" class="form-group form-actions">
             </div>
@@ -149,60 +216,37 @@
                 return null;
             },
 
+            getfilter: function () {
+                var filter = new Object();
+                filter.Type = Number($('#filter-types').val());
+                filter.JobID = $('#filter-jobid').val();
+                filter.InvoiceNO = $('#filter-invoiceno').val();
+                filter.BillLadingNO = $('#filter-billladingno').val();
+                filter.TKHQNO = $('#filter-tkhq').val();
+                filter.Customer = Number($('#filter-customers').val());
+                filter.IsPaidCustomer = Number($('#filter-paid-customers').val());
+                filter.InformTransComp = Number($('#filter-inform-transcomp').val());
+                filter.IsPaidTransComp = Number($('#filter-paid-transcomp').val());
+                filter.Status = Number($('#filter-statuses').val());
+                return filter;
+            },
+
+            filter: function () {
+                this.currentpage = 0;
+                this.loadlist();
+            },
+
             loadlist: function () {
                 NProgress.start();
-
+                var filter = this.getfilter();
+                var filterString = JSON.stringify(filter);
                 $.post(jobs.ajaxPath + '?ts=' + new Date().getTime().toString(),
-                    { 'mod': "loadlist", 'page': jobs.currentpage },
+                    { 'mod': "loadlist", 'page': jobs.currentpage, 'filter': filterString },
                                 function (data) {
                                     NProgress.done();
                                     var result = JSON.parse(data);
 
-                                    var html =
-                                        "<table id=\"tblList\" class=\"table table-vcenter table-striped table-condensed table-hover table-bordered\">" +
-                                            "<thead>" +
-                                                "<tr class=\"row-header-filter\">" +
-                                                    "<th class=\"text-center\"></th>" +
-                                                    "<th class=\"text-center\"><select class=\"select-select2 select2-hidden-accessible\"><option value=\"0\">--- Loại ---</option></select></th>" +
-                                                    "<th class=\"text-center\"><input type=\"text\" class=\"form-control\" placeholder=\"Job ID\"></th>" +
-                                                    "<th class=\"text-center\"><input type=\"text\" class=\"form-control\" placeholder=\"Invoice NO\"></th>" +
-                                                    "<th class=\"text-center\"><input type=\"text\" class=\"form-control\" placeholder=\"BillLading ID\"></th>" +
-                                                    "<th class=\"text-center\"><input type=\"text\" class=\"form-control\" placeholder=\"TKHQ\"></th>" +
-                                                    "<th class=\"text-center\"><select class=\"select-select2 select2-hidden-accessible\"><option value=\"0\">--- Khách hàng ---</option></select></th>" +
-                                                    "<th class=\"text-center\"></th>" +
-                                                    "<th class=\"text-center\"><select class=\"select-select2 select2-hidden-accessible\"><option value=\"0\">--- Tình trạng thanh toán ---</option></select></th>" +
-                                                    "<th class=\"text-center\"><select class=\"select-select2 select2-hidden-accessible\"><option value=\"0\">--- Báo nhà xe ---</option></select></th>" +
-                                                    "<th class=\"text-center\"><select class=\"select-select2 select2-hidden-accessible\"><option value=\"0\">--- Tình trạng thanh toán ---</option></select></th>" +
-                                                    "<th class=\"text-center\"><select class=\"select-select2 select2-hidden-accessible\"><option value=\"0\">--- Trạng thái ---</option></select></th>" +
-                                                    "<th class=\"text-center\"></th>" +
-                                                    "<th class=\"text-center\"></th>" +
-                                                    "<th class=\"text-center\"><a class=\"btn btn-sm btn-success\" data-toggle=\"tooltip\" title=\"Lọc\"><i class=\"hi hi-search\"></i></a></th>" +
-                                                "</tr>" +
-                                                "<tr>" +
-                                                    "<th rowspan=\"2\" class=\"text-center\">STT</th>" +
-                                                    "<th rowspan=\"2\" class=\"text-center\">Loại</th>" +
-                                                    "<th colspan=\"4\" class=\"text-center\">Thông tin JOB</th>" +
-                                                    "<th colspan=\"3\" class=\"text-center\">Khách hàng</th>" +
-                                                    "<th colspan=\"2\" class=\"text-center\">Nhà xe</th>" +
-                                                    "<th rowspan=\"2\" class=\"text-center\">Ngày giao hàng</th>" +
-                                                    "<th rowspan=\"2\" class=\"text-center\">Trạng thái</th>" +
-                                                    "<th rowspan=\"2\" class=\"text-center\">#</th>" +
-                                                "</tr>" +
-                                                "<tr>" +
-                                                    "<th class=\"text-center\">JobID</th>" +
-                                                    "<th class=\"text-center\">Invoice NO</th>" +
-                                                    "<th class=\"text-center\">BillLading NO</th>" +
-                                                    "<th class=\"text-center\">TKHQ</th>" +
-
-                                                    "<th class=\"text-center\">Tên KH</th>" +
-                                                    "<th class=\"text-center\">Đã chi tạm ứng</th>" +
-                                                    "<th class=\"text-center\">Thanh toán</th>" +
-
-                                                    "<th class=\"text-center\">Đã báo</th>" +
-                                                    "<th class=\"text-center\">Thanh toán</th>" +
-                                                "</tr>" +
-                                            "</thead>" +
-                                            "<tbody>";
+                                    var html = "";
 
                                     if (result.ErrorCode != 0) {
                                         html +=
@@ -249,9 +293,9 @@
                                         }
                                     }
 
-                                    html += "</tbody></table>";
+                                    //html += "</tbody></table>";
 
-                                    $('#divTableList').html(html);
+                                    $('#tbodyList').html(html);
                                     globalhelpers.RenderPaging($('#divPaging'), '/<%= CurrentSys_Module.Alias %>', jobs.currentpage, pageSize, totalPages);
 
                                     $('[data-toggle="tooltip"]').tooltip();
