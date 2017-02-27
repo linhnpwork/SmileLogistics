@@ -2768,6 +2768,7 @@ namespace SmileLogistics.DAL.Helpers
                 updateObj.Description = obj.Description;
                 updateObj.LastestUpdated = DateTime.Now;
                 updateObj.Name = obj.Name;
+                updateObj.ProcessOneTime = obj.ProcessOneTime;
                 updateObj.UpdatedBy = obj.UpdatedBy;
 
                 DB.SubmitChanges();
@@ -2933,6 +2934,7 @@ namespace SmileLogistics.DAL.Helpers
                     IsDeleted = obj.IsDeleted,
                     LastestUpdate = obj.LastestUpdated,
                     Name = obj.Name,
+                    ProcessOneTime = obj.ProcessOneTime,
                     sLastestUpdate = obj.LastestUpdated.ToString(GlobalValues.DateFormat_VN),
                     UpdatedBy = Sys_User_GetE(obj.UpdatedBy)
                 };
@@ -3188,7 +3190,7 @@ namespace SmileLogistics.DAL.Helpers
             {
                 if (obj == null) return null;
                 List<eCustomsProcess_FeeDetail> feeTypes = new List<eCustomsProcess_FeeDetail>();
-                if (obj.CustomsProcess_FeeDetails.Count > 0)
+                if (obj.CustomsProcess_FeeDetails.Count() > 0)
                 {
                     foreach (CustomsProcess_FeeDetail type in obj.CustomsProcess_FeeDetails)
                         feeTypes.Add(CustomsProcess_FeeDetail_Entity(type, false));
@@ -3207,7 +3209,7 @@ namespace SmileLogistics.DAL.Helpers
                     FeeDetails = feeTypes,
                 };
             }
-            catch
+            catch(Exception ex)
             {
                 return null;
             }
@@ -3716,6 +3718,7 @@ namespace SmileLogistics.DAL.Helpers
                     sConsignedDate = !obj.IsConsigned ? string.Empty : obj.ConsignedDate.ToString(GlobalValues.DateFormat_VN),
                     sProcessedDate = obj.ProcessedDate.ToString(GlobalValues.DateFormat_VN),
                     sStatus = GlobalValues.JobStatus.FirstOrDefault(o => o.ID == obj.Status).Name,
+                    sType = GlobalValues.JobTypes.FirstOrDefault(o => o.ID == obj.Type).Name,
                     Customer = obj.CustomerID == null ? null : Customer_GetE((int)obj.CustomerID),
                 };
             }

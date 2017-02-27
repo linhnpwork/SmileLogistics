@@ -1487,6 +1487,10 @@ namespace SmileLogistics.DAL
 		
 		private int _QuotationID;
 		
+		private double _Total_In;
+		
+		private double _Total_Out;
+		
 		private EntitySet<CustomerQuotation_CustomsDetail> _CustomerQuotation_CustomsDetails;
 		
 		private EntitySet<Job> _Jobs;
@@ -1519,6 +1523,10 @@ namespace SmileLogistics.DAL
     partial void OnUpdatedByChanged();
     partial void OnQuotationIDChanging(int value);
     partial void OnQuotationIDChanged();
+    partial void OnTotal_InChanging(double value);
+    partial void OnTotal_InChanged();
+    partial void OnTotal_OutChanging(double value);
+    partial void OnTotal_OutChanged();
     #endregion
 		
 		public CustomerQuotation_Custom()
@@ -1738,6 +1746,46 @@ namespace SmileLogistics.DAL
 			}
 		}
 		
+		[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_Total_In", DbType="Float NOT NULL")]
+		public double Total_In
+		{
+			get
+			{
+				return this._Total_In;
+			}
+			set
+			{
+				if ((this._Total_In != value))
+				{
+					this.OnTotal_InChanging(value);
+					this.SendPropertyChanging();
+					this._Total_In = value;
+					this.SendPropertyChanged("Total_In");
+					this.OnTotal_InChanged();
+				}
+			}
+		}
+		
+		[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_Total_Out", DbType="Float NOT NULL")]
+		public double Total_Out
+		{
+			get
+			{
+				return this._Total_Out;
+			}
+			set
+			{
+				if ((this._Total_Out != value))
+				{
+					this.OnTotal_OutChanging(value);
+					this.SendPropertyChanging();
+					this._Total_Out = value;
+					this.SendPropertyChanged("Total_Out");
+					this.OnTotal_OutChanged();
+				}
+			}
+		}
+		
 		[global::System.Data.Linq.Mapping.AssociationAttribute(Name="CustomerQuotation_Custom_CustomerQuotation_CustomsDetail", Storage="_CustomerQuotation_CustomsDetails", ThisKey="ID", OtherKey="QuotationID")]
 		public EntitySet<CustomerQuotation_CustomsDetail> CustomerQuotation_CustomsDetails
 		{
@@ -1897,6 +1945,12 @@ namespace SmileLogistics.DAL
 		
 		private int _UpdatedBy;
 		
+		private int _Quantity;
+		
+		private double _Total_In;
+		
+		private double _Total_Out;
+		
 		private EntityRef<CustomerQuotation_Custom> _CustomerQuotation_Custom;
 		
 		private EntityRef<CustomsProcess_FeeDetail> _CustomsProcess_FeeDetail;
@@ -1921,6 +1975,12 @@ namespace SmileLogistics.DAL
     partial void OnLastestUpdatedChanged();
     partial void OnUpdatedByChanging(int value);
     partial void OnUpdatedByChanged();
+    partial void OnQuantityChanging(int value);
+    partial void OnQuantityChanged();
+    partial void OnTotal_InChanging(double value);
+    partial void OnTotal_InChanged();
+    partial void OnTotal_OutChanging(double value);
+    partial void OnTotal_OutChanged();
     #endregion
 		
 		public CustomerQuotation_CustomsDetail()
@@ -2083,6 +2143,66 @@ namespace SmileLogistics.DAL
 			}
 		}
 		
+		[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_Quantity", DbType="Int NOT NULL")]
+		public int Quantity
+		{
+			get
+			{
+				return this._Quantity;
+			}
+			set
+			{
+				if ((this._Quantity != value))
+				{
+					this.OnQuantityChanging(value);
+					this.SendPropertyChanging();
+					this._Quantity = value;
+					this.SendPropertyChanged("Quantity");
+					this.OnQuantityChanged();
+				}
+			}
+		}
+		
+		[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_Total_In", DbType="Float NOT NULL")]
+		public double Total_In
+		{
+			get
+			{
+				return this._Total_In;
+			}
+			set
+			{
+				if ((this._Total_In != value))
+				{
+					this.OnTotal_InChanging(value);
+					this.SendPropertyChanging();
+					this._Total_In = value;
+					this.SendPropertyChanged("Total_In");
+					this.OnTotal_InChanged();
+				}
+			}
+		}
+		
+		[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_Total_Out", DbType="Float NOT NULL")]
+		public double Total_Out
+		{
+			get
+			{
+				return this._Total_Out;
+			}
+			set
+			{
+				if ((this._Total_Out != value))
+				{
+					this.OnTotal_OutChanging(value);
+					this.SendPropertyChanging();
+					this._Total_Out = value;
+					this.SendPropertyChanged("Total_Out");
+					this.OnTotal_OutChanged();
+				}
+			}
+		}
+		
 		[global::System.Data.Linq.Mapping.AssociationAttribute(Name="CustomerQuotation_Custom_CustomerQuotation_CustomsDetail", Storage="_CustomerQuotation_Custom", ThisKey="QuotationID", OtherKey="ID", IsForeignKey=true)]
 		public CustomerQuotation_Custom CustomerQuotation_Custom
 		{
@@ -2236,6 +2356,8 @@ namespace SmileLogistics.DAL
 		
 		private bool _IsUSD;
 		
+		private double _Total;
+		
 		private EntitySet<Job_QuotationRoute> _Job_QuotationRoutes;
 		
 		private EntityRef<Customer> _Customer;
@@ -2272,6 +2394,8 @@ namespace SmileLogistics.DAL
     partial void OnLastestUpdatedChanged();
     partial void OnIsUSDChanging(bool value);
     partial void OnIsUSDChanged();
+    partial void OnTotalChanging(double value);
+    partial void OnTotalChanged();
     #endregion
 		
 		public CustomerQuotation_Route()
@@ -2531,6 +2655,26 @@ namespace SmileLogistics.DAL
 					this._IsUSD = value;
 					this.SendPropertyChanged("IsUSD");
 					this.OnIsUSDChanged();
+				}
+			}
+		}
+		
+		[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_Total", DbType="Float NOT NULL")]
+		public double Total
+		{
+			get
+			{
+				return this._Total;
+			}
+			set
+			{
+				if ((this._Total != value))
+				{
+					this.OnTotalChanging(value);
+					this.SendPropertyChanging();
+					this._Total = value;
+					this.SendPropertyChanged("Total");
+					this.OnTotalChanged();
 				}
 			}
 		}
@@ -3074,10 +3218,6 @@ namespace SmileLogistics.DAL
 		
 		private double _Price;
 		
-		private bool _IsUSD;
-		
-		private System.DateTime _ExpireFrom;
-		
 		private int _UpdatedBy;
 		
 		private bool _IsDeleted;
@@ -3104,10 +3244,6 @@ namespace SmileLogistics.DAL
     partial void OnFeeTypeIDChanged();
     partial void OnPriceChanging(double value);
     partial void OnPriceChanged();
-    partial void OnIsUSDChanging(bool value);
-    partial void OnIsUSDChanged();
-    partial void OnExpireFromChanging(System.DateTime value);
-    partial void OnExpireFromChanged();
     partial void OnUpdatedByChanging(int value);
     partial void OnUpdatedByChanged();
     partial void OnIsDeletedChanging(bool value);
@@ -3187,46 +3323,6 @@ namespace SmileLogistics.DAL
 					this._Price = value;
 					this.SendPropertyChanged("Price");
 					this.OnPriceChanged();
-				}
-			}
-		}
-		
-		[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_IsUSD", DbType="Bit NOT NULL")]
-		public bool IsUSD
-		{
-			get
-			{
-				return this._IsUSD;
-			}
-			set
-			{
-				if ((this._IsUSD != value))
-				{
-					this.OnIsUSDChanging(value);
-					this.SendPropertyChanging();
-					this._IsUSD = value;
-					this.SendPropertyChanged("IsUSD");
-					this.OnIsUSDChanged();
-				}
-			}
-		}
-		
-		[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_ExpireFrom", DbType="DateTime NOT NULL")]
-		public System.DateTime ExpireFrom
-		{
-			get
-			{
-				return this._ExpireFrom;
-			}
-			set
-			{
-				if ((this._ExpireFrom != value))
-				{
-					this.OnExpireFromChanging(value);
-					this.SendPropertyChanging();
-					this._ExpireFrom = value;
-					this.SendPropertyChanged("ExpireFrom");
-					this.OnExpireFromChanged();
 				}
 			}
 		}
@@ -3485,6 +3581,8 @@ namespace SmileLogistics.DAL
 		
 		private int _UpdatedBy;
 		
+		private bool _ProcessOneTime;
+		
 		private EntitySet<CustomsProcess_FeeDetail> _CustomsProcess_FeeDetails;
 		
 		private EntityRef<Sys_User> _Sys_User;
@@ -3505,6 +3603,8 @@ namespace SmileLogistics.DAL
     partial void OnLastestUpdatedChanged();
     partial void OnUpdatedByChanging(int value);
     partial void OnUpdatedByChanged();
+    partial void OnProcessOneTimeChanging(bool value);
+    partial void OnProcessOneTimeChanged();
     #endregion
 		
 		public CustomsProcess_FeeType()
@@ -3634,6 +3734,26 @@ namespace SmileLogistics.DAL
 					this._UpdatedBy = value;
 					this.SendPropertyChanged("UpdatedBy");
 					this.OnUpdatedByChanged();
+				}
+			}
+		}
+		
+		[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_ProcessOneTime", DbType="Bit NOT NULL")]
+		public bool ProcessOneTime
+		{
+			get
+			{
+				return this._ProcessOneTime;
+			}
+			set
+			{
+				if ((this._ProcessOneTime != value))
+				{
+					this.OnProcessOneTimeChanging(value);
+					this.SendPropertyChanging();
+					this._ProcessOneTime = value;
+					this.SendPropertyChanged("ProcessOneTime");
+					this.OnProcessOneTimeChanged();
 				}
 			}
 		}
@@ -4723,6 +4843,12 @@ namespace SmileLogistics.DAL
 		
 		private double _Loads;
 		
+		private double _PromotionByTransComp;
+		
+		private double _Total_Out;
+		
+		private double _Total_In;
+		
 		private EntityRef<CustomerQuotation_Route> _CustomerQuotation_Route;
 		
 		private EntityRef<Job> _Job;
@@ -4761,6 +4887,12 @@ namespace SmileLogistics.DAL
     partial void OnOrderChanged();
     partial void OnLoadsChanging(double value);
     partial void OnLoadsChanged();
+    partial void OnPromotionByTransCompChanging(double value);
+    partial void OnPromotionByTransCompChanged();
+    partial void OnTotal_OutChanging(double value);
+    partial void OnTotal_OutChanged();
+    partial void OnTotal_InChanging(double value);
+    partial void OnTotal_InChanged();
     #endregion
 		
 		public Job_QuotationRoute()
@@ -5063,6 +5195,66 @@ namespace SmileLogistics.DAL
 			}
 		}
 		
+		[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_PromotionByTransComp", DbType="Float NOT NULL")]
+		public double PromotionByTransComp
+		{
+			get
+			{
+				return this._PromotionByTransComp;
+			}
+			set
+			{
+				if ((this._PromotionByTransComp != value))
+				{
+					this.OnPromotionByTransCompChanging(value);
+					this.SendPropertyChanging();
+					this._PromotionByTransComp = value;
+					this.SendPropertyChanged("PromotionByTransComp");
+					this.OnPromotionByTransCompChanged();
+				}
+			}
+		}
+		
+		[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_Total_Out", DbType="Float NOT NULL")]
+		public double Total_Out
+		{
+			get
+			{
+				return this._Total_Out;
+			}
+			set
+			{
+				if ((this._Total_Out != value))
+				{
+					this.OnTotal_OutChanging(value);
+					this.SendPropertyChanging();
+					this._Total_Out = value;
+					this.SendPropertyChanged("Total_Out");
+					this.OnTotal_OutChanged();
+				}
+			}
+		}
+		
+		[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_Total_In", DbType="Float NOT NULL")]
+		public double Total_In
+		{
+			get
+			{
+				return this._Total_In;
+			}
+			set
+			{
+				if ((this._Total_In != value))
+				{
+					this.OnTotal_InChanging(value);
+					this.SendPropertyChanging();
+					this._Total_In = value;
+					this.SendPropertyChanged("Total_In");
+					this.OnTotal_InChanged();
+				}
+			}
+		}
+		
 		[global::System.Data.Linq.Mapping.AssociationAttribute(Name="CustomerQuotation_Route_Job_QuotationRoute", Storage="_CustomerQuotation_Route", ThisKey="RouteID", OtherKey="ID", IsForeignKey=true)]
 		public CustomerQuotation_Route CustomerQuotation_Route
 		{
@@ -5236,6 +5428,18 @@ namespace SmileLogistics.DAL
 		
 		private double _AgentPrepaids;
 		
+		private double _Total_Transport_In;
+		
+		private double _Total_Customs_In;
+		
+		private double _Total_In;
+		
+		private double _Total_Transport_Out;
+		
+		private double _Total_Customs_Out;
+		
+		private double _Total_Out;
+		
 		private EntitySet<Agent_Prepaid> _Agent_Prepaids;
 		
 		private EntitySet<Job_InOutFee> _Job_InOutFees;
@@ -5298,6 +5502,18 @@ namespace SmileLogistics.DAL
     partial void OnCustomerPrepaidsChanged();
     partial void OnAgentPrepaidsChanging(double value);
     partial void OnAgentPrepaidsChanged();
+    partial void OnTotal_Transport_InChanging(double value);
+    partial void OnTotal_Transport_InChanged();
+    partial void OnTotal_Customs_InChanging(double value);
+    partial void OnTotal_Customs_InChanged();
+    partial void OnTotal_InChanging(double value);
+    partial void OnTotal_InChanged();
+    partial void OnTotal_Transport_OutChanging(double value);
+    partial void OnTotal_Transport_OutChanged();
+    partial void OnTotal_Customs_OutChanging(double value);
+    partial void OnTotal_Customs_OutChanged();
+    partial void OnTotal_OutChanging(double value);
+    partial void OnTotal_OutChanged();
     #endregion
 		
 		public Job()
@@ -5760,6 +5976,126 @@ namespace SmileLogistics.DAL
 					this._AgentPrepaids = value;
 					this.SendPropertyChanged("AgentPrepaids");
 					this.OnAgentPrepaidsChanged();
+				}
+			}
+		}
+		
+		[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_Total_Transport_In", DbType="Float NOT NULL")]
+		public double Total_Transport_In
+		{
+			get
+			{
+				return this._Total_Transport_In;
+			}
+			set
+			{
+				if ((this._Total_Transport_In != value))
+				{
+					this.OnTotal_Transport_InChanging(value);
+					this.SendPropertyChanging();
+					this._Total_Transport_In = value;
+					this.SendPropertyChanged("Total_Transport_In");
+					this.OnTotal_Transport_InChanged();
+				}
+			}
+		}
+		
+		[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_Total_Customs_In", DbType="Float NOT NULL")]
+		public double Total_Customs_In
+		{
+			get
+			{
+				return this._Total_Customs_In;
+			}
+			set
+			{
+				if ((this._Total_Customs_In != value))
+				{
+					this.OnTotal_Customs_InChanging(value);
+					this.SendPropertyChanging();
+					this._Total_Customs_In = value;
+					this.SendPropertyChanged("Total_Customs_In");
+					this.OnTotal_Customs_InChanged();
+				}
+			}
+		}
+		
+		[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_Total_In", DbType="Float NOT NULL")]
+		public double Total_In
+		{
+			get
+			{
+				return this._Total_In;
+			}
+			set
+			{
+				if ((this._Total_In != value))
+				{
+					this.OnTotal_InChanging(value);
+					this.SendPropertyChanging();
+					this._Total_In = value;
+					this.SendPropertyChanged("Total_In");
+					this.OnTotal_InChanged();
+				}
+			}
+		}
+		
+		[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_Total_Transport_Out", DbType="Float NOT NULL")]
+		public double Total_Transport_Out
+		{
+			get
+			{
+				return this._Total_Transport_Out;
+			}
+			set
+			{
+				if ((this._Total_Transport_Out != value))
+				{
+					this.OnTotal_Transport_OutChanging(value);
+					this.SendPropertyChanging();
+					this._Total_Transport_Out = value;
+					this.SendPropertyChanged("Total_Transport_Out");
+					this.OnTotal_Transport_OutChanged();
+				}
+			}
+		}
+		
+		[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_Total_Customs_Out", DbType="Float NOT NULL")]
+		public double Total_Customs_Out
+		{
+			get
+			{
+				return this._Total_Customs_Out;
+			}
+			set
+			{
+				if ((this._Total_Customs_Out != value))
+				{
+					this.OnTotal_Customs_OutChanging(value);
+					this.SendPropertyChanging();
+					this._Total_Customs_Out = value;
+					this.SendPropertyChanged("Total_Customs_Out");
+					this.OnTotal_Customs_OutChanged();
+				}
+			}
+		}
+		
+		[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_Total_Out", DbType="Float NOT NULL")]
+		public double Total_Out
+		{
+			get
+			{
+				return this._Total_Out;
+			}
+			set
+			{
+				if ((this._Total_Out != value))
+				{
+					this.OnTotal_OutChanging(value);
+					this.SendPropertyChanging();
+					this._Total_Out = value;
+					this.SendPropertyChanged("Total_Out");
+					this.OnTotal_OutChanged();
 				}
 			}
 		}

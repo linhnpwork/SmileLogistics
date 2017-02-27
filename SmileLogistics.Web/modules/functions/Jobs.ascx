@@ -131,17 +131,20 @@
             },
 
             godetail: function (id) {
-                location.href = jobs.detaillink + (id == undefined ? "" : ("?id=" + id));
+                location.href = jobs.detaillink + (id == undefined ? "" : ("?job=" + id));
             },
 
             reloadpage: function () {
                 location.href = '/<%= CurrentSys_Module.Alias %>/?page=' + jobs.currentpage;
             },
 
-            getobj: function (id) {
-                if (jobs.all == null) return null;
-                for (var i = 0; i < jobs.all.length; i++)
-                    if (jobs.all[i].ID == id) return jobs.all[i];
+            getobj: function (value, list, field) {
+                if (field == undefined) field = "ID";
+                if (list == undefined) list = jobs.all;
+
+                if (list == null) return null;
+                for (var i = 0; i < list.length; i++)
+                    if (list[i][field] == value) return list[i];
 
                 return null;
             },
@@ -181,9 +184,8 @@
                                                     "<th colspan=\"4\" class=\"text-center\">Thông tin JOB</th>" +
                                                     "<th colspan=\"3\" class=\"text-center\">Khách hàng</th>" +
                                                     "<th colspan=\"2\" class=\"text-center\">Nhà xe</th>" +
+                                                    "<th rowspan=\"2\" class=\"text-center\">Ngày giao hàng</th>" +
                                                     "<th rowspan=\"2\" class=\"text-center\">Trạng thái</th>" +
-                                                    "<th rowspan=\"2\" class=\"text-center\">Ngày xử lý</th>" +
-                                                    "<th rowspan=\"2\" class=\"text-center\">Ngày duyệt</th>" +
                                                     "<th rowspan=\"2\" class=\"text-center\">#</th>" +
                                                 "</tr>" +
                                                 "<tr>" +
@@ -202,40 +204,50 @@
                                             "</thead>" +
                                             "<tbody>";
 
-                                    //if (result.ErrorCode != 0) {
-                                    html +=
-                                        "<tr>" +
-                                            "<td class=\"text-center\" colspan=\"15\">" +
-                                                result.Message +
-                                            "</td>" +
-                                        "</tr>";
-                                    //}
-                                    //else {
-                                    //    jobs.all = JSON.parse(result.Data.List);
-                                    //    jobs.currentpage = Number(result.Data.PageIndex);
-                                    //    var pageSize = Number(result.Data.PageSize);
-                                    //    var totalPages = Number(result.Data.TotalPages);
+                                    if (result.ErrorCode != 0) {
+                                        html +=
+                                            "<tr>" +
+                                                "<td class=\"text-center\" colspan=\"14\">" +
+                                                    result.Message +
+                                                "</td>" +
+                                            "</tr>";
+                                    }
+                                    else {
+                                        jobs.all = JSON.parse(result.Data.List);
+                                        jobs.currentpage = Number(result.Data.PageIndex);
+                                        var pageSize = Number(result.Data.PageSize);
+                                        var totalPages = Number(result.Data.TotalPages);
 
-                                    //    for (var i = 0; i < jobs.all.length; i++) {
-                                    //        var obj = jobs.all[i];
+                                        for (var i = 0; i < jobs.all.length; i++) {
+                                            var obj = jobs.all[i];
+                                            var statusClassName = globalhelpers.GetStatusClass(obj.Status);
 
-                                    //        html +=
-                                    //            "<tr>" +
-                                    //                "<td class=\"text-center\">" +
-                                    //                    (jobs.currentpage * pageSize + i + 1) +
-                                    //                "</td>" +
-                                    //                "<td class=\"text-center\">" + obj.Name + "</td>" +
-                                    //                "<td class=\"text-center\">" + obj.Code + "</td>" +
-                                    //                "<td class=\"text-center\">" + obj.Description + "</td>" +
-                                    //                "<td class=\"text-center\">" +
-                                    //                    //"<div class=\"btn-group\">" +
-                                    //                        "<a onclick=\"jobs.godetail('" + obj.ID + "');\" href=\"javascript:void(0)\" data-toggle=\"tooltip\" title=\"Sửa\" class=\"btn btn-xs btn-default\"><i class=\"fa fa-pencil\"></i></a>" +
-                                    //                        "<a onclick=\"jobs.startdelete('" + obj.ID + "');\" href=\"javascript:void(0)\" data-toggle=\"tooltip\" title=\"Xóa\" class=\"btn btn-xs btn-danger\"><i class=\"fa fa-times\"></i></a>" +
-                                    //                    //"</div>" +
-                                    //                "</td>" +
-                                    //            "</tr>";
-                                    //    }
-                                    //}
+                                            html +=
+                                                "<tr>" +
+                                                    "<td class=\"text-center\">" +
+                                                        (jobs.currentpage * pageSize + i + 1) +
+                                                    "</td>" +
+                                                    "<td class=\"text-center\">" + obj.sType + "</td>" +
+                                                    "<td class=\"text-center\">" + obj.JobID + "</td>" +
+                                                    "<td class=\"text-center\">" + obj.InvoiceNO + "</td>" +
+                                                    "<td class=\"text-center\">" + obj.BillLadingNO + "</td>" +
+                                                    "<td class=\"text-center\">" + obj.TKHQNO + "</td>" +
+                                                    "<td class=\"text-center\">" + obj.Customer.Name + "</td>" +
+                                                    "<td class=\"text-center\">" + globalhelpers.Format_Money(obj.CustomerPrepaids.toFixed(2)) + "</td>" +
+                                                    "<td class=\"text-center\">" + (obj.IsPaidFromCustomer ? "<i class=\"gi gi-ok_2\"></i>" : "") + "</td>" +
+                                                    "<td class=\"text-center\">" + (obj.IsInformTransportComp ? "<i class=\"gi gi-ok_2\"></i>" : "") + "</td>" +
+                                                    "<td class=\"text-center\">" + (obj.IsPayedForTransportComp ? "<i class=\"gi gi-ok_2\"></i>" : "") + "</td>" +
+                                                    "<td class=\"text-center\">" + (obj.IsConsigned ? (obj.sConsignedTime + " " + sConsignedDate) : "---") + "</td>" +
+                                                    "<td class=\"text-center\"><span class=\"" + (statusClassName == "" ? "" : ("text-" + statusClassName)) + "\">" + obj.sStatus + "</span></td>" +
+                                                    "<td class=\"text-center\">" +
+                                                        //"<div class=\"btn-group\">" +
+                                                            "<a onclick=\"jobs.godetail('" + obj.ID + "');\" href=\"javascript:void(0)\" data-toggle=\"tooltip\" title=\"Sửa\" class=\"btn btn-xs btn-default\"><i class=\"fa fa-pencil\"></i></a>" +
+                                                            "<a onclick=\"jobs.startdelete('" + obj.ID + "');\" href=\"javascript:void(0)\" data-toggle=\"tooltip\" title=\"Xóa\" class=\"btn btn-xs btn-danger\"><i class=\"fa fa-times\"></i></a>" +
+                                                        //"</div>" +
+                                                    "</td>" +
+                                                "</tr>";
+                                        }
+                                    }
 
                                     html += "</tbody></table>";
 

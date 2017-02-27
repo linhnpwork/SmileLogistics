@@ -73,6 +73,13 @@
                             <input type="text" id="info-description" class="form-control" placeholder="Ghi chú">
                         </div>
                     </div>
+                    <div class="form-group">
+                        <label class="col-md-3 control-label">Phí tính 1 lần?</label>
+                        <div class="col-md-9">
+                            <label class='switch switch-success'>
+                                <input id="info-processonetime" type='checkbox'><span></span></label>
+                        </div>
+                    </div>
                     <div id="divModalAlert" class="form-group" style="display: none;">
                         <div class="col-md-3">
                         </div>
@@ -163,6 +170,7 @@
 
                 $('#modal-info #info-name').val(tthqfeetypes.currentobj.Name);
                 $('#modal-info #info-description').val(tthqfeetypes.currentobj.Description);
+                $('#modal-info #info-processonetime').prop('checked', tthqfeetypes.currentobj.ProcessOneTime);
 
                 $('#modal-info .modal-header .modal-title').html('Cập nhật Loại phí TTHQ');
                 $('#btn-do-save').html('Lưu');
@@ -213,6 +221,7 @@
                     message += '- Tên không hợp lệ!<br/>';
 
                 data.description = $('#modal-info #info-description').val();
+                data.processonetime = $('#modal-info #info-processonetime').prop('checked');
 
                 data.id = tthqfeetypes.mode == "create" ? 0 : tthqfeetypes.currentobj.ID;
 
@@ -255,6 +264,7 @@
                                                     "<th class=\"text-center\">STT</th>" +
                                                     "<th class=\"text-center\">Tên</th>" +
                                                     "<th class=\"text-center\">Ghi chú</th>" +
+                                                    "<th class=\"text-center\">Tính 1 lần?</th>" +
                                                     "<th class=\"text-center\">#</th>" +
                                                 "</tr>" +
                                             "</thead>" +
@@ -263,7 +273,7 @@
                                     if (result.ErrorCode != 0) {
                                         html +=
                                             "<tr>" +
-                                                "<td class=\"text-center\" colspan=\"4\">" +
+                                                "<td class=\"text-center\" colspan=\"5\">" +
                                                     result.Message +
                                                 "</td>" +
                                             "</tr>";
@@ -284,6 +294,7 @@
                                                     "</td>" +
                                                     "<td class=\"text-center\">" + obj.Name + "</td>" +
                                                     "<td class=\"text-center\">" + obj.Description + "</td>" +
+                                                    "<td class=\"text-center\">" + (obj.ProcessOneTime ? "<i class=\"gi gi-ok_2\"></i>" : "") + "</td>" +
                                                     "<td class=\"text-center\">" +
                                                         //"<div class=\"btn-group\">" +
                                                             "<a onclick=\"tthqfeetypes.startedit('" + obj.ID + "');\" href=\"javascript:void(0)\" data-toggle=\"tooltip\" title=\"Sửa\" class=\"btn btn-xs btn-default\"><i class=\"fa fa-pencil\"></i></a>" +

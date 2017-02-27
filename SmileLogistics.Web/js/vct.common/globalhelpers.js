@@ -8,6 +8,28 @@
                 '</g>' +
             '</svg>',
 
+        StatusColors: [
+            { ID: 0, Class: 'warning' }
+        ],
+        GetStatusClass: function (status) {
+            var statusColor = this.GetObjInList(Number(status), this.StatusColors);
+            if (statusColor == null) return "";
+
+            return statusColor.Class;
+        },
+
+        GetObjInList: function (value, list, field) {
+            if (field == undefined) field = "ID";
+            if (list == undefined || list == null || list.length == 0) return null;
+            if (value == undefined || value == null) return null;
+
+            for (var i = 0; i < list.length; i++) {
+                if (list[i][field] == value) return list[i];
+            }
+
+            return null;
+        },
+
         Format_Money: function (nStr) {
             nStr += '';
             x = nStr.split('.');

@@ -35,6 +35,7 @@ namespace SmileLogistics.DAL.Entities
         public string sConsignedTime { get; set; }
         public string sConsignedDate { get; set; }
         public string sStatus { get; set; }
+        public string sType { get; set; }
         public eCustomer Customer { get; set; }
     }
 }

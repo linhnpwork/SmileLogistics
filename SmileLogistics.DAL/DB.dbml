@@ -61,6 +61,8 @@
       <Column Name="LastestUpdated" Type="System.Boolean" DbType="Bit NOT NULL" CanBeNull="false" />
       <Column Name="UpdatedBy" Type="System.Int32" DbType="Int NOT NULL" CanBeNull="false" />
       <Column Name="QuotationID" Type="System.Int32" DbType="Int NOT NULL" CanBeNull="false" />
+      <Column Name="Total_In" Type="System.Double" DbType="Float NOT NULL" CanBeNull="false" />
+      <Column Name="Total_Out" Type="System.Double" DbType="Float NOT NULL" CanBeNull="false" />
       <Association Name="CustomerQuotation_Custom_CustomerQuotation_CustomsDetail" Member="CustomerQuotation_CustomsDetails" ThisKey="ID" OtherKey="QuotationID" Type="CustomerQuotation_CustomsDetail" />
       <Association Name="CustomerQuotation_Custom_Job" Member="Jobs" ThisKey="ID" OtherKey="Quotation_CustomProcID" Type="Job" />
       <Association Name="Quotation_CustomsProcess_CustomerQuotation_Custom" Member="Quotation_CustomsProcess" ThisKey="QuotationID" OtherKey="ID" Type="Quotation_CustomsProcess" IsForeignKey="true" />
@@ -76,6 +78,9 @@
       <Column Name="IsDeleted" Type="System.Boolean" DbType="Bit NOT NULL" CanBeNull="false" />
       <Column Name="LastestUpdated" Type="System.DateTime" DbType="DateTime NOT NULL" CanBeNull="false" />
       <Column Name="UpdatedBy" Type="System.Int32" DbType="Int NOT NULL" CanBeNull="false" />
+      <Column Name="Quantity" Type="System.Int32" DbType="Int NOT NULL" CanBeNull="false" />
+      <Column Name="Total_In" Type="System.Double" DbType="Float NOT NULL" CanBeNull="false" />
+      <Column Name="Total_Out" Type="System.Double" DbType="Float NOT NULL" CanBeNull="false" />
       <Association Name="CustomerQuotation_Custom_CustomerQuotation_CustomsDetail" Member="CustomerQuotation_Custom" ThisKey="QuotationID" OtherKey="ID" Type="CustomerQuotation_Custom" IsForeignKey="true" />
       <Association Name="CustomsProcess_FeeDetail_CustomerQuotation_CustomsDetail" Member="CustomsProcess_FeeDetail" ThisKey="FeeDetailID" OtherKey="ID" Type="CustomsProcess_FeeDetail" IsForeignKey="true" />
       <Association Name="Sys_User_CustomerQuotation_CustomsDetail" Member="Sys_User" ThisKey="UpdatedBy" OtherKey="ID" Type="Sys_User" IsForeignKey="true" />
@@ -95,6 +100,7 @@
       <Column Name="UpdatedBy" Type="System.Int32" DbType="Int NOT NULL" CanBeNull="false" />
       <Column Name="LastestUpdated" Type="System.DateTime" DbType="DateTime NOT NULL" CanBeNull="false" />
       <Column Name="IsUSD" Type="System.Boolean" DbType="Bit NOT NULL" CanBeNull="false" />
+      <Column Name="Total" Type="System.Double" DbType="Float NOT NULL" CanBeNull="false" />
       <Association Name="CustomerQuotation_Route_Job_QuotationRoute" Member="Job_QuotationRoutes" ThisKey="ID" OtherKey="RouteID" Type="Job_QuotationRoute" />
       <Association Name="Customer_CustomerQuotation_Route" Member="Customer" ThisKey="CustomerID" OtherKey="ID" Type="Customer" IsForeignKey="true" />
       <Association Name="Quotation_Route_CustomerQuotation_Route" Member="Quotation_Route" ThisKey="QuotationID" OtherKey="ID" Type="Quotation_Route" IsForeignKey="true" />
@@ -123,8 +129,6 @@
       <Column Name="ID" Type="System.Int32" DbType="Int NOT NULL IDENTITY" IsPrimaryKey="true" IsDbGenerated="true" CanBeNull="false" />
       <Column Name="FeeTypeID" Type="System.Int32" DbType="Int NOT NULL" CanBeNull="false" />
       <Column Name="Price" Type="System.Double" DbType="Float NOT NULL" CanBeNull="false" />
-      <Column Name="IsUSD" Type="System.Boolean" DbType="Bit NOT NULL" CanBeNull="false" />
-      <Column Name="ExpireFrom" Type="System.DateTime" DbType="DateTime NOT NULL" CanBeNull="false" />
       <Column Name="UpdatedBy" Type="System.Int32" DbType="Int NOT NULL" CanBeNull="false" />
       <Column Name="IsDeleted" Type="System.Boolean" DbType="Bit NOT NULL" CanBeNull="false" />
       <Column Name="LastestUpdated" Type="System.DateTime" DbType="DateTime NOT NULL" CanBeNull="false" />
@@ -143,6 +147,7 @@
       <Column Name="IsDeleted" Type="System.Boolean" DbType="Bit NOT NULL" CanBeNull="false" />
       <Column Name="LastestUpdated" Type="System.DateTime" DbType="DateTime NOT NULL" CanBeNull="false" />
       <Column Name="UpdatedBy" Type="System.Int32" DbType="Int NOT NULL" CanBeNull="false" />
+      <Column Name="ProcessOneTime" Type="System.Boolean" DbType="Bit NOT NULL" CanBeNull="false" />
       <Association Name="CustomsProcess_FeeType_CustomsProcess_FeeDetail" Member="CustomsProcess_FeeDetails" ThisKey="ID" OtherKey="FeeTypeID" Type="CustomsProcess_FeeDetail" />
       <Association Name="Sys_User_CustomsProcess_FeeType" Member="Sys_User" ThisKey="UpdatedBy" OtherKey="ID" Type="Sys_User" IsForeignKey="true" />
     </Type>
@@ -207,6 +212,9 @@
       <Column Name="USDRate" Type="System.Double" DbType="Float NOT NULL" CanBeNull="false" />
       <Column Name="[Order]" Member="Order" Type="System.Int32" DbType="Int NOT NULL" CanBeNull="false" />
       <Column Name="Loads" Type="System.Double" DbType="Float NOT NULL" CanBeNull="false" />
+      <Column Name="PromotionByTransComp" Type="System.Double" DbType="Float NOT NULL" CanBeNull="false" />
+      <Column Name="Total_Out" Type="System.Double" DbType="Float NOT NULL" CanBeNull="false" />
+      <Column Name="Total_In" Type="System.Double" DbType="Float NOT NULL" CanBeNull="false" />
       <Association Name="CustomerQuotation_Route_Job_QuotationRoute" Member="CustomerQuotation_Route" ThisKey="RouteID" OtherKey="ID" Type="CustomerQuotation_Route" IsForeignKey="true" />
       <Association Name="Job_Job_QuotationRoute" Member="Job" ThisKey="JobID" OtherKey="ID" Type="Job" IsForeignKey="true" />
       <Association Name="Sys_User_Job_QuotationRoute" Member="Sys_User" ThisKey="UpdatedBy" OtherKey="ID" Type="Sys_User" IsForeignKey="true" />
@@ -236,6 +244,12 @@
       <Column Name="IsPaidFromCustomer" Type="System.Boolean" DbType="Bit NOT NULL" CanBeNull="false" />
       <Column Name="CustomerPrepaids" Type="System.Double" DbType="Float NOT NULL" CanBeNull="false" />
       <Column Name="AgentPrepaids" Type="System.Double" DbType="Float NOT NULL" CanBeNull="false" />
+      <Column Name="Total_Transport_In" Type="System.Double" DbType="Float NOT NULL" CanBeNull="false" />
+      <Column Name="Total_Customs_In" Type="System.Double" DbType="Float NOT NULL" CanBeNull="false" />
+      <Column Name="Total_In" Type="System.Double" DbType="Float NOT NULL" CanBeNull="false" />
+      <Column Name="Total_Transport_Out" Type="System.Double" DbType="Float NOT NULL" CanBeNull="false" />
+      <Column Name="Total_Customs_Out" Type="System.Double" DbType="Float NOT NULL" CanBeNull="false" />
+      <Column Name="Total_Out" Type="System.Double" DbType="Float NOT NULL" CanBeNull="false" />
       <Association Name="Job_Agent_Prepaid" Member="Agent_Prepaids" ThisKey="ID" OtherKey="JobID" Type="Agent_Prepaid" />
       <Association Name="Job_Job_InOutFee" Member="Job_InOutFees" ThisKey="ID" OtherKey="JobID" Type="Job_InOutFee" />
       <Association Name="Job_Job_Prepaid" Member="Job_Prepaids" ThisKey="ID" OtherKey="JobID" Type="Job_Prepaid" />
