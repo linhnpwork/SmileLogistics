@@ -100,7 +100,6 @@
                     <div class="form-group">
                         <label class="col-md-3 control-label">Hiệu lực báo giá</label>
                         <div class="col-md-9">
-                            <%--<input type="text" id="example-datepicker2" name="example-datepicker2" class="form-control input-datepicker" data-date-format="dd/mm/yy" placeholder="dd/mm/yy">--%>
                             <div class="input-group input-daterange" data-date-format="dd/mm/yyyy">
                                 <input type="text" id="info-expire-start" class="form-control text-center" placeholder="Từ ngày">
                                 <span class="input-group-addon"><i class="fa fa-angle-right"></i></span>

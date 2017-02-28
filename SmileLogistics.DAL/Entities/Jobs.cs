@@ -44,6 +44,7 @@ namespace SmileLogistics.DAL.Entities
         public string sStatus { get; set; }
         public string sType { get; set; }
         public eCustomer Customer { get; set; }
+        public List<eJob_QuotationRoute> Routes { get; set; }
     }
 
     public class eJobFilter
@@ -94,5 +95,13 @@ namespace SmileLogistics.DAL.Entities
         public double Price { get; set; }
         public string sExpireStart { get; set; }
         public string sExpireEnd { get; set; }
+        public string sPlaceStart { get; set; }
+        public string sPlaceEnd { get; set; }
+        public string sVehicleTypeLoad { get; set; }
+        public int TransCompID { get; set; }
+        public int VehicleTypeID { get; set; }
+        public int VehicleLoadID { get; set; }
+        public int QuotationCompID { get; set; }
+        public int QuotationCustomerID { get; set; }
     }
 }

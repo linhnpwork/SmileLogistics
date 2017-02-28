@@ -40,10 +40,6 @@
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
   <ItemGroup>
-    <Reference Include="Decided.Libs, Version=1.0.0.0, Culture=neutral, processorArchitecture=MSIL">
-      <SpecificVersion>False</SpecificVersion>
-      <HintPath>C:\Users\Admin\Desktop\Decided.Libs.dll</HintPath>
-    </Reference>
     <Reference Include="Microsoft.CSharp" />
     <Reference Include="Newtonsoft.Json, Version=9.0.0.0, Culture=neutral, PublicKeyToken=30ad4fe6b2a6aeed, processorArchitecture=MSIL">
       <HintPath>..\packages\Newtonsoft.Json.9.0.1\lib\net45\Newtonsoft.Json.dll</HintPath>
@@ -782,6 +778,7 @@
     <Content Include="modules\systems\RolePermission.ascx" />
     <Content Include="modules\systems\Roles.ascx" />
     <Content Include="pages\503.html" />
+    <Content Include="test.html" />
     <Content Include="uploads\avatars\636094479081782984.jpg" />
     <Content Include="uploads\avatars\636094490267608737.png" />
     <Content Include="uploads\avatars\636095334553935082.jpg" />
@@ -1083,6 +1080,10 @@
     </Compile>
   </ItemGroup>
   <ItemGroup>
+    <ProjectReference Include="..\..\..\..\DesignBanner\Decided.Apps.DesignBanner\Decided.Libs\Decided.Libs.csproj">
+      <Project>{55995cd7-eaa8-48e2-9b43-98f9b0510234}</Project>
+      <Name>Decided.Libs</Name>
+    </ProjectReference>
     <ProjectReference Include="..\SmileLogistics.DAL\SmileLogistics.DAL.csproj">
       <Project>{66874e8f-bc54-43a8-b57c-de43d3d10846}</Project>
       <Name>SmileLogistics.DAL</Name>

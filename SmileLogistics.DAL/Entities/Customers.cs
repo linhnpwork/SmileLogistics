@@ -20,4 +20,25 @@ namespace SmileLogistics.DAL.Entities
         public DateTime LastestUpdate { get; set; }
         public string sLastestUpdate { get; set; }
     }
+
+    public class eCustomerQuotation_Route
+    {
+        public int ID { get; set; }
+        public int CustomerID { get; set; }
+        public int QuotationID { get; set; }
+        public double Price{ get; set; }
+        public DateTime Expire_Start{ get; set; }
+        public DateTime Expire_End { get; set; }
+        public bool IsUSD { get; set; }
+        public double Total { get; set; }
+        public int PlaceStart { get; set; }
+        public int PlaceEnd { get; set; }
+
+        public bool IsDeleted { get; set; }
+        public eSys_User UpdatedBy { get; set; }
+        public DateTime LastestUpdate { get; set; }
+        public string sLastestUpdate { get; set; }
+        public string sExpireStart { get; set; }
+        public string sExpireEnd { get; set; }
+    }
 }

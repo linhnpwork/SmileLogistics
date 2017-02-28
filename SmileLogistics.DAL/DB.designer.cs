@@ -2388,10 +2388,6 @@ namespace SmileLogistics.DAL
 		
 		private double _Price;
 		
-		private bool _IsSamePrice;
-		
-		private double _Price_RoundedTrip;
-		
 		private System.DateTime _Expire_Start;
 		
 		private System.DateTime _Expire_End;
@@ -2405,6 +2401,10 @@ namespace SmileLogistics.DAL
 		private bool _IsUSD;
 		
 		private double _Total;
+		
+		private System.Nullable<int> _PlaceStart;
+		
+		private System.Nullable<int> _PlaceEnd;
 		
 		private EntitySet<Job_QuotationRoute> _Job_QuotationRoutes;
 		
@@ -2426,10 +2426,6 @@ namespace SmileLogistics.DAL
     partial void OnQuotationIDChanged();
     partial void OnPriceChanging(double value);
     partial void OnPriceChanged();
-    partial void OnIsSamePriceChanging(bool value);
-    partial void OnIsSamePriceChanged();
-    partial void OnPrice_RoundedTripChanging(double value);
-    partial void OnPrice_RoundedTripChanged();
     partial void OnExpire_StartChanging(System.DateTime value);
     partial void OnExpire_StartChanged();
     partial void OnExpire_EndChanging(System.DateTime value);
@@ -2444,6 +2440,10 @@ namespace SmileLogistics.DAL
     partial void OnIsUSDChanged();
     partial void OnTotalChanging(double value);
     partial void OnTotalChanged();
+    partial void OnPlaceStartChanging(System.Nullable<int> value);
+    partial void OnPlaceStartChanged();
+    partial void OnPlaceEndChanging(System.Nullable<int> value);
+    partial void OnPlaceEndChanged();
     #endregion
 		
 		public CustomerQuotation_Route()
@@ -2539,46 +2539,6 @@ namespace SmileLogistics.DAL
 					this._Price = value;
 					this.SendPropertyChanged("Price");
 					this.OnPriceChanged();
-				}
-			}
-		}
-		
-		[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_IsSamePrice", DbType="Bit NOT NULL")]
-		public bool IsSamePrice
-		{
-			get
-			{
-				return this._IsSamePrice;
-			}
-			set
-			{
-				if ((this._IsSamePrice != value))
-				{
-					this.OnIsSamePriceChanging(value);
-					this.SendPropertyChanging();
-					this._IsSamePrice = value;
-					this.SendPropertyChanged("IsSamePrice");
-					this.OnIsSamePriceChanged();
-				}
-			}
-		}
-		
-		[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_Price_RoundedTrip", DbType="Float NOT NULL")]
-		public double Price_RoundedTrip
-		{
-			get
-			{
-				return this._Price_RoundedTrip;
-			}
-			set
-			{
-				if ((this._Price_RoundedTrip != value))
-				{
-					this.OnPrice_RoundedTripChanging(value);
-					this.SendPropertyChanging();
-					this._Price_RoundedTrip = value;
-					this.SendPropertyChanged("Price_RoundedTrip");
-					this.OnPrice_RoundedTripChanged();
 				}
 			}
 		}
@@ -2723,6 +2683,46 @@ namespace SmileLogistics.DAL
 					this._Total = value;
 					this.SendPropertyChanged("Total");
 					this.OnTotalChanged();
+				}
+			}
+		}
+		
+		[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_PlaceStart", DbType="Int")]
+		public System.Nullable<int> PlaceStart
+		{
+			get
+			{
+				return this._PlaceStart;
+			}
+			set
+			{
+				if ((this._PlaceStart != value))
+				{
+					this.OnPlaceStartChanging(value);
+					this.SendPropertyChanging();
+					this._PlaceStart = value;
+					this.SendPropertyChanged("PlaceStart");
+					this.OnPlaceStartChanged();
+				}
+			}
+		}
+		
+		[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_PlaceEnd", DbType="Int")]
+		public System.Nullable<int> PlaceEnd
+		{
+			get
+			{
+				return this._PlaceEnd;
+			}
+			set
+			{
+				if ((this._PlaceEnd != value))
+				{
+					this.OnPlaceEndChanging(value);
+					this.SendPropertyChanging();
+					this._PlaceEnd = value;
+					this.SendPropertyChanged("PlaceEnd");
+					this.OnPlaceEndChanged();
 				}
 			}
 		}

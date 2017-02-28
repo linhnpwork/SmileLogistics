@@ -42,6 +42,306 @@ namespace SmileLogistics.Web.ajax.modules.functions
                 case "loadquotations":
                     LoadQuotations();
                     break;
+                case "create_quotation_route":
+                    Create_QuotationRoute();
+                    break;
+                case "delete_quotation_route":
+                    Delete_QuotationRoute();
+                    break;
+            }
+        }
+
+        private void Delete_QuotationRoute()
+        {
+            string sId = Request.Form["id"];
+            if (string.IsNullOrEmpty(sId))
+            {
+                DoResponse(JsonConvert.SerializeObject(new GlobalValues.ResponseData()
+                {
+                    Data = null,
+                    ErrorCode = -1,
+                    Message = "Dữ liệu không hợp lệ!",
+                }));
+
+                return;
+            }
+
+            using (DALTools dalTools = new DALTools())
+            {
+                int id = int.Parse(sId);
+                Job_QuotationRoute obj = dalTools.Job_QuotationRoute_Get(id);
+                if (obj == null)
+                {
+                    DoResponse(JsonConvert.SerializeObject(new GlobalValues.ResponseData()
+                    {
+                        Data = null,
+                        ErrorCode = -1,
+                        Message = "Không tìm thấy Báo giá Vận chuyển!",
+                    }));
+
+                    return;
+                }
+
+                obj.UpdatedBy = CurrentSys_User.ID;
+                if (!dalTools.Job_QuotationRoute_Delete(obj))
+                    DoResponse(JsonConvert.SerializeObject(new GlobalValues.ResponseData()
+                    {
+                        Data = null,
+                        ErrorCode = 1,
+                        Message = "Xóa thất bại, vui lòng kiểm tra lại dữ liệu!",
+                    }));
+                else
+                    DoResponse(JsonConvert.SerializeObject(new GlobalValues.ResponseData()
+                    {
+                        Data = null,
+                        ErrorCode = 0,
+                        Message = "Xóa thành công! Đang chuyển ...",
+                    }));
+            }
+        }
+
+        private void Create_QuotationRoute()
+        {
+            string postdata = Request.Form["data"];
+            if (postdata == string.Empty)
+            {
+                DoResponse(JsonConvert.SerializeObject(new GlobalValues.ResponseData()
+                {
+                    Data = null,
+                    ErrorCode = -1,
+                    Message = "Dữ liệu không hợp lệ!",
+                }));
+
+                return;
+            }
+
+            dynamic data;
+            try { data = JsonConvert.DeserializeObject(postdata); }
+            catch { data = null; }
+
+            if (data == null)
+            {
+                DoResponse(JsonConvert.SerializeObject(new GlobalValues.ResponseData()
+                {
+                    Data = null,
+                    ErrorCode = -2,
+                    Message = "Dữ liệu không hợp lệ!",
+                }));
+
+                return;
+            }
+
+            using (DALTools dalTools = new DALTools())
+            {
+                eJob job = dalTools.Job_GetE(int.Parse(data.jobid.ToString()));
+                if (job == null)
+                {
+                    DoResponse(JsonConvert.SerializeObject(new GlobalValues.ResponseData()
+                    {
+                        Data = null,
+                        ErrorCode = 1,
+                        Message = "Dữ liệu không hợp lệ!",
+                    }));
+
+                    return;
+                }
+
+                Quotation_Route quotation_route = dalTools.Quotation_Route_Get(int.Parse(data.quotationcomp.ToString()));
+                if (quotation_route == null)
+                {
+                    DoResponse(JsonConvert.SerializeObject(new GlobalValues.ResponseData()
+                    {
+                        Data = null,
+                        ErrorCode = 1,
+                        Message = "Dữ liệu không hợp lệ!",
+                    }));
+
+                    return;
+                }
+
+                int placestartID = int.Parse(data.placestart.ToString());
+                int placeendID = int.Parse(data.placeend.ToString());
+                if ((placestartID != quotation_route.TransportCompany_Route.StartPoint && placestartID != quotation_route.TransportCompany_Route.EndPoint) ||
+                    (placeendID != quotation_route.TransportCompany_Route.StartPoint && placeendID != quotation_route.TransportCompany_Route.EndPoint))
+                {
+                    DoResponse(JsonConvert.SerializeObject(new GlobalValues.ResponseData()
+                    {
+                        Data = null,
+                        ErrorCode = 2,
+                        Message = "Dữ liệu không hợp lệ!",
+                    }));
+
+                    return;
+                }
+
+                int quotation_customerID = int.Parse(data.quotationcustomer.ToString());
+                CustomerQuotation_Route quotation_customer = dalTools.CustomerQuotation_Route_Get(quotation_customerID);
+
+                if (quotation_customerID != -1 && quotation_customer == null)
+                {
+                    DoResponse(JsonConvert.SerializeObject(new GlobalValues.ResponseData()
+                    {
+                        Data = null,
+                        ErrorCode = 3,
+                        Message = "Dữ liệu không hợp lệ!",
+                    }));
+
+                    return;
+                }
+
+                DateTime expireStart = CommonUtils.ConvertDateFromVNString(data.expirestart.ToString());
+                DateTime expireEnd = CommonUtils.ConvertDateFromVNString(data.expireend.ToString());
+                if (expireStart == CommonUtils.SQLMinValue || expireEnd == CommonUtils.SQLMinValue)
+                {
+                    DoResponse(JsonConvert.SerializeObject(new GlobalValues.ResponseData()
+                    {
+                        Data = null,
+                        ErrorCode = 4,
+                        Message = "Dữ liệu không hợp lệ!",
+                    }));
+
+                    return;
+                }
+
+                if (expireEnd < DateTime.Now.AddDays(1))
+                {
+                    DoResponse(JsonConvert.SerializeObject(new GlobalValues.ResponseData()
+                    {
+                        Data = null,
+                        ErrorCode = 5,
+                        Message = "Hiệu lực báo giá không hợp lệ!",
+                    }));
+
+                    return;
+                }
+
+                bool isusd = bool.Parse(data.isusd.ToString());
+                double usdrate = double.Parse(data.usdrate.ToString());
+                if (isusd && usdrate <= 0)
+                {
+                    DoResponse(JsonConvert.SerializeObject(new GlobalValues.ResponseData()
+                    {
+                        Data = null,
+                        ErrorCode = 6,
+                        Message = "Tỉ giá USD không hợp lệ!",
+                    }));
+
+                    return;
+                }
+
+                int quantity = int.Parse(data.quantity.ToString());
+                if (quantity < 1)
+                {
+                    DoResponse(JsonConvert.SerializeObject(new GlobalValues.ResponseData()
+                    {
+                        Data = null,
+                        ErrorCode = 7,
+                        Message = "Số lượng xe không hợp lệ!",
+                    }));
+
+                    return;
+                }
+
+                double loads = double.Parse(data.loads.ToString());
+                if (loads > quotation_route.TransportCompany_VehicleType_Load.VehicleLoad.FullLoad * quantity)
+                {
+                    DoResponse(JsonConvert.SerializeObject(new GlobalValues.ResponseData()
+                    {
+                        Data = null,
+                        ErrorCode = 8,
+                        Message = "Trọng lượng hàng vượt quá tải trọng tối đa của xe!",
+                    }));
+
+                    return;
+                }
+
+                double price = double.Parse(data.price.ToString());
+
+                #region Kiểm tra Báo giá theo Khách hàng hiện tại
+
+                bool isCreateNewQuotationCustomer = false;
+                if (quotation_customerID == -1) isCreateNewQuotationCustomer = true;
+                else
+                {
+                    if (price == quotation_customer.Price &&
+                       isusd == quotation_customer.IsUSD)
+                        isCreateNewQuotationCustomer = false;
+                    else
+                        isCreateNewQuotationCustomer = true;
+                }
+
+                //Tạo mới Báo giá theo KH
+                if (isCreateNewQuotationCustomer)
+                {
+                    quotation_customer = new CustomerQuotation_Route()
+                    {
+                        CustomerID = job.CustomerID,
+                        Expire_End = expireEnd,
+                        Expire_Start = expireStart,
+                        IsDeleted = false,
+                        IsUSD = isusd,
+                        LastestUpdated = DateTime.Now,
+                        PlaceEnd = placeendID,
+                        PlaceStart = placestartID,
+                        Price = price,
+                        QuotationID = quotation_route.ID,
+                        Total = 0,
+                        UpdatedBy = CurrentSys_User.ID,
+                    };
+
+                    int result = dalTools.CustomerQuotation_Route_Create(ref quotation_customer);
+                    if (result != 0)
+                    {
+                        DoResponse(JsonConvert.SerializeObject(new GlobalValues.ResponseData()
+                        {
+                            Data = null,
+                            ErrorCode = 9,
+                            Message = "Có lỗi trong quá trình xử lý! Vui lòng liên hệ Kỹ thuật viên!",
+                        }));
+
+                        return;
+                    }
+                }
+
+                #endregion
+
+                Job_QuotationRoute obj = new Job_QuotationRoute()
+                {
+                    Description = data.description.ToString(),
+                    DriverPhoneNumber = data.driverphone.ToString(),
+                    ExtraFee = double.Parse(data.extrafee.ToString()),
+                    IsDeleted = false,
+                    JobID = int.Parse(data.jobid.ToString()),
+                    LastestUpdate = DateTime.Now,
+                    Loads = loads,
+                    PlaceEnd = placeendID,
+                    PlaceStart = placestartID,
+                    PromotionByTransComp = double.Parse(data.comppromotion.ToString()),
+                    Quantity = quantity,
+                    RouteID = quotation_customer.ID,
+                    Status = 0,
+                    Total_In = 0,
+                    Total_Out = 0,
+                    UpdatedBy = CurrentSys_User.ID,
+                    USDRate = usdrate,
+                    VehicleNO = data.vehicleno.ToString(),
+                };
+
+                int res = dalTools.Job_QuotationRoute_Create(ref obj);
+                if (res != 0)
+                    DoResponse(JsonConvert.SerializeObject(new GlobalValues.ResponseData()
+                    {
+                        Data = null,
+                        ErrorCode = res,
+                        Message = "Thêm mới thất bại, vui lòng kiểm tra lại dữ liệu!",
+                    }));
+                else
+                    DoResponse(JsonConvert.SerializeObject(new GlobalValues.ResponseData()
+                    {
+                        Data = obj.ID.ToString(),
+                        ErrorCode = 0,
+                        Message = "Thêm mới thành công! Đang chuyển...",
+                    }));
             }
         }
 
@@ -54,7 +354,7 @@ namespace SmileLogistics.Web.ajax.modules.functions
             using (DALTools dalTools = new DALTools())
             {
                 List<eQuotationRoute> allRoutes_Comp = dalTools.Quotation_Route_GetEs(filter);
-                List<eJob_QuotationRoute> allRoutes_Customer = dalTools.Job_QuotationRoute_GetEs(filter);
+                List<eCustomerQuotation_Route> allRoutes_Customer = dalTools.CustomerQuotation_Route_GetEs(filter);
 
                 DoResponse(JsonConvert.SerializeObject(new GlobalValues.ResponseData()
                 {

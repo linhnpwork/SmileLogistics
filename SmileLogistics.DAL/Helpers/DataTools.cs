@@ -2530,6 +2530,7 @@ namespace SmileLogistics.DAL.Helpers
             try
             {
                 var all = DB.Quotation_Routes.Where(o => !o.IsDeleted &&
+                    //o.Expire_End >= DateTime.Now.AddDays(-1) &&
                     o.VehicleLoadID == filter.LoadID &&
                     ((o.TransportCompany_Route.StartPoint == filter.PlaceStart && o.TransportCompany_Route.EndPoint == filter.PlaceEnd) ||
                     (o.TransportCompany_Route.StartPoint == filter.PlaceEnd && o.TransportCompany_Route.EndPoint == filter.PlaceStart)));
@@ -3760,6 +3761,11 @@ namespace SmileLogistics.DAL.Helpers
             {
                 if (obj == null) return null;
 
+                var routes = obj.Job_QuotationRoutes.Where(o => !o.IsDeleted);
+                List<eJob_QuotationRoute> quotationRoutes = new List<eJob_QuotationRoute>();
+                foreach (Job_QuotationRoute route in routes)
+                    quotationRoutes.Add(Job_QuotationRoute_Entity(route));
+
                 return new eJob()
                 {
                     AttachedFiles = obj.AttachedFiles,
@@ -3798,6 +3804,181 @@ namespace SmileLogistics.DAL.Helpers
                     sStatus = GlobalValues.JobStatus.FirstOrDefault(o => o.ID == obj.Status).Name,
                     sType = GlobalValues.JobTypes.FirstOrDefault(o => o.ID == obj.Type).Name,
                     Customer = obj.CustomerID == null ? null : Customer_GetE((int)obj.CustomerID),
+                    Routes = quotationRoutes.Count == 0 ? null : quotationRoutes,
+                };
+            }
+            catch
+            {
+                return null;
+            }
+        }
+
+        public void Job_CalculateProfit(int jobid)
+        {
+            try
+            {
+                Job job = Job_Get(jobid);
+                if (job == null) return;
+
+                Job_CalculateProfit_QuotationRoutes(job);
+            }
+            catch
+            {
+                return;
+            }
+        }
+
+        private void Job_CalculateProfit_QuotationRoutes(Job job)
+        {
+            try
+            {
+                if (job == null) return;
+
+                double total_in = 0;
+                double total_out = 0;
+
+                List<Job_QuotationRoute> routes = DB.Job_QuotationRoutes.Where(o => !o.IsDeleted && o.JobID == job.ID).ToList();
+                if (routes != null)
+                {
+                    foreach (Job_QuotationRoute route in routes)
+                    {
+                        double compPrice = 0;
+                        if (route.CustomerQuotation_Route.Quotation_Route.IsSamePrice)
+                            compPrice = route.CustomerQuotation_Route.Quotation_Route.Price;
+                        else
+                        {
+                            compPrice =
+                                route.PlaceStart == route.CustomerQuotation_Route.Quotation_Route.TransportCompany_Route.StartPoint ?
+                                route.CustomerQuotation_Route.Quotation_Route.Price :
+                                route.CustomerQuotation_Route.Quotation_Route.Price_RoundedTrip;
+                        }
+                        route.Total_In = route.ExtraFee + route.CustomerQuotation_Route.Price * route.Quantity;
+                        route.Total_Out = compPrice * route.Quantity - route.PromotionByTransComp;
+
+                        DB.SubmitChanges();
+
+                        total_in += route.Total_In;
+                        total_out += route.Total_Out;
+                    }
+
+                    job.Total_Transport_In = total_in;
+                    job.Total_Transport_Out = total_out;
+                    DB.SubmitChanges();
+                }
+            }
+            catch
+            {
+                return;
+            }
+        }
+
+        #endregion
+
+        #region CustomerQuotation_Route
+
+        public int CustomerQuotation_Route_Create(ref CustomerQuotation_Route obj)
+        {
+            try
+            {
+                DB.CustomerQuotation_Routes.InsertOnSubmit(obj);
+                DB.SubmitChanges();
+
+                return 0;
+            }
+            catch
+            {
+                return int.MinValue;
+            }
+        }
+
+        public CustomerQuotation_Route CustomerQuotation_Route_Get(int id)
+        {
+            try
+            {
+                return DB.CustomerQuotation_Routes.FirstOrDefault(o => !o.IsDeleted && o.ID == id);
+            }
+            catch
+            {
+                return null;
+            }
+        }
+
+        public eCustomerQuotation_Route CustomerQuotation_Route_GetE(int id)
+        {
+            try
+            {
+                return CustomerQuotation_Route_Entity(CustomerQuotation_Route_Get(id));
+            }
+            catch
+            {
+                return null;
+            }
+        }
+
+        public List<CustomerQuotation_Route> CustomerQuotation_Route_Gets(eJobFilter_Quotation filter)
+        {
+            try
+            {
+                var all = DB.CustomerQuotation_Routes.Where(o => !o.IsDeleted &&
+                    //o.Expire_End >= DateTime.Now.AddDays(-1) &&
+                    o.Quotation_Route.TransportCompany_VehicleType_Load.ID == filter.LoadID &&
+                    ((o.PlaceStart == filter.PlaceStart && o.PlaceEnd == filter.PlaceEnd) ||
+                    (o.PlaceStart == filter.PlaceEnd && o.PlaceEnd == filter.PlaceStart)));
+
+                if (all.Count() == 0) return null;
+
+                return all.OrderByDescending(o => o.Expire_Start).ThenByDescending(o => o.Expire_End).ToList();
+            }
+            catch
+            {
+                return null;
+            }
+        }
+
+        public List<eCustomerQuotation_Route> CustomerQuotation_Route_GetEs(eJobFilter_Quotation filter)
+        {
+            try
+            {
+                var all = CustomerQuotation_Route_Gets(filter);
+                if (all == null) return null;
+
+                List<eCustomerQuotation_Route> result = new List<eCustomerQuotation_Route>();
+                foreach (CustomerQuotation_Route obj in all)
+                    result.Add(CustomerQuotation_Route_Entity(obj));
+
+                return result;
+            }
+            catch
+            {
+                return null;
+            }
+        }
+
+        public eCustomerQuotation_Route CustomerQuotation_Route_Entity(CustomerQuotation_Route obj, bool includeEntity = true)
+        {
+            try
+            {
+                if (obj == null) return null;
+
+                return new eCustomerQuotation_Route()
+                {
+                    ID = obj.ID,
+                    PlaceEnd = obj.PlaceEnd == null ? int.MinValue : (int)obj.PlaceEnd,
+                    PlaceStart = obj.PlaceStart == null ? int.MinValue : (int)obj.PlaceStart,
+                    CustomerID = obj.CustomerID,
+                    Expire_End = obj.Expire_End,
+                    Expire_Start = obj.Expire_Start,
+                    IsUSD = obj.IsUSD,
+                    QuotationID = obj.QuotationID,
+                    Total = obj.Total,
+                    Price = obj.Price,
+
+                    IsDeleted = obj.IsDeleted,
+                    LastestUpdate = obj.LastestUpdated,
+                    sLastestUpdate = obj.LastestUpdated.ToString(GlobalValues.DateFormat_VN),
+                    UpdatedBy = Sys_User_GetE(obj.UpdatedBy),
+                    sExpireEnd = obj.Expire_End.ToString(GlobalValues.DateFormat_VN),
+                    sExpireStart = obj.Expire_Start.ToString(GlobalValues.DateFormat_VN),
                 };
             }
             catch
@@ -3810,18 +3991,50 @@ namespace SmileLogistics.DAL.Helpers
 
         #region Job_QuotationRoute
 
-        public List<Job_QuotationRoute> Job_QuotationRoute_Gets(eJobFilter_Quotation filter)
+        public bool Job_QuotationRoute_Delete(Job_QuotationRoute job)
         {
             try
             {
-                var all = DB.Job_QuotationRoutes.Where(o => !o.IsDeleted &&
-                    o.CustomerQuotation_Route.Quotation_Route.VehicleLoadID == filter.LoadID &&
-                    ((o.PlaceStart == filter.PlaceStart && o.PlaceEnd == filter.PlaceEnd) ||
-                    (o.PlaceStart == filter.PlaceEnd && o.PlaceEnd == filter.PlaceStart)));
+                Job_QuotationRoute obj = DB.Job_QuotationRoutes.FirstOrDefault(o => o.ID == job.ID);
+                if (obj == null) return false;
 
-                if (all.Count() == 0) return null;
+                obj.IsDeleted = true;
+                obj.LastestUpdate = DateTime.Now;
+                obj.UpdatedBy = job.UpdatedBy;
+                DB.SubmitChanges();
 
-                return all.OrderByDescending(o => o.CustomerQuotation_Route.Expire_Start).ThenByDescending(o => o.CustomerQuotation_Route.Expire_End).ToList();
+                Job_CalculateProfit(job.JobID);
+
+                return true;
+            }
+            catch
+            {
+                return false;
+            }
+        }
+
+        public int Job_QuotationRoute_Create(ref Job_QuotationRoute obj)
+        {
+            try
+            {
+                DB.Job_QuotationRoutes.InsertOnSubmit(obj);
+                DB.SubmitChanges();
+
+                Job_CalculateProfit(obj.JobID);
+
+                return 0;
+            }
+            catch
+            {
+                return int.MinValue;
+            }
+        }
+
+        public Job_QuotationRoute Job_QuotationRoute_Get(int id)
+        {
+            try
+            {
+                return DB.Job_QuotationRoutes.FirstOrDefault(o => !o.IsDeleted && o.ID == id);
             }
             catch
             {
@@ -3829,11 +4042,40 @@ namespace SmileLogistics.DAL.Helpers
             }
         }
 
-        public List<eJob_QuotationRoute> Job_QuotationRoute_GetEs(eJobFilter_Quotation filter)
+        public eJob_QuotationRoute Job_QuotationRoute_GetE(int id)
         {
             try
             {
-                var all = Job_QuotationRoute_Gets(filter);
+                return Job_QuotationRoute_Entity(Job_QuotationRoute_Get(id));
+            }
+            catch
+            {
+                return null;
+            }
+        }
+
+        public List<Job_QuotationRoute> Job_QuotationRoute_Gets(int jobID)
+        {
+            try
+            {
+                var all = DB.Job_QuotationRoutes.Where(o => !o.IsDeleted &&
+                    o.JobID == jobID);
+
+                if (all.Count() == 0) return null;
+
+                return all.OrderBy(o => o.ID).ToList();
+            }
+            catch
+            {
+                return null;
+            }
+        }
+
+        public List<eJob_QuotationRoute> Job_QuotationRoute_GetEs(int jobID)
+        {
+            try
+            {
+                var all = Job_QuotationRoute_Gets(jobID);
                 if (all == null) return null;
 
                 List<eJob_QuotationRoute> result = new List<eJob_QuotationRoute>();
@@ -3854,16 +4096,18 @@ namespace SmileLogistics.DAL.Helpers
             {
                 if (obj == null) return null;
 
+                TransportCompany_VehicleType_Load loadtype = obj.CustomerQuotation_Route.Quotation_Route.TransportCompany_VehicleType_Load;
+
                 return new eJob_QuotationRoute()
                 {
+                    ID = obj.ID,
+                    PlaceEnd = obj.PlaceEnd == null ? int.MinValue : (int)obj.PlaceEnd,
+                    PlaceStart = obj.PlaceStart == null ? int.MinValue : (int)obj.PlaceStart,
                     Description = obj.Description,
                     DriverPhoneNumber = obj.DriverPhoneNumber,
-                    ID = obj.ID,
                     ExtraFee = obj.ExtraFee,
                     JobID = obj.JobID,
                     Loads = obj.Loads,
-                    PlaceEnd = obj.PlaceEnd == null ? int.MinValue : (int)obj.PlaceEnd,
-                    PlaceStart = obj.PlaceStart == null ? int.MinValue : (int)obj.PlaceStart,
                     PromotionByTransComp = obj.PromotionByTransComp,
                     Quantity = obj.Quantity,
                     RouteID = obj.RouteID,
@@ -3877,10 +4121,18 @@ namespace SmileLogistics.DAL.Helpers
                     LastestUpdate = obj.LastestUpdate,
                     sLastestUpdate = obj.LastestUpdate.ToString(GlobalValues.DateFormat_VN),
                     UpdatedBy = Sys_User_GetE(obj.UpdatedBy),
-                    sStatus = GlobalValues.Job_QuotationRoute_Status.FirstOrDefault(o => o.ID == obj.Status).Name,
-                    Price = obj.CustomerQuotation_Route.Price,
                     sExpireEnd = obj.CustomerQuotation_Route.Expire_End.ToString(GlobalValues.DateFormat_VN),
                     sExpireStart = obj.CustomerQuotation_Route.Expire_Start.ToString(GlobalValues.DateFormat_VN),
+                    Price = obj.CustomerQuotation_Route.Price,
+                    sStatus = GlobalValues.Job_QuotationRoute_Status.FirstOrDefault(o => o.ID == obj.Status).Name,
+                    sPlaceEnd = TransportPlace_Get((int)obj.PlaceEnd).Name,
+                    sPlaceStart = TransportPlace_Get((int)obj.PlaceStart).Name,
+                    sVehicleTypeLoad = loadtype.TransportCompany_VehicleType.VehicleType.Name + "-" + loadtype.VehicleLoad.Name,
+                    TransCompID = obj.CustomerQuotation_Route.Quotation_Route.TransportCompany_Route.TransCompID,
+                    VehicleTypeID = obj.CustomerQuotation_Route.Quotation_Route.TransportCompany_VehicleType_Load.TransComp_VehicleTypeID,
+                    VehicleLoadID = obj.CustomerQuotation_Route.Quotation_Route.TransportCompany_VehicleType_Load.ID,
+                    QuotationCompID = obj.CustomerQuotation_Route.QuotationID,
+                    QuotationCustomerID = obj.RouteID,
                 };
             }
             catch

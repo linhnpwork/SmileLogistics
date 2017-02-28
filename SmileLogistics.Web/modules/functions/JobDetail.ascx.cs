@@ -46,8 +46,8 @@ namespace SmileLogistics.Web.modules.functions
             List<eTransportPlace> all = dalTools.TransportPlace_GetEs();
             if (all != null)
             {
-                string htmlStart = "<select id=\"info-quotation-route-place-start\" onchange=\"jobs.load_quotations();\" class=\"select-select2 select2-hidden-accessible\" style=\"width: 100%;\">";
-                string htmlEnd = "<select id=\"info-quotation-route-place-end\" onchange=\"jobs.load_quotations();\" class=\"select-select2 select2-hidden-accessible\" style=\"width: 100%;\">";
+                string htmlStart = "<select id=\"info-quotation-route-place-start\" onchange=\"jobs.load_quotations();\" class=\"form-control\" style=\"width: 100%;\">";
+                string htmlEnd = "<select id=\"info-quotation-route-place-end\" onchange=\"jobs.load_quotations();\" class=\"form-control\" style=\"width: 100%;\">";
 
                 foreach (eTransportPlace obj in all)
                 {
@@ -118,7 +118,7 @@ namespace SmileLogistics.Web.modules.functions
             List<eCustomer> all = dalTools.Customer_GetEs();
             if (all != null)
             {
-                string html = "<select id=\"info-customers\" class=\"select-select2 select2-hidden-accessible\" style=\"width: auto;\">";
+                string html = "<select id=\"info-customers\" class=\"form-control\" style=\"width: auto;\">";
 
                 foreach (eCustomer obj in all)
                 {
