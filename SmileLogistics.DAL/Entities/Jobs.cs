@@ -59,4 +59,40 @@ namespace SmileLogistics.DAL.Entities
         public int IsPaidTransComp { get; set; }
         public int Status { get; set; }
     }
+
+    public class eJobFilter_Quotation
+    {
+        public int PlaceStart { get; set; }
+        public int PlaceEnd { get; set; }
+        public int LoadID { get; set; }
+    }
+
+    public class eJob_QuotationRoute
+    {
+        public int ID { get; set; }
+        public int JobID { get; set; }
+        public int RouteID { get; set; }
+        public string Description { get; set; }
+        public double ExtraFee { get; set; }
+        public string DriverPhoneNumber { get; set; }
+        public string VehicleNO { get; set; }
+        public int Status { get; set; }
+        public double USDRate { get; set; }
+        public double Loads { get; set; }
+        public double PromotionByTransComp { get; set; }
+        public double Total_In { get; set; }
+        public double Total_Out { get; set; }
+        public int PlaceStart { get; set; }
+        public int PlaceEnd { get; set; }
+        public int Quantity { get; set; }
+
+        public bool IsDeleted { get; set; }
+        public eSys_User UpdatedBy { get; set; }
+        public DateTime LastestUpdate { get; set; }
+        public string sLastestUpdate { get; set; }
+        public string sStatus { get; set; }
+        public double Price { get; set; }
+        public string sExpireStart { get; set; }
+        public string sExpireEnd { get; set; }
+    }
 }

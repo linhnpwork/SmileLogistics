@@ -39,6 +39,33 @@ namespace SmileLogistics.Web.ajax.modules.functions
                 case "update_status":
                     UpdateStatus();
                     break;
+                case "loadquotations":
+                    LoadQuotations();
+                    break;
+            }
+        }
+
+        private void LoadQuotations()
+        {
+            string sFilter = Request.Form["filter"].ToString();
+
+            eJobFilter_Quotation filter = JsonConvert.DeserializeObject<eJobFilter_Quotation>(sFilter);
+
+            using (DALTools dalTools = new DALTools())
+            {
+                List<eQuotationRoute> allRoutes_Comp = dalTools.Quotation_Route_GetEs(filter);
+                List<eJob_QuotationRoute> allRoutes_Customer = dalTools.Job_QuotationRoute_GetEs(filter);
+
+                DoResponse(JsonConvert.SerializeObject(new GlobalValues.ResponseData()
+                {
+                    Data = new
+                    {
+                        List_ByComp = allRoutes_Comp == null ? string.Empty : JsonConvert.SerializeObject(allRoutes_Comp),
+                        List_ByCustomer = allRoutes_Customer == null ? string.Empty : JsonConvert.SerializeObject(allRoutes_Customer),
+                    },
+                    ErrorCode = 0,
+                    Message = string.Empty,
+                }));
             }
         }
 
@@ -338,7 +365,7 @@ namespace SmileLogistics.Web.ajax.modules.functions
             using (DALTools dalTools = new DALTools())
             {
                 int totalPages = 0;
-                List<eJob> all = dalTools.Job_GetEs(filter,pageIndex, GlobalValues.DefaultPagingSize, out totalPages);
+                List<eJob> all = dalTools.Job_GetEs(filter, pageIndex, GlobalValues.DefaultPagingSize, out totalPages);
 
                 if (all == null || all.Count == 0)
                     DoResponse(JsonConvert.SerializeObject(new GlobalValues.ResponseData()

@@ -4899,6 +4899,8 @@ namespace SmileLogistics.DAL
 		
 		private System.Nullable<int> _PlaceEnd;
 		
+		private int _Quantity;
+		
 		private EntityRef<CustomerQuotation_Route> _CustomerQuotation_Route;
 		
 		private EntityRef<Job> _Job;
@@ -4949,6 +4951,8 @@ namespace SmileLogistics.DAL
     partial void OnPlaceStartChanged();
     partial void OnPlaceEndChanging(System.Nullable<int> value);
     partial void OnPlaceEndChanged();
+    partial void OnQuantityChanging(int value);
+    partial void OnQuantityChanged();
     #endregion
 		
 		public Job_QuotationRoute()
@@ -5337,6 +5341,26 @@ namespace SmileLogistics.DAL
 					this._PlaceEnd = value;
 					this.SendPropertyChanged("PlaceEnd");
 					this.OnPlaceEndChanged();
+				}
+			}
+		}
+		
+		[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_Quantity", DbType="Int NOT NULL")]
+		public int Quantity
+		{
+			get
+			{
+				return this._Quantity;
+			}
+			set
+			{
+				if ((this._Quantity != value))
+				{
+					this.OnQuantityChanging(value);
+					this.SendPropertyChanging();
+					this._Quantity = value;
+					this.SendPropertyChanged("Quantity");
+					this.OnQuantityChanged();
 				}
 			}
 		}
@@ -9024,8 +9048,6 @@ namespace SmileLogistics.DAL
 		
 		private int _UpdatedBy;
 		
-		private double _PercentSecondPackage;
-		
 		private EntitySet<TransportCompany_Route> _TransportCompany_Routes;
 		
 		private EntitySet<TransportCompany_VehicleType> _TransportCompany_VehicleTypes;
@@ -9054,8 +9076,6 @@ namespace SmileLogistics.DAL
     partial void OnLastestUpdatedChanged();
     partial void OnUpdatedByChanging(int value);
     partial void OnUpdatedByChanged();
-    partial void OnPercentSecondPackageChanging(double value);
-    partial void OnPercentSecondPackageChanged();
     #endregion
 		
 		public TransportCompany()
@@ -9246,26 +9266,6 @@ namespace SmileLogistics.DAL
 					this._UpdatedBy = value;
 					this.SendPropertyChanged("UpdatedBy");
 					this.OnUpdatedByChanged();
-				}
-			}
-		}
-		
-		[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_PercentSecondPackage", DbType="Float NOT NULL")]
-		public double PercentSecondPackage
-		{
-			get
-			{
-				return this._PercentSecondPackage;
-			}
-			set
-			{
-				if ((this._PercentSecondPackage != value))
-				{
-					this.OnPercentSecondPackageChanging(value);
-					this.SendPropertyChanging();
-					this._PercentSecondPackage = value;
-					this.SendPropertyChanged("PercentSecondPackage");
-					this.OnPercentSecondPackageChanged();
 				}
 			}
 		}

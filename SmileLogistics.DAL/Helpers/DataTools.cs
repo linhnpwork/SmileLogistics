@@ -1926,7 +1926,6 @@ namespace SmileLogistics.DAL.Helpers
                 updateObj.LastestUpdated = DateTime.Now;
                 updateObj.Name = obj.Name;
                 updateObj.PhoneNumber = obj.PhoneNumber;
-                updateObj.PercentSecondPackage = obj.PercentSecondPackage;
                 updateObj.UpdatedBy = obj.UpdatedBy;
                 updateObj.Status = obj.Status;
 
@@ -2214,7 +2213,6 @@ namespace SmileLogistics.DAL.Helpers
                     LastestUpdate = obj.LastestUpdated,
                     Name = obj.Name,
                     PhoneNumber = obj.PhoneNumber,
-                    PercentSecondPackage = obj.PercentSecondPackage,
                     Status = obj.Status,
                     StatusName = GlobalValues.TransportCompanyStatuses.FirstOrDefault(o => o.ID == obj.Status).Name,
                     sLastestUpdate = obj.LastestUpdated.ToString(GlobalValues.DateFormat_VN),
@@ -2526,6 +2524,44 @@ namespace SmileLogistics.DAL.Helpers
         #endregion
 
         #region QuotationRoutes
+
+        public List<Quotation_Route> Quotation_Route_Gets(eJobFilter_Quotation filter)
+        {
+            try
+            {
+                var all = DB.Quotation_Routes.Where(o => !o.IsDeleted &&
+                    o.VehicleLoadID == filter.LoadID &&
+                    ((o.TransportCompany_Route.StartPoint == filter.PlaceStart && o.TransportCompany_Route.EndPoint == filter.PlaceEnd) ||
+                    (o.TransportCompany_Route.StartPoint == filter.PlaceEnd && o.TransportCompany_Route.EndPoint == filter.PlaceStart)));
+
+                if (all.Count() == 0) return null;
+
+                return all.OrderByDescending(o => o.Expire_Start).ThenByDescending(o => o.Expire_End).ToList();
+            }
+            catch
+            {
+                return null;
+            }
+        }
+
+        public List<eQuotationRoute> Quotation_Route_GetEs(eJobFilter_Quotation filter)
+        {
+            try
+            {
+                var all = Quotation_Route_Gets(filter);
+                if (all == null) return null;
+
+                List<eQuotationRoute> result = new List<eQuotationRoute>();
+                foreach (Quotation_Route obj in all)
+                    result.Add(Quotation_Route_Entity(obj));
+
+                return result;
+            }
+            catch
+            {
+                return null;
+            }
+        }
 
         public bool Quotation_Route_Delete(Quotation_Route route)
         {
@@ -3762,6 +3798,89 @@ namespace SmileLogistics.DAL.Helpers
                     sStatus = GlobalValues.JobStatus.FirstOrDefault(o => o.ID == obj.Status).Name,
                     sType = GlobalValues.JobTypes.FirstOrDefault(o => o.ID == obj.Type).Name,
                     Customer = obj.CustomerID == null ? null : Customer_GetE((int)obj.CustomerID),
+                };
+            }
+            catch
+            {
+                return null;
+            }
+        }
+
+        #endregion
+
+        #region Job_QuotationRoute
+
+        public List<Job_QuotationRoute> Job_QuotationRoute_Gets(eJobFilter_Quotation filter)
+        {
+            try
+            {
+                var all = DB.Job_QuotationRoutes.Where(o => !o.IsDeleted &&
+                    o.CustomerQuotation_Route.Quotation_Route.VehicleLoadID == filter.LoadID &&
+                    ((o.PlaceStart == filter.PlaceStart && o.PlaceEnd == filter.PlaceEnd) ||
+                    (o.PlaceStart == filter.PlaceEnd && o.PlaceEnd == filter.PlaceStart)));
+
+                if (all.Count() == 0) return null;
+
+                return all.OrderByDescending(o => o.CustomerQuotation_Route.Expire_Start).ThenByDescending(o => o.CustomerQuotation_Route.Expire_End).ToList();
+            }
+            catch
+            {
+                return null;
+            }
+        }
+
+        public List<eJob_QuotationRoute> Job_QuotationRoute_GetEs(eJobFilter_Quotation filter)
+        {
+            try
+            {
+                var all = Job_QuotationRoute_Gets(filter);
+                if (all == null) return null;
+
+                List<eJob_QuotationRoute> result = new List<eJob_QuotationRoute>();
+                foreach (Job_QuotationRoute obj in all)
+                    result.Add(Job_QuotationRoute_Entity(obj));
+
+                return result;
+            }
+            catch
+            {
+                return null;
+            }
+        }
+
+        public eJob_QuotationRoute Job_QuotationRoute_Entity(Job_QuotationRoute obj, bool includeEntity = true)
+        {
+            try
+            {
+                if (obj == null) return null;
+
+                return new eJob_QuotationRoute()
+                {
+                    Description = obj.Description,
+                    DriverPhoneNumber = obj.DriverPhoneNumber,
+                    ID = obj.ID,
+                    ExtraFee = obj.ExtraFee,
+                    JobID = obj.JobID,
+                    Loads = obj.Loads,
+                    PlaceEnd = obj.PlaceEnd == null ? int.MinValue : (int)obj.PlaceEnd,
+                    PlaceStart = obj.PlaceStart == null ? int.MinValue : (int)obj.PlaceStart,
+                    PromotionByTransComp = obj.PromotionByTransComp,
+                    Quantity = obj.Quantity,
+                    RouteID = obj.RouteID,
+                    Status = obj.Status,
+                    Total_In = obj.Total_In,
+                    Total_Out = obj.Total_Out,
+                    USDRate = obj.USDRate,
+                    VehicleNO = obj.VehicleNO,
+
+                    IsDeleted = obj.IsDeleted,
+                    LastestUpdate = obj.LastestUpdate,
+                    sLastestUpdate = obj.LastestUpdate.ToString(GlobalValues.DateFormat_VN),
+                    UpdatedBy = Sys_User_GetE(obj.UpdatedBy),
+                    sStatus = GlobalValues.Job_QuotationRoute_Status.FirstOrDefault(o => o.ID == obj.Status).Name,
+                    Price = obj.CustomerQuotation_Route.Price,
+                    sExpireEnd = obj.CustomerQuotation_Route.Expire_End.ToString(GlobalValues.DateFormat_VN),
+                    sExpireStart = obj.CustomerQuotation_Route.Expire_Start.ToString(GlobalValues.DateFormat_VN),
                 };
             }
             catch

@@ -206,9 +206,47 @@
                         </div>
                     </div>
                     <div class="form-group">
-                        <label class="col-md-3 control-label">Ghi chú</label>
-                        <div class="col-md-9">
-                            <input type="text" id="info-description" class="form-control" placeholder="Ghi chú">
+                        <label class="col-md-3 control-label">Báo giá từ Hãng</label>
+                        <div id="divQuotationRoute_By_TransportCompanies" class="col-md-3">
+                        </div>
+                        <label class="col-md-3 control-label">Báo giá theo Khách hàng</label>
+                        <div id="divQuotationRoute_By_Customers" class="col-md-3">
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <div class="col-xs-12">
+                            <div id="clickable-wizard-quotation-infos" class="form-horizontal form-bordered ui-formwizard">
+                                <div id="tab-quotation" class="step ui-formwizard-content">
+                                    <div class="form-group">
+                                        <div class="col-xs-12">
+                                            <ul class="nav nav-pills nav-justified clickable-steps">
+                                                <li class="active"><a href="javascript:void(0)" data-gotostep="tab-quotation"><strong>1. Báo giá chi tiết</strong></a></li>
+                                                <li><a href="javascript:void(0)" data-gotostep="tab-info"><strong>2. Thông tin bổ sung</strong></a></li>
+                                            </ul>
+                                        </div>
+                                    </div>
+                                    <div class="form-group">
+                                        <div id="divTabQuotation" class="col-xs-12">
+                                        </div>
+                                    </div>
+                                </div>
+                                <div id="tab-info" class="step ui-formwizard-content">
+                                    <div class="form-group">
+                                        <div class="col-xs-12">
+                                            <ul class="nav nav-pills nav-justified clickable-steps">
+                                                <li><a href="javascript:void(0)" data-gotostep="tab-quotation"><strong>1. Báo giá chi tiết</strong></a></li>
+                                                <li class="active"><a href="javascript:void(0)" data-gotostep="tab-info"><strong>2. Thông tin bổ sung</strong></a></li>
+                                            </ul>
+                                        </div>
+                                    </div>
+                                    <div class="form-group">
+                                        <div class="col-md-12">
+                                            <div id="divVehicleTypes" class="table-responsive">
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
                         </div>
                     </div>
                     <div id="divModalAlert" class="form-group" style="display: none;">
@@ -221,7 +259,7 @@
             </div>
             <div class="modal-footer">
                 <a id="btn-modal-add-close" class="btn btn-sm btn-default" data-dismiss="modal">Hủy</a>
-                <a id="btn-do-save" onclick="jobs.doAdd();" class="btn btn-sm btn-primary">Lưu</a>
+                <a id="btn-do-save-quotationroute" onclick="jobs.doAdd();" class="btn btn-sm btn-primary">Lưu</a>
             </div>
         </div>
     </div>
@@ -230,10 +268,13 @@
     var jobs =
         {
             ajaxPath: '/ajax/modules/functions/jobs.aspx',
-            mode: 'create',
+            mode_quotationroute: 'create',
             currentobj: null,
+            currentobj_quotation_route: null,
             currentjobID: '',
             allComps: null,
+            allQuotation_Comp: null,
+            allQuotation_Customer: null,
 
             alert: function (content) {
                 $('#divModalAlert').show();
@@ -247,6 +288,11 @@
             },
 
             init: function () {
+                var s = $("#clickable-wizard-quotation-infos");
+                s.formwizard({ disableUIStyles: !0, inDuration: 0, outDuration: 0 });
+                $(".clickable-steps a").on("click", function ()
+                { var r = $(this).data("gotostep"); s.formwizard("show", r) });
+
                 var sObj = '<%= _JobDetail %>';
                 if (sObj == '')
                     this.currentobj = null;
@@ -275,6 +321,118 @@
 
             //-----------------------------------------------------------------------------------------------
 
+            generate_quotation_value: function () {
+
+            },
+
+            getfilter: function () {
+                var filter = new Object();
+                filter.PlaceStart = Number($('#info-quotation-route-place-start').val());
+                filter.PlaceEnd = Number($('#info-quotation-route-place-end').val());
+                filter.LoadID = Number($('#info-quotation-route-vehicleloads').val());
+
+                return filter;
+            },
+
+            getlist: function (value, list, field) {
+                if (value == undefined || list == undefined || list == null || list.length == 0 || field == undefined) return null;
+                var result = new Array();
+                for (var i = 0; i < list.length; i++) {
+                    if (list[i][field] == value) result.push(list[i]);
+                }
+
+                return result.length == 0 ? null : result;
+            },
+
+            load_quotation_customer: function () {
+                //Báo giá Khách hàng
+                var quotationCompID = Number($('#info-quotation-route-quotation-by-comp').val());
+                if (isNaN(quotationCompID)) {
+                    $('#divQuotationRoute_By_Customers').html('');
+                    return;
+                }
+                var quotation = jobs.getobj(quotationCompID, jobs.allQuotation_Comp);
+
+                var html_Customer = "";
+
+                if (quotation == null) {
+                    html_Customer += "<label class='control-label label-quicklink'><a href='/bao-gia-van-chuyen'>Chưa có dữ liệu Báo giá vận chuyển! Nhấp chọn chuyển sang trang Quản lý!</a></label>";
+                }
+                else {
+                    html_Customer =
+                        "<select id=\"info-quotation-route-quotation-by-customer\" onchange=\"jobs.generate_quotation_value();\" class=\"form-control\" style=\"width: 100%;\">" +
+                            "<option value=\"-1\">--- Tạo mới ---</option>";
+
+                    var list = jobs.getlist(quotationCompID, jobs.allQuotation_Customer, "QuotationID");
+
+                    if (list != null)
+
+                        for (var i = 0; i < list.length; i++) {
+                            var quotationCustomer = list[i];
+
+                            html_Customer += "<option value=\"" + quotationCustomer.ID + "\">" + "Giá: " + globalhelpers.Format_Money(quotationCustomer.Price.toFixed(2)) + " - Hiệu lực từ " + quotationCustomer.sExpireStart + " đến " + quotationCustomer.sExpireEnd + "</option>";
+                        }
+                }
+
+                html_Customer += "</select>";
+
+                $('#divQuotationRoute_By_Customers').html(html_Customer);
+
+                jobs.generate_quotation_value();
+
+                //---------------
+
+                $('[data-toggle="tooltip"]').tooltip();
+            },
+
+            load_quotations: function () {
+                var filter = this.getfilter();
+
+                NProgress.start();
+                globalhelpers.ShowOverlay(true, 'Đang lấy dữ liệu Báo giá ...');
+                var filterString = JSON.stringify(filter);
+                $.post(jobs.ajaxPath + '?ts=' + new Date().getTime().toString(),
+                    { 'mod': "loadquotations", 'page': jobs.currentpage, 'filter': filterString },
+                                function (data) {
+                                    NProgress.done();
+                                    globalhelpers.ShowOverlay(false);
+
+                                    var result = JSON.parse(data);
+
+                                    //Báo giá Hãng
+
+                                    var html_Comp = "";
+
+                                    if (result.ErrorCode != 0) {
+                                        html_Comp += "<label class='control-label label-quicklink'><a href='/bao-gia-van-chuyen'>Chưa có dữ liệu Báo giá vận chuyển! Nhấp chọn chuyển sang trang Quản lý!</a></label>";
+                                    }
+                                    else {
+                                        jobs.allQuotation_Comp = result.Data.List_ByComp == "" ? null : JSON.parse(result.Data.List_ByComp);
+                                        if (jobs.allQuotation_Comp == null)
+                                            html_Comp += "<label class='control-label label-quicklink'><a href='/bao-gia-van-chuyen'>Chưa có dữ liệu Báo giá vận chuyển! Nhấp chọn chuyển sang trang Quản lý!</a></label>";
+                                        else {
+                                            html_Comp = "<select id=\"info-quotation-route-quotation-by-comp\" onchange=\"jobs.load_quotation_customer();\" class=\"form-control\" style=\"width: 100%;\">";
+
+                                            for (var i = 0; i < jobs.allQuotation_Comp.length; i++) {
+                                                var quotationComp = jobs.allQuotation_Comp[i];
+
+                                                html_Comp += "<option value=\"" + quotationComp.ID + "\">" + ("Giá: " + (quotationComp.IsSamePrice ? globalhelpers.Format_Money(quotationComp.Price.toFixed(2)) : (filter.PlaceStart == quotationComp.Route.StartPoint ? globalhelpers.Format_Money(quotationComp.Price.toFixed(2)) : globalhelpers.Format_Money(quotationComp.Price_RoundedTrip.toFixed(2)))) + " - Hiệu lực từ " + quotationComp.sExpireStart + " đến " + quotationComp.sExpireEnd) + "</option>";
+                                            }
+
+                                            html_Comp += "</select>";
+                                        }
+                                    }
+
+                                    $('#divQuotationRoute_By_TransportCompanies').html(html_Comp);
+
+                                    jobs.load_quotation_customer();
+
+                                    //---------------
+
+                                    $('[data-toggle="tooltip"]').tooltip();
+                                });
+            },
+
             generate_vehicleloads: function () {
                 var compId = Number($('#info-quotation-route-transcomps').val());
                 var comp = this.getobj(compId, this.allComps);
@@ -288,7 +446,7 @@
                     $('#divQuotationRoute_Vehicle_Loads').html('<label class="control-label label-quicklink"><a href="/hang-van-chuyen">Chưa có dữ liệu Tải trọng xe của hãng! Nhấp chọn chuyển sang trang Quản lý!</a></label>');
                 }
                 else {
-                    var html = "<select id=\"info-quotation-route-vehicleloads\" class=\"form-control\" style=\"width: auto;\">";
+                    var html = "<select id=\"info-quotation-route-vehicleloads\" onchange=\"jobs.load_quotations();\" class=\"form-control\" style=\"width: auto;\">";
 
                     for (var i = 0; i < type.Loads.length; i++) {
                         var load = type.Loads[i];
@@ -298,6 +456,8 @@
                     html += "</select>";
 
                     $('#divQuotationRoute_Vehicle_Loads').html(html);
+
+                    this.load_quotations();
                 }
             },
 
@@ -349,6 +509,9 @@
             },
 
             startAdd_quotation_route: function () {
+                this.mode_quotationroute = 'create';
+                $('#modal-info-quotation-route .modal-header .modal-title').html('Thêm mới Báo giá Vận chuyển');
+                $('#btn-do-save-quotationroute').html('Thêm');
                 $('#modal-info-quotation-route').modal('show');
             },
 

@@ -218,6 +218,7 @@
       <Column Name="Total_In" Type="System.Double" DbType="Float NOT NULL" CanBeNull="false" />
       <Column Name="PlaceStart" Type="System.Int32" DbType="Int" CanBeNull="true" />
       <Column Name="PlaceEnd" Type="System.Int32" DbType="Int" CanBeNull="true" />
+      <Column Name="Quantity" Type="System.Int32" DbType="Int NOT NULL" CanBeNull="false" />
       <Association Name="CustomerQuotation_Route_Job_QuotationRoute" Member="CustomerQuotation_Route" ThisKey="RouteID" OtherKey="ID" Type="CustomerQuotation_Route" IsForeignKey="true" />
       <Association Name="Job_Job_QuotationRoute" Member="Job" ThisKey="JobID" OtherKey="ID" Type="Job" IsForeignKey="true" />
       <Association Name="Sys_User_Job_QuotationRoute" Member="Sys_User" ThisKey="UpdatedBy" OtherKey="ID" Type="Sys_User" IsForeignKey="true" />
@@ -385,7 +386,6 @@
       <Column Name="IsDeleted" Type="System.Boolean" DbType="Bit NOT NULL" CanBeNull="false" />
       <Column Name="LastestUpdated" Type="System.DateTime" DbType="DateTime NOT NULL" CanBeNull="false" />
       <Column Name="UpdatedBy" Type="System.Int32" DbType="Int NOT NULL" CanBeNull="false" />
-      <Column Name="PercentSecondPackage" Type="System.Double" DbType="Float NOT NULL" CanBeNull="false" />
       <Association Name="TransportCompany_TransportCompany_Route" Member="TransportCompany_Routes" ThisKey="ID" OtherKey="TransCompID" Type="TransportCompany_Route" />
       <Association Name="TransportCompany_TransportCompany_VehicleType" Member="TransportCompany_VehicleTypes" ThisKey="ID" OtherKey="TransCompID" Type="TransportCompany_VehicleType" />
       <Association Name="Sys_User_TransportCompany" Member="Sys_User" ThisKey="UpdatedBy" OtherKey="ID" Type="Sys_User" IsForeignKey="true" />
