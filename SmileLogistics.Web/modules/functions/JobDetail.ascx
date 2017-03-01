@@ -141,6 +141,10 @@
                         <div id="divQuotationCustoms_By_Customers" class="col-md-3">
                         </div>
                     </div>
+                    <div class="form-group">
+                        <div id="divQuotationCustoms_FeeType_Details" class="col-md-12">
+                        </div>
+                    </div>
                 </div>
                 <div class="form-horizontal form-bordered">
                     <div class="form-group form-actions text-right">
@@ -432,6 +436,67 @@
 
             //-----------------------------------------------------------------------------------------------
 
+            generate_quotationcustoms_values: function () {
+                if (this.currentobj == null) return;
+
+                var quotationcustoms_basicID = Number($('#info-quotation-customs-quotation-by-basic').val());
+                var quotationcustoms_customerID = Number($('#info-quotation-customs-quotation-by-customers').val());
+                if (isNaN(quotationcustoms_basicID) || isNaN(quotationcustoms_customerID)) return;
+
+                var quotationcustoms_Basic = jobs.getobj(quotationcustoms_basicID, jobs.allQuotationCustoms_Basic);
+                var quotationcustoms_Customer = jobs.getobj(quotationcustoms_customerID, jobs.allQuotationCustoms_Customers);
+
+                if (quotationcustoms_Basic == null) return;
+
+                var objQuotation = quotationcustoms_Customer == null ? quotationcustoms_Basic : quotationcustoms_Customer;
+                if (objQuotation.FeeDetails == null || objQuotation.FeeDetails.length == 0) return;
+
+                var html =
+                    "<table id=\"tblList_Quotation_Customs_Fees\" class=\"table table-vcenter table-striped table-condensed table-hover table-bordered\">" +
+                        "<thead>" +
+                            "<tr>" +
+                                "<th class=\"text-center\">Thứ tự</th>" +
+                                "<th class=\"text-center\">Tên loại phí</th>" +
+                                "<th class=\"text-center\">Giá gốc</th>" +
+                                "<th class=\"text-center\">Giá báo cho KH</th>" +
+                                "<th class=\"text-center\">Số lượng Cont</th>" +
+                            "</tr>" +
+                        "</thead>" +
+                        "<tbody>";
+
+                for (var i = 0; i < objQuotation.FeeDetails.length; i++) {
+                    var detail = objQuotation.FeeDetails[i];
+                    //if (detail.IsDeleted) continue;
+
+                    var detailBasic = jobs.getobj(detail.FeeTypeID, quotationcustoms_Basic.FeeDetails, "FeeTypeID");
+
+                    html +=
+                        "<tr>" +
+                            "<td class=\"text-center\">" +
+                                detail.Order +
+                            "</td>" +
+                            "<td class=\"text-center\">" +
+                                detail.sFeeTypeName +
+                            "</td>" +
+                            "<td class=\"text-center\">" +
+                                globalhelpers.Format_Money(detailBasic.Price.toFixed(2)) +
+                            "</td>" +
+                            "<td class=\"text-center\">" +
+                                "<input type=\"text\" id=\"info-quotationcustoms-feetype-" + detail.FeeTypeID + "\" class=\"form-control\" placeholder=\"Phí " + detail.sFeeTypeName + "\" style=\"width: auto;\" value=\"0\">" +
+                            "</td>" +
+                            "<td class=\"text-center\">" +
+                                "<input type=\"text\" id=\"info-quotationcustoms-quantity-" + detail.FeeTypeID + "\" class=\"form-control\" placeholder=\"Số lượng Cont\" style=\"width: auto;\" value=\"0\">" +
+                            "</td>" +
+                        "</tr>";
+                }
+
+                html += "</tbody></table>";
+
+                $('#divQuotationCustoms_FeeType_Details').html(html);
+
+                $('[data-toggle="tooltip"]').tooltip();
+            },
+
             generate_quotationcustoms_controls_customer: function () {
                 if (this.currentobj == null) return;
 
@@ -441,7 +506,7 @@
                 var html = "";
 
                 html =
-                    "<select id=\"info-quotation-customs-quotation-by-customers\" onchange=\"jobs.generate_quotationcustoms_controls_customer();\" class=\"form-control\" style=\"width: 100%;\">" +
+                    "<select id=\"info-quotation-customs-quotation-by-customers\" onchange=\"jobs.generate_quotationcustoms_values();\" class=\"form-control\" style=\"width: 100%;\">" +
                         "<option value=\"-1\">--- Tạo mới ---</option>";
 
                 var list = jobs.getlist(quotationBasicID, jobs.allQuotationCustoms_Customers, "QuotationID");
@@ -460,7 +525,7 @@
                 //if (jobs.mode_quotationroute == 'edit')
                 //    $('#info-quotation-route-quotation-by-comp').val(jobs.currentobj_quotation_route.QuotationCompID);
 
-                //jobs.generate_quotationcustoms_controls_customer();
+                jobs.generate_quotationcustoms_values();
 
                 //---------------
 

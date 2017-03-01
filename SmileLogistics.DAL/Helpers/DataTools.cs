@@ -3004,7 +3004,8 @@ namespace SmileLogistics.DAL.Helpers
                     sLastestUpdate = obj.LastestUpdated.ToString(GlobalValues.DateFormat_VN),
                     UpdatedBy = Sys_User_GetE(obj.UpdatedBy),
                     FeeType = CustomsProcess_FeeType_GetE(obj.FeeTypeID),
-                    Quotation = !includedRelation ? null : Quotation_CustomsProcess_GetE(obj.QuotationID)
+                    Quotation = !includedRelation ? null : Quotation_CustomsProcess_GetE(obj.QuotationID),
+                    sFeeTypeName = obj.CustomsProcess_FeeType.Name,
                 };
             }
             catch
@@ -4059,6 +4060,14 @@ namespace SmileLogistics.DAL.Helpers
             {
                 if (obj == null) return null;
 
+                List<eCustomerQuotation_CustomsDetail> feeDetails = new List<eCustomerQuotation_CustomsDetail>();
+                var _feeDetails = obj.CustomerQuotation_CustomsDetails.Where(o => !o.IsDeleted);
+                if (_feeDetails.Count() > 0)
+                {
+                    foreach (CustomerQuotation_CustomsDetail feeDetail in _feeDetails)
+                        feeDetails.Add(CustomerQuotation_CustomsDetail_Entity(feeDetail));
+                }
+
                 return new eCustomerQuotation_Custom()
                 {
                     CustomerID = obj.CustomerID,
@@ -4078,6 +4087,38 @@ namespace SmileLogistics.DAL.Helpers
                     sLastestUpdate = obj.LastestUpdated.ToString(GlobalValues.DateFormat_VN),
                     sExpireEnd = obj.Expire_End.ToString(GlobalValues.DateFormat_VN),
                     sExpireStart = obj.Expire_Start.ToString(GlobalValues.DateFormat_VN),
+                    FeeDetails = feeDetails.Count == 0 ? null : feeDetails,
+                };
+            }
+            catch
+            {
+                return null;
+            }
+        }
+
+        private eCustomerQuotation_CustomsDetail CustomerQuotation_CustomsDetail_Entity(CustomerQuotation_CustomsDetail obj)
+        {
+            try
+            {
+                if (obj == null) return null;
+
+                return new eCustomerQuotation_CustomsDetail()
+                {
+                    FeeDetailID = obj.FeeDetailID,
+                    ID = obj.ID,
+                    IsDeleted = obj.IsDeleted,
+                    LastestUpdate = obj.LastestUpdated,
+                    Order = obj.Order,
+                    Price = obj.Price,
+                    Quantity = obj.Quantity,
+                    QuotationID = obj.QuotationID,
+                    Total_In = obj.Total_In,
+                    Total_Out = obj.Total_Out,
+
+                    UpdatedBy = Sys_User_GetE(obj.UpdatedBy),
+                    sLastestUpdate = obj.LastestUpdated.ToString(GlobalValues.DateFormat_VN),
+                    sFeeTypeName = obj.CustomsProcess_FeeDetail.CustomsProcess_FeeType.Name,
+                    FeeTypeID = obj.CustomsProcess_FeeDetail.CustomsProcess_FeeType.ID,
                 };
             }
             catch

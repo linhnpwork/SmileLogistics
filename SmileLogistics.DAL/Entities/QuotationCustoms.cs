@@ -32,6 +32,7 @@ namespace SmileLogistics.DAL.Entities
         public string sLastestUpdate { get; set; }
         public eQuotation_CustomsProcess Quotation { get; set; }
         public eCustomsProcess_FeeType FeeType { get; set; }
+        public string sFeeTypeName { get; set; }
     }
 
     public class eCustomerQuotation_Custom_Filter
@@ -58,5 +59,26 @@ namespace SmileLogistics.DAL.Entities
         public string sLastestUpdate { get; set; }
         public string sExpireStart { get; set; }
         public string sExpireEnd { get; set; }
+        public List<eCustomerQuotation_CustomsDetail> FeeDetails { get; set; }
+
+    }
+
+    public class eCustomerQuotation_CustomsDetail
+    {
+        public int ID { get; set; }
+        public int QuotationID { get; set; }
+        public int FeeDetailID { get; set; }
+        public double Price { get; set; }
+        public int Quantity { get; set; }
+        public int Order { get; set; }
+        public double Total_In { get; set; }
+        public double Total_Out { get; set; }
+
+        public bool IsDeleted { get; set; }
+        public eSys_User UpdatedBy { get; set; }
+        public DateTime LastestUpdate { get; set; }
+        public string sLastestUpdate { get; set; }
+        public string sFeeTypeName { get; set; }
+        public int FeeTypeID { get; set; }
     }
 }
