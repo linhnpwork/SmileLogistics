@@ -58,12 +58,12 @@
       <Column Name="IsUSD" Type="System.Boolean" DbType="Bit NOT NULL" CanBeNull="false" />
       <Column Name="USDRate" Type="System.Double" DbType="Float NOT NULL" CanBeNull="false" />
       <Column Name="IsDeleted" Type="System.Boolean" DbType="Bit NOT NULL" CanBeNull="false" />
-      <Column Name="LastestUpdated" Type="System.Boolean" DbType="Bit NOT NULL" CanBeNull="false" />
       <Column Name="UpdatedBy" Type="System.Int32" DbType="Int NOT NULL" CanBeNull="false" />
       <Column Name="QuotationID" Type="System.Int32" DbType="Int NOT NULL" CanBeNull="false" />
       <Column Name="Total_In" Type="System.Double" DbType="Float NOT NULL" CanBeNull="false" />
       <Column Name="Total_Out" Type="System.Double" DbType="Float NOT NULL" CanBeNull="false" />
       <Column Name="DecreasePercentFromSecondCont" Type="System.Double" DbType="Float NOT NULL" CanBeNull="false" />
+      <Column Name="LastestUpdated" Type="System.DateTime" DbType="DateTime NOT NULL" CanBeNull="false" />
       <Association Name="CustomerQuotation_Custom_CustomerQuotation_CustomsDetail" Member="CustomerQuotation_CustomsDetails" ThisKey="ID" OtherKey="QuotationID" Type="CustomerQuotation_CustomsDetail" />
       <Association Name="CustomerQuotation_Custom_Job" Member="Jobs" ThisKey="ID" OtherKey="Quotation_CustomProcID" Type="Job" />
       <Association Name="Quotation_CustomsProcess_CustomerQuotation_Custom" Member="Quotation_CustomsProcess" ThisKey="QuotationID" OtherKey="ID" Type="Quotation_CustomsProcess" IsForeignKey="true" />
@@ -100,7 +100,6 @@
       <Column Name="UpdatedBy" Type="System.Int32" DbType="Int NOT NULL" CanBeNull="false" />
       <Column Name="LastestUpdated" Type="System.DateTime" DbType="DateTime NOT NULL" CanBeNull="false" />
       <Column Name="IsUSD" Type="System.Boolean" DbType="Bit NOT NULL" CanBeNull="false" />
-      <Column Name="Total" Type="System.Double" DbType="Float NOT NULL" CanBeNull="false" />
       <Column Name="PlaceStart" Type="System.Int32" DbType="Int" CanBeNull="true" />
       <Column Name="PlaceEnd" Type="System.Int32" DbType="Int" CanBeNull="true" />
       <Association Name="CustomerQuotation_Route_Job_QuotationRoute" Member="Job_QuotationRoutes" ThisKey="ID" OtherKey="RouteID" Type="Job_QuotationRoute" />

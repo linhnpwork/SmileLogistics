@@ -22,5 +22,5 @@ namespace SmileLogistics.DAL.Entities
     {
         public int ID { get; set; }
         public double Value { get; set; }
-    }
+    }    
 }

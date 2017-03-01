@@ -128,6 +128,19 @@
             <div class="block full block-related-edit">
                 <div class="block-title">
                     <h2>Báo giá <strong>TTHQ</strong></h2>
+                    <div id="divControl-quotation-customer-settings" class="block-options pull-right">
+                        <a onclick="jobs.startAdd_quotation_customs();" class="btn btn-sm btn-success" data-toggle="tooltip" title="Thiết lập báo giá"><i class="hi hi-cog"></i></a>
+                    </div>
+                </div>
+                <div id="divQuotation-customs-details" class="form-horizontal">
+                    <div class="form-group">
+                        <label class="col-md-3 control-label">Báo giá gốc</label>
+                        <div id="divQuotationCustoms_By_Basic" class="col-md-3">
+                        </div>
+                        <label class="col-md-3 control-label">Báo giá theo Khách hàng</label>
+                        <div id="divQuotationCustoms_By_Customers" class="col-md-3">
+                        </div>
+                    </div>
                 </div>
                 <div class="form-horizontal form-bordered">
                     <div class="form-group form-actions text-right">
@@ -358,6 +371,9 @@
             allQuotation_Comp: null,
             allQuotation_Customer: null,
 
+            allQuotationCustoms_Basic: null,
+            allQuotationCustoms_Customers: null,
+
             alert_quotation_route: function (content) {
                 $('#divModalAlert').show();
                 $('#divModalAlert-content').html(
@@ -398,10 +414,90 @@
                 else
                     this.allComps = JSON.parse(sComps);
 
+                var sQuotationCustoms_Basic = '<%= _AllQuotationCustoms %>';
+                if (sQuotationCustoms_Basic == '')
+                    this.allQuotationCustoms_Basic = null;
+                else
+                    this.allQuotationCustoms_Basic = JSON.parse(sQuotationCustoms_Basic);
+
+                var sQuotationCustoms_Customers = '<%= _AllCustomerQuotation_Customs %>';
+                if (sQuotationCustoms_Customers == '')
+                    this.allQuotationCustoms_Customers = null;
+                else
+                    this.allQuotationCustoms_Customers = JSON.parse(sQuotationCustoms_Customers);
+
                 this.generate_companies();
+                this.generate_quotationcustoms_controls_basic();
             },
 
             //-----------------------------------------------------------------------------------------------
+
+            generate_quotationcustoms_controls_customer: function () {
+                if (this.currentobj == null) return;
+
+                var quotationBasicID = Number($('#info-quotation-customs-quotation-by-basic').val());
+                if (isNaN(quotationBasicID)) return;
+
+                var html = "";
+
+                html =
+                    "<select id=\"info-quotation-customs-quotation-by-customers\" onchange=\"jobs.generate_quotationcustoms_controls_customer();\" class=\"form-control\" style=\"width: 100%;\">" +
+                        "<option value=\"-1\">--- Tạo mới ---</option>";
+
+                var list = jobs.getlist(quotationBasicID, jobs.allQuotationCustoms_Customers, "QuotationID");
+                if (list != null && list.length > 0) {
+                    for (var i = 0; i < list.length; i++) {
+                        var quotation = list[i];
+
+                        html += "<option value=\"" + quotation.ID + "\">Hiệu lực từ " + quotation.sExpireStart + " đến " + quotation.sExpireEnd + "</option>";
+                    }
+                }
+
+                html += "</select>";
+
+                $('#divQuotationCustoms_By_Customers').html(html);
+
+                //if (jobs.mode_quotationroute == 'edit')
+                //    $('#info-quotation-route-quotation-by-comp').val(jobs.currentobj_quotation_route.QuotationCompID);
+
+                //jobs.generate_quotationcustoms_controls_customer();
+
+                //---------------
+
+                $('[data-toggle="tooltip"]').tooltip();
+            },
+
+            generate_quotationcustoms_controls_basic: function () {
+                if (this.currentobj == null) return;
+
+                var html = "";
+
+                if (jobs.allQuotationCustoms_Basic == null || jobs.allQuotationCustoms_Basic.length == 0) {
+                    html += "<label class='control-label label-quicklink'><a href='/bao-gia-tthq'>Chưa có dữ liệu Báo giá TTHQ! Nhấp chọn chuyển sang trang Quản lý!</a></label>";
+                }
+                else {
+                    html = "<select id=\"info-quotation-customs-quotation-by-basic\" onchange=\"jobs.generate_quotationcustoms_controls_customer();\" class=\"form-control\" style=\"width: 100%;\">";
+
+                    for (var i = 0; i < jobs.allQuotationCustoms_Basic.length; i++) {
+                        var quotation = jobs.allQuotationCustoms_Basic[i];
+
+                        html += "<option value=\"" + quotation.ID + "\">Hiệu lực từ: " + quotation.sExpireFrom + "</option>";
+                    }
+
+                    html += "</select>";
+                }
+
+                $('#divQuotationCustoms_By_Basic').html(html);
+
+                //if (jobs.mode_quotationroute == 'edit')
+                //    $('#info-quotation-route-quotation-by-comp').val(jobs.currentobj_quotation_route.QuotationCompID);
+
+                jobs.generate_quotationcustoms_controls_customer();
+
+                //---------------
+
+                $('[data-toggle="tooltip"]').tooltip();
+            },
 
             generate_quotation_routes: function () {
                 var html =
@@ -643,8 +739,7 @@
                     $('#info-quotationroute-value-expire-start').val(quotationCustomer != null ? quotationCustomer.sExpireStart : quotationComp.sExpireStart);
                     $('#info-quotationroute-value-expire-end').val(quotationCustomer != null ? quotationCustomer.sExpireEnd : quotationComp.sExpireEnd);
                 }
-                else
-                {
+                else {
                     $('#info-quotationroute-value-price').val(jobs.currentobj_quotation_route.Price);
                 }
             },

@@ -14,25 +14,45 @@ namespace SmileLogistics.Web.modules.functions
 {
     public partial class JobDetail : BaseControl
     {
-        private int jobID = int.MinValue;
+        private string jobID = string.Empty;
+        private eJob job = null;
         public string _JobDetail = string.Empty;
         public string _JobID = string.Empty;
         public string _AllCompanies = string.Empty;
+        public string _AllQuotationCustoms = string.Empty;
+        public string _AllCustomerQuotation_Customs = string.Empty;
+
         protected void Page_Load(object sender, EventArgs e)
         {
             if (!IsPostBack)
             {
                 using (DALTools dalTools = new DALTools())
                 {
+                    jobID = Request.QueryString["job"];
+                    job = string.IsNullOrEmpty(jobID) ? null : dalTools.Job_GetE(int.Parse(jobID));
+
                     LoadTypes();
                     LoadCustomers(dalTools);
 
                     LoadRoutePlaces(dalTools);
                     LoadTransportCompanies(dalTools);
 
+                    LoadCustomsFeeTypes(dalTools);
+
                     LoadJobDetail(dalTools);
                 }
             }
+        }
+
+        private void LoadCustomsFeeTypes(DALTools dalTools)
+        {
+            if (job == null) return;
+
+            List<eQuotation_CustomsProcess> allQuotation_Customs = dalTools.Quotation_CustomsProcess_GetEs();
+            _AllQuotationCustoms = allQuotation_Customs == null ? string.Empty : JsonConvert.SerializeObject(allQuotation_Customs);
+
+            List<eCustomerQuotation_Custom> allCustomerQuotation_Customs = dalTools.CustomerQuotation_Custom_GetEs(new eCustomerQuotation_Custom_Filter() { CustomerID = job.CustomerID });
+            _AllCustomerQuotation_Customs = allCustomerQuotation_Customs == null ? string.Empty : JsonConvert.SerializeObject(allCustomerQuotation_Customs);
         }
 
         private void LoadTransportCompanies(DALTools dalTools)
@@ -70,18 +90,9 @@ namespace SmileLogistics.Web.modules.functions
 
         private void LoadJobDetail(DALTools dalTools)
         {
-            if (!string.IsNullOrEmpty(Request.QueryString["job"]))
+            if (!string.IsNullOrEmpty(jobID))
             {
-                try
-                {
-                    jobID = int.Parse(Request.QueryString["job"]);
-                }
-                catch
-                {
-                    jobID = int.MinValue;
-                }
-
-                eJob obj = dalTools.Job_GetE(jobID);
+                eJob obj = dalTools.Job_GetE(int.Parse(jobID));
                 _JobDetail = obj == null ? string.Empty : JsonConvert.SerializeObject(obj);
                 _JobID = obj != null ? obj.JobID : DateTime.Now.ToString("ddMMyyyy-HHmmss");
             }

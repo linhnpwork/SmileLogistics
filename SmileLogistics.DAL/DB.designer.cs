@@ -1481,8 +1481,6 @@ namespace SmileLogistics.DAL
 		
 		private bool _IsDeleted;
 		
-		private bool _LastestUpdated;
-		
 		private int _UpdatedBy;
 		
 		private int _QuotationID;
@@ -1492,6 +1490,8 @@ namespace SmileLogistics.DAL
 		private double _Total_Out;
 		
 		private double _DecreasePercentFromSecondCont;
+		
+		private System.DateTime _LastestUpdated;
 		
 		private EntitySet<CustomerQuotation_CustomsDetail> _CustomerQuotation_CustomsDetails;
 		
@@ -1519,8 +1519,6 @@ namespace SmileLogistics.DAL
     partial void OnUSDRateChanged();
     partial void OnIsDeletedChanging(bool value);
     partial void OnIsDeletedChanged();
-    partial void OnLastestUpdatedChanging(bool value);
-    partial void OnLastestUpdatedChanged();
     partial void OnUpdatedByChanging(int value);
     partial void OnUpdatedByChanged();
     partial void OnQuotationIDChanging(int value);
@@ -1531,6 +1529,8 @@ namespace SmileLogistics.DAL
     partial void OnTotal_OutChanged();
     partial void OnDecreasePercentFromSecondContChanging(double value);
     partial void OnDecreasePercentFromSecondContChanged();
+    partial void OnLastestUpdatedChanging(System.DateTime value);
+    partial void OnLastestUpdatedChanged();
     #endregion
 		
 		public CustomerQuotation_Custom()
@@ -1682,26 +1682,6 @@ namespace SmileLogistics.DAL
 			}
 		}
 		
-		[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_LastestUpdated", DbType="Bit NOT NULL")]
-		public bool LastestUpdated
-		{
-			get
-			{
-				return this._LastestUpdated;
-			}
-			set
-			{
-				if ((this._LastestUpdated != value))
-				{
-					this.OnLastestUpdatedChanging(value);
-					this.SendPropertyChanging();
-					this._LastestUpdated = value;
-					this.SendPropertyChanged("LastestUpdated");
-					this.OnLastestUpdatedChanged();
-				}
-			}
-		}
-		
 		[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_UpdatedBy", DbType="Int NOT NULL")]
 		public int UpdatedBy
 		{
@@ -1806,6 +1786,26 @@ namespace SmileLogistics.DAL
 					this._DecreasePercentFromSecondCont = value;
 					this.SendPropertyChanged("DecreasePercentFromSecondCont");
 					this.OnDecreasePercentFromSecondContChanged();
+				}
+			}
+		}
+		
+		[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_LastestUpdated", DbType="DateTime NOT NULL")]
+		public System.DateTime LastestUpdated
+		{
+			get
+			{
+				return this._LastestUpdated;
+			}
+			set
+			{
+				if ((this._LastestUpdated != value))
+				{
+					this.OnLastestUpdatedChanging(value);
+					this.SendPropertyChanging();
+					this._LastestUpdated = value;
+					this.SendPropertyChanged("LastestUpdated");
+					this.OnLastestUpdatedChanged();
 				}
 			}
 		}
@@ -2400,8 +2400,6 @@ namespace SmileLogistics.DAL
 		
 		private bool _IsUSD;
 		
-		private double _Total;
-		
 		private System.Nullable<int> _PlaceStart;
 		
 		private System.Nullable<int> _PlaceEnd;
@@ -2438,8 +2436,6 @@ namespace SmileLogistics.DAL
     partial void OnLastestUpdatedChanged();
     partial void OnIsUSDChanging(bool value);
     partial void OnIsUSDChanged();
-    partial void OnTotalChanging(double value);
-    partial void OnTotalChanged();
     partial void OnPlaceStartChanging(System.Nullable<int> value);
     partial void OnPlaceStartChanged();
     partial void OnPlaceEndChanging(System.Nullable<int> value);
@@ -2663,26 +2659,6 @@ namespace SmileLogistics.DAL
 					this._IsUSD = value;
 					this.SendPropertyChanged("IsUSD");
 					this.OnIsUSDChanged();
-				}
-			}
-		}
-		
-		[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_Total", DbType="Float NOT NULL")]
-		public double Total
-		{
-			get
-			{
-				return this._Total;
-			}
-			set
-			{
-				if ((this._Total != value))
-				{
-					this.OnTotalChanging(value);
-					this.SendPropertyChanging();
-					this._Total = value;
-					this.SendPropertyChanged("Total");
-					this.OnTotalChanged();
 				}
 			}
 		}

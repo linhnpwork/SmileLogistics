@@ -3170,7 +3170,7 @@ namespace SmileLogistics.DAL.Helpers
                 var all = DB.Quotation_CustomsProcesses.Where(o => !o.IsDeleted);
                 if (all.Count() == 0) return null;
 
-                return all.OrderByDescending(o => o.LastestUpdated).ToList();
+                return all.OrderByDescending(o => o.ExpireFrom).ToList();
             }
             catch
             {
@@ -3876,6 +3876,34 @@ namespace SmileLogistics.DAL.Helpers
 
         #region CustomerQuotation_Route
 
+        public int CustomerQuotation_Route_Update(CustomerQuotation_Route quotation)
+        {
+            try
+            {
+                CustomerQuotation_Route obj = DB.CustomerQuotation_Routes.FirstOrDefault(o => o.ID == quotation.ID);
+                if (obj == null) return -1;
+
+                obj.Expire_End = quotation.Expire_End;
+                obj.Expire_Start = quotation.Expire_Start;
+                obj.IsUSD = quotation.IsUSD;
+                obj.LastestUpdated = DateTime.Now;
+                obj.PlaceEnd = quotation.PlaceEnd;
+                obj.PlaceStart = quotation.PlaceStart;
+                obj.Price = quotation.Price;
+                obj.QuotationID = quotation.QuotationID;
+                obj.UpdatedBy = quotation.UpdatedBy;
+
+                DB.CustomerQuotation_Routes.InsertOnSubmit(obj);
+                DB.SubmitChanges();
+
+                return 0;
+            }
+            catch
+            {
+                return int.MinValue;
+            }
+        }
+
         public int CustomerQuotation_Route_Create(ref CustomerQuotation_Route obj)
         {
             try
@@ -3970,7 +3998,6 @@ namespace SmileLogistics.DAL.Helpers
                     Expire_Start = obj.Expire_Start,
                     IsUSD = obj.IsUSD,
                     QuotationID = obj.QuotationID,
-                    Total = obj.Total,
                     Price = obj.Price,
 
                     IsDeleted = obj.IsDeleted,
@@ -3989,7 +4016,113 @@ namespace SmileLogistics.DAL.Helpers
 
         #endregion
 
+        #region CustomerQuotation_Customs
+
+        public List<CustomerQuotation_Custom> CustomerQuotation_Custom_Gets(eCustomerQuotation_Custom_Filter filter)
+        {
+            try
+            {
+                var all = DB.CustomerQuotation_Customs.Where(o => !o.IsDeleted &&
+                    o.CustomerID == filter.CustomerID);
+                if (all.Count() == 0) return null;
+
+                return all.OrderByDescending(o => o.LastestUpdated).ToList();
+            }
+            catch
+            {
+                return null;
+            }
+        }
+
+        public List<eCustomerQuotation_Custom> CustomerQuotation_Custom_GetEs(eCustomerQuotation_Custom_Filter filter)
+        {
+            try
+            {
+                var all = CustomerQuotation_Custom_Gets(filter);
+                if (all == null) return null;
+
+                List<eCustomerQuotation_Custom> result = new List<eCustomerQuotation_Custom>();
+                foreach (CustomerQuotation_Custom obj in all)
+                    result.Add(CustomerQuotation_Custom_Entity(obj));
+
+                return result;
+            }
+            catch
+            {
+                return null;
+            }
+        }
+
+        private eCustomerQuotation_Custom CustomerQuotation_Custom_Entity(CustomerQuotation_Custom obj)
+        {
+            try
+            {
+                if (obj == null) return null;
+
+                return new eCustomerQuotation_Custom()
+                {
+                    CustomerID = obj.CustomerID,
+                    DecreasePercentFromSecondCont = obj.DecreasePercentFromSecondCont,
+                    Expire_End = obj.Expire_End,
+                    Expire_Start = obj.Expire_Start,
+                    ID = obj.ID,
+                    IsDeleted = obj.IsDeleted,
+                    IsUSD = obj.IsUSD,
+                    LastestUpdate = obj.LastestUpdated,
+                    QuotationID = obj.QuotationID,
+                    Total_In = obj.Total_In,
+                    Total_Out = obj.Total_Out,
+                    USDRate = obj.USDRate,
+
+                    UpdatedBy = Sys_User_GetE(obj.UpdatedBy),
+                    sLastestUpdate = obj.LastestUpdated.ToString(GlobalValues.DateFormat_VN),
+                    sExpireEnd = obj.Expire_End.ToString(GlobalValues.DateFormat_VN),
+                    sExpireStart = obj.Expire_Start.ToString(GlobalValues.DateFormat_VN),
+                };
+            }
+            catch
+            {
+                return null;
+            }
+        }
+
+
+        #endregion
+
         #region Job_QuotationRoute
+
+        public int Job_QuotationRoute_Update(Job_QuotationRoute route)
+        {
+            try
+            {
+                Job_QuotationRoute obj = DB.Job_QuotationRoutes.FirstOrDefault(o => o.ID == route.ID);
+                if (obj == null) return -1;
+
+                obj.Description = route.Description;
+                obj.DriverPhoneNumber = route.DriverPhoneNumber;
+                obj.ExtraFee = route.ExtraFee;
+                obj.LastestUpdate = DateTime.Now;
+                obj.Loads = route.Loads;
+                obj.PlaceEnd = route.PlaceEnd;
+                obj.PlaceStart = route.PlaceStart;
+                obj.PromotionByTransComp = route.PromotionByTransComp;
+                obj.Quantity = route.Quantity;
+                obj.RouteID = route.RouteID;
+                obj.UpdatedBy = route.UpdatedBy;
+                obj.USDRate = route.USDRate;
+                obj.VehicleNO = route.VehicleNO;
+
+                DB.SubmitChanges();
+
+                Job_CalculateProfit(obj.JobID);
+
+                return 0;
+            }
+            catch
+            {
+                return int.MinValue;
+            }
+        }
 
         public bool Job_QuotationRoute_Delete(Job_QuotationRoute job)
         {

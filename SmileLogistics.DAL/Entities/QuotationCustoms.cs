@@ -34,26 +34,29 @@ namespace SmileLogistics.DAL.Entities
         public eCustomsProcess_FeeType FeeType { get; set; }
     }
 
-    //public class eTransportCompany_VehicleType_Load
-    //{
-    //    public int ID { get; set; }
-    //    public int TransComp_VehicleTypeID { get; set; }
-    //    public int VehicleLoadID { get; set; }
-    //    public bool IsDeleted { get; set; }
-    //    public eSys_User UpdatedBy { get; set; }
-    //    public DateTime LastestUpdate { get; set; }
-    //    public string sLastestUpdate { get; set; }
-    //    public eVehicleType VehicleType { get; set; }
-    //    public eVehicleLoad VehicleLoad { get; set; }
-    //}
+    public class eCustomerQuotation_Custom_Filter
+    {
+        public int CustomerID { get; set; }
+    }
 
-    //public class aTransportCompany_VehicleType
-    //{
-    //    public int ID { get; set; }
-    //    public List<aTransportCompany_VehicleType_Load> Loads { get; set; }
-    //}
-    //public class aTransportCompany_VehicleType_Load
-    //{
-    //    public int ID { get; set; }
-    //}
+    public class eCustomerQuotation_Custom
+    {
+        public int ID { get; set; }
+        public int CustomerID { get; set; }
+        public bool IsUSD { get; set; }
+        public DateTime Expire_Start { get; set; }
+        public DateTime Expire_End { get; set; }
+        public double USDRate { get; set; }
+        public int QuotationID { get; set; }
+        public double Total_In { get; set; }
+        public double Total_Out { get; set; }
+        public double DecreasePercentFromSecondCont { get; set; }
+
+        public bool IsDeleted { get; set; }
+        public eSys_User UpdatedBy { get; set; }
+        public DateTime LastestUpdate { get; set; }
+        public string sLastestUpdate { get; set; }
+        public string sExpireStart { get; set; }
+        public string sExpireEnd { get; set; }
+    }
 }
