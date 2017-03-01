@@ -11,7 +11,6 @@ namespace SmileLogistics.DAL.Entities
         public int ID { get; set; }
         public string Name { get; set; }
         public string Description { get; set; }
-        public bool ProcessOneTime { get; set; }
         public bool IsDeleted { get; set; }
         public eSys_User UpdatedBy { get; set; }
         public DateTime LastestUpdate { get; set; }

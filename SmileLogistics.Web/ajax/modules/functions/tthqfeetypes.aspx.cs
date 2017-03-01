@@ -139,7 +139,6 @@ namespace SmileLogistics.Web.ajax.modules.functions
                     ID = int.Parse(data.id.ToString()),
                     Description = data.description.ToString(),
                     Name = data.name.ToString(),
-                    ProcessOneTime = bool.Parse(data.processonetime.ToString()),
                     UpdatedBy = CurrentSys_User.ID,
                     LastestUpdated = DateTime.Now,
                 };
@@ -212,7 +211,6 @@ namespace SmileLogistics.Web.ajax.modules.functions
                 {
                     Description = data.description.ToString(),
                     Name = data.name.ToString(),
-                    ProcessOneTime = bool.Parse(data.processonetime.ToString()),
                     IsDeleted = false,
                     UpdatedBy = CurrentSys_User.ID,
                     LastestUpdated = DateTime.Now,

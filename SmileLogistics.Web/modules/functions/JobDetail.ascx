@@ -134,21 +134,52 @@
                 </div>
                 <div id="divQuotation-customs-details" class="form-horizontal">
                     <div class="form-group">
-                        <label class="col-md-3 control-label">Báo giá gốc</label>
-                        <div id="divQuotationCustoms_By_Basic" class="col-md-3">
-                        </div>
                         <label class="col-md-3 control-label">Báo giá theo Khách hàng</label>
-                        <div id="divQuotationCustoms_By_Customers" class="col-md-3">
+                        <div id="divQuotationCustoms_By_Customers" class="col-md-9">
                         </div>
                     </div>
                     <div class="form-group">
-                        <div id="divQuotationCustoms_FeeType_Details" class="col-md-12">
+                        <label class="col-md-3 control-label">Hiệu lực báo giá</label>
+                        <div class="col-md-9">
+                            <div class="input-group input-daterange" data-date-format="dd/mm/yyyy">
+                                <input type="text" id="info-quotation-customs-expire-start" class="form-control text-center" placeholder="Từ ngày">
+                                <span class="input-group-addon"><i class="fa fa-angle-right"></i></span>
+                                <input type="text" id="info-quotation-customs-expire-end" class="form-control text-center" placeholder="Đến ngày">
+                            </div>
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label class="col-md-3 control-label">Sử dụng USD?</label>
+                        <div class="col-md-3">
+                            <label class='switch switch-success'>
+                                <input id="info-quotation-customs-isusd" type='checkbox'><span></span>
+                            </label>
+                        </div>
+                        <label class="col-md-3 control-label">Tỉ giá USD</label>
+                        <div class="col-md-3">
+                            <input type="text" id="info-quotation-customs-usdrate" class="form-control" placeholder="1 USD = ? VND">
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label class="col-md-3 control-label">Ghi chú</label>
+                        <div class="col-md-9">
+                            <input type="text" id="info-quotation-customs-description" class="form-control" placeholder="Ghi chú">
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <div id="divQuotation_Customs_FeeDetails" class="col-md-12">
+                        </div>
+                    </div>
+                    <div id="divModalAlert-quotation-customs" class="form-group" style="display: none;">
+                        <div class="col-md-3">
+                        </div>
+                        <div id="divModalAlert-quotation-customs-content" class="col-md-9">
                         </div>
                     </div>
                 </div>
                 <div class="form-horizontal form-bordered">
                     <div class="form-group form-actions text-right">
-                        <a id="btn-do-save-tthq" class="btn btn-sm btn-primary">Lưu</a>
+                        <a id="btn-do-save-quotationcustoms" onclick="jobs" class="btn btn-sm btn-primary">Lưu</a>
                     </div>
                 </div>
             </div>
@@ -273,9 +304,14 @@
                                     </div>
                                     <div class="form-group">
                                         <label class="col-md-3 control-label">Sử dụng đồng USD?</label>
-                                        <div class="col-md-9">
+                                        <div class="col-md-2">
                                             <label class='switch switch-success'>
                                                 <input id="info-quotationroute-value-isusd" type='checkbox'><span></span></label>
+                                        </div>
+                                        <label class="col-md-3 control-label">Tỉ giá USD</label>
+                                        <div class="col-md-4">
+                                            <input type="text" id="info-quotationroute-info-usdrate" class="form-control" placeholder="1 USD = ? VND" style="width: auto;" value="0">
+                                            <span class="help-block">(Dùng dấm chấm '.' để xác định số thập phân!)</span>
                                         </div>
                                     </div>
                                     <div class="form-group">
@@ -336,13 +372,6 @@
                                             <span class="help-block">(Dùng dấm chấm '.' để xác định số thập phân!)</span>
                                         </div>
                                     </div>
-                                    <div class="form-group">
-                                        <label class="col-md-3 control-label">Tỉ giá USD</label>
-                                        <div class="col-md-9">
-                                            <input type="text" id="info-quotationroute-info-usdrate" class="form-control" placeholder="1 USD = ? VND" style="width: auto;" value="0">
-                                            <span class="help-block">(Dùng dấm chấm '.' để xác định số thập phân!)</span>
-                                        </div>
-                                    </div>
                                 </div>
                             </div>
                         </div>
@@ -375,12 +404,23 @@
             allQuotation_Comp: null,
             allQuotation_Customer: null,
 
-            allQuotationCustoms_Basic: null,
+            allCustomsFeeTypes: null,
             allQuotationCustoms_Customers: null,
 
             alert_quotation_route: function (content) {
                 $('#divModalAlert').show();
                 $('#divModalAlert-content').html(
+                    '<div class="alert alert-danger alert-dismissable">' +
+                        '<button type="button" class="close" data-dismiss="alert" aria-hidden="true">×</button>' +
+                        '<h4><i class="fa fa-times-circle"></i>&nbsp;Lỗi</h4>' +
+                        content +
+                    '</div>'
+                    );
+            },
+
+            alert_quotation_customs: function (content) {
+                $('#divModalAlert-quotation-customs').show();
+                $('#divModalAlert-quotation-customs-content').html(
                     '<div class="alert alert-danger alert-dismissable">' +
                         '<button type="button" class="close" data-dismiss="alert" aria-hidden="true">×</button>' +
                         '<h4><i class="fa fa-times-circle"></i>&nbsp;Lỗi</h4>' +
@@ -418,11 +458,11 @@
                 else
                     this.allComps = JSON.parse(sComps);
 
-                var sQuotationCustoms_Basic = '<%= _AllQuotationCustoms %>';
-                if (sQuotationCustoms_Basic == '')
-                    this.allQuotationCustoms_Basic = null;
+                var sCustomsFeeTypes = '<%= _AllCustomsFeeTypes %>';
+                if (sCustomsFeeTypes == '')
+                    this.allCustomsFeeTypes = null;
                 else
-                    this.allQuotationCustoms_Basic = JSON.parse(sQuotationCustoms_Basic);
+                    this.allCustomsFeeTypes = JSON.parse(sCustomsFeeTypes);
 
                 var sQuotationCustoms_Customers = '<%= _AllCustomerQuotation_Customs %>';
                 if (sQuotationCustoms_Customers == '')
@@ -431,68 +471,115 @@
                     this.allQuotationCustoms_Customers = JSON.parse(sQuotationCustoms_Customers);
 
                 this.generate_companies();
-                this.generate_quotationcustoms_controls_basic();
+                this.generate_quotationcustoms_controls_customer();
             },
 
             //-----------------------------------------------------------------------------------------------
 
+            doAdd_quotation_customs: function () {
+                var postdata = jobs.validateForm_quotation_customs();
+                if (postdata == null)
+                    return;
+
+                NProgress.start();
+                $('#btn-do-save-quotationcustoms').addClass('disabled');
+                $('#btn-do-save-quotationcustoms').html('Đang xử lý...');
+
+                var xhr = new XMLHttpRequest();
+                xhr.open('POST', jobs.ajaxPath + '?ts=' + new Date().getTime().toString());
+                xhr.onload = function () {
+                    NProgress.done();
+
+                    var result = JSON.parse(xhr.responseText);
+                    $('#btn-do-save-quotationcustoms').removeClass('disabled');
+                    $('#btn-do-save-quotationcustoms').html(jobs.mode_quotationroute == 'create' ? 'Thêm' : 'Lưu');
+                    alert(result.Message);
+
+                    if (result.ErrorCode == 0) {
+                        jobs.reloadpage();
+                    }
+                };
+
+                var form = new FormData();
+                form.append('mod', 'update_quotation_customs');
+                form.append('data', JSON.stringify(postdata));
+
+                xhr.send(form);
+            },
+
+            validateForm_quotation_customs: function () {
+                var message = '';
+                var data = new Object();
+
+                data.jobid = jobs.currentobj.ID;
+
+                data.description = $('#info-quotation-customs-description').val();
+
+                data.isusd = $('#info-quotation-customs-isusd').prop('checked');
+
+                data.expirestart = $('#info-quotation-customs-expire-start').val();
+                data.expireend = $('#info-quotation-customs-expire-end').val();
+
+                data.usdrate = Number($('#info-quotation-customs-usdrate').val());
+                if (data.isusd && (isNaN(data.usdrate) || data.usdrate <= 0))
+                    message += '- Tỉ giá USD không hợp lệ!<br/>';
+
+                //data.id = jobs.mode_quotationroute == "create" ? 0 : jobs.currentobj_quotation_route.ID;
+
+                if (message != '') {
+                    jobs.alert_quotation_customs(message);
+                    return null;
+                }
+
+                return data;
+            },
+
             generate_quotationcustoms_values: function () {
                 if (this.currentobj == null) return;
 
-                var quotationcustoms_basicID = Number($('#info-quotation-customs-quotation-by-basic').val());
                 var quotationcustoms_customerID = Number($('#info-quotation-customs-quotation-by-customers').val());
-                if (isNaN(quotationcustoms_basicID) || isNaN(quotationcustoms_customerID)) return;
+                if (isNaN(quotationcustoms_customerID)) return;
 
-                var quotationcustoms_Basic = jobs.getobj(quotationcustoms_basicID, jobs.allQuotationCustoms_Basic);
                 var quotationcustoms_Customer = jobs.getobj(quotationcustoms_customerID, jobs.allQuotationCustoms_Customers);
+                var feeDetails = quotationcustoms_Customer == null ? jobs.allCustomsFeeTypes : quotationcustoms_Customer.FeeDetails;
 
-                if (quotationcustoms_Basic == null) return;
-
-                var objQuotation = quotationcustoms_Customer == null ? quotationcustoms_Basic : quotationcustoms_Customer;
-                if (objQuotation.FeeDetails == null || objQuotation.FeeDetails.length == 0) return;
+                if (feeDetails == null || feeDetails.length == 0) {
+                    $('#divQuotation_Customs_FeeDetails').html('<label class="control-label label-quicklink"><a href="/loai-phi-tthq">Không tìm thấy Loại phí TTHQ! Chuyển sang trang Quản lý?</a></label>');
+                }
 
                 var html =
                     "<table id=\"tblList_Quotation_Customs_Fees\" class=\"table table-vcenter table-striped table-condensed table-hover table-bordered\">" +
                         "<thead>" +
                             "<tr>" +
-                                "<th class=\"text-center\">Thứ tự</th>" +
                                 "<th class=\"text-center\">Tên loại phí</th>" +
-                                "<th class=\"text-center\">Giá gốc</th>" +
-                                "<th class=\"text-center\">Giá báo cho KH</th>" +
-                                "<th class=\"text-center\">Số lượng Cont</th>" +
+                                "<th class=\"text-center\">Tổng tiền</th>" +
+                                "<th class=\"text-center\" style=\"width: 60%;\">Ghi chú</th>" +
                             "</tr>" +
                         "</thead>" +
                         "<tbody>";
 
-                for (var i = 0; i < objQuotation.FeeDetails.length; i++) {
-                    var detail = objQuotation.FeeDetails[i];
-                    //if (detail.IsDeleted) continue;
-
-                    var detailBasic = jobs.getobj(detail.FeeTypeID, quotationcustoms_Basic.FeeDetails, "FeeTypeID");
+                for (var i = 0; i < feeDetails.length; i++) {
+                    var detail = feeDetails[i];
+                    var id = quotationcustoms_Customer == null ? detail.ID : detail.FeeTypeID;
+                    var name = quotationcustoms_Customer == null ? detail.Name : detail.sFeeTypeName;
 
                     html +=
                         "<tr>" +
                             "<td class=\"text-center\">" +
-                                detail.Order +
+                                (quotationcustoms_Customer == null ? detail.Name : detail.sFeeTypeName) +
+                            "</td>" +                            
+                            "<td class=\"text-center\">" +
+                                "<input type=\"text\" id=\"info-quotationcustoms-price-" + id + "\" class=\"form-control\" placeholder=\"Phí " + name + "\" style=\"width: 100%;\" value=\"0\">" +
                             "</td>" +
                             "<td class=\"text-center\">" +
-                                detail.sFeeTypeName +
-                            "</td>" +
-                            "<td class=\"text-center\">" +
-                                globalhelpers.Format_Money(detailBasic.Price.toFixed(2)) +
-                            "</td>" +
-                            "<td class=\"text-center\">" +
-                                "<input type=\"text\" id=\"info-quotationcustoms-feetype-" + detail.FeeTypeID + "\" class=\"form-control\" placeholder=\"Phí " + detail.sFeeTypeName + "\" style=\"width: auto;\" value=\"0\">" +
-                            "</td>" +
-                            "<td class=\"text-center\">" +
-                                "<input type=\"text\" id=\"info-quotationcustoms-quantity-" + detail.FeeTypeID + "\" class=\"form-control\" placeholder=\"Số lượng Cont\" style=\"width: auto;\" value=\"0\">" +
+                                "<input type=\"text\" id=\"info-quotationcustoms-description-" + id + "\" class=\"form-control\" placeholder=\"Ghi chú\" style=\"width: 100%;\">" +
                             "</td>" +
                         "</tr>";
                 }
 
                 html += "</tbody></table>";
 
-                $('#divQuotationCustoms_FeeType_Details').html(html);
+                $('#divQuotation_Customs_FeeDetails').html(html);
 
                 $('[data-toggle="tooltip"]').tooltip();
             },
@@ -500,19 +587,15 @@
             generate_quotationcustoms_controls_customer: function () {
                 if (this.currentobj == null) return;
 
-                var quotationBasicID = Number($('#info-quotation-customs-quotation-by-basic').val());
-                if (isNaN(quotationBasicID)) return;
-
                 var html = "";
 
                 html =
-                    "<select id=\"info-quotation-customs-quotation-by-customers\" onchange=\"jobs.generate_quotationcustoms_values();\" class=\"form-control\" style=\"width: 100%;\">" +
+                    "<select id=\"info-quotation-customs-quotation-by-customers\" onchange=\"jobs.generate_quotationcustoms_values();\" class=\"form-control\" style=\"width: auto;\">" +
                         "<option value=\"-1\">--- Tạo mới ---</option>";
 
-                var list = jobs.getlist(quotationBasicID, jobs.allQuotationCustoms_Customers, "QuotationID");
-                if (list != null && list.length > 0) {
-                    for (var i = 0; i < list.length; i++) {
-                        var quotation = list[i];
+                if (jobs.allQuotationCustoms_Customers != null && jobs.allQuotationCustoms_Customers.length > 0) {
+                    for (var i = 0; i < jobs.allQuotationCustoms_Customers.length; i++) {
+                        var quotation = jobs.allQuotationCustoms_Customers[i];
 
                         html += "<option value=\"" + quotation.ID + "\">Hiệu lực từ " + quotation.sExpireStart + " đến " + quotation.sExpireEnd + "</option>";
                     }
@@ -526,38 +609,6 @@
                 //    $('#info-quotation-route-quotation-by-comp').val(jobs.currentobj_quotation_route.QuotationCompID);
 
                 jobs.generate_quotationcustoms_values();
-
-                //---------------
-
-                $('[data-toggle="tooltip"]').tooltip();
-            },
-
-            generate_quotationcustoms_controls_basic: function () {
-                if (this.currentobj == null) return;
-
-                var html = "";
-
-                if (jobs.allQuotationCustoms_Basic == null || jobs.allQuotationCustoms_Basic.length == 0) {
-                    html += "<label class='control-label label-quicklink'><a href='/bao-gia-tthq'>Chưa có dữ liệu Báo giá TTHQ! Nhấp chọn chuyển sang trang Quản lý!</a></label>";
-                }
-                else {
-                    html = "<select id=\"info-quotation-customs-quotation-by-basic\" onchange=\"jobs.generate_quotationcustoms_controls_customer();\" class=\"form-control\" style=\"width: 100%;\">";
-
-                    for (var i = 0; i < jobs.allQuotationCustoms_Basic.length; i++) {
-                        var quotation = jobs.allQuotationCustoms_Basic[i];
-
-                        html += "<option value=\"" + quotation.ID + "\">Hiệu lực từ: " + quotation.sExpireFrom + "</option>";
-                    }
-
-                    html += "</select>";
-                }
-
-                $('#divQuotationCustoms_By_Basic').html(html);
-
-                //if (jobs.mode_quotationroute == 'edit')
-                //    $('#info-quotation-route-quotation-by-comp').val(jobs.currentobj_quotation_route.QuotationCompID);
-
-                jobs.generate_quotationcustoms_controls_customer();
 
                 //---------------
 

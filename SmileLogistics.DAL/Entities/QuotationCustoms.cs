@@ -6,34 +6,34 @@ using System.Threading.Tasks;
 
 namespace SmileLogistics.DAL.Entities
 {
-    public class eQuotation_CustomsProcess
-    {
-        public int ID { get; set; }
-        public bool IsUSD { get; set; }
-        public DateTime ExpireFrom { get; set; }
+    //public class eQuotation_CustomsProcess
+    //{
+    //    public int ID { get; set; }
+    //    public bool IsUSD { get; set; }
+    //    public DateTime ExpireFrom { get; set; }
 
-        public bool IsDeleted { get; set; }
-        public eSys_User UpdatedBy { get; set; }
-        public DateTime LastestUpdate { get; set; }
-        public string sLastestUpdate { get; set; }
-        public string sExpireFrom { get; set; }
-        public List<eCustomsProcess_FeeDetail> FeeDetails { get; set; }
-    }
+    //    public bool IsDeleted { get; set; }
+    //    public eSys_User UpdatedBy { get; set; }
+    //    public DateTime LastestUpdate { get; set; }
+    //    public string sLastestUpdate { get; set; }
+    //    public string sExpireFrom { get; set; }
+    //    public List<eCustomsProcess_FeeDetail> FeeDetails { get; set; }
+    //}
 
-    public class eCustomsProcess_FeeDetail
-    {
-        public int ID { get; set; }
-        public int QuotationID { get; set; }
-        public int FeeTypeID { get; set; }
-        public double Price { get; set; }
-        public bool IsDeleted { get; set; }
-        public eSys_User UpdatedBy { get; set; }
-        public DateTime LastestUpdate { get; set; }
-        public string sLastestUpdate { get; set; }
-        public eQuotation_CustomsProcess Quotation { get; set; }
-        public eCustomsProcess_FeeType FeeType { get; set; }
-        public string sFeeTypeName { get; set; }
-    }
+    //public class eCustomsProcess_FeeDetail
+    //{
+    //    public int ID { get; set; }
+    //    public int QuotationID { get; set; }
+    //    public int FeeTypeID { get; set; }
+    //    public double Price { get; set; }
+    //    public bool IsDeleted { get; set; }
+    //    public eSys_User UpdatedBy { get; set; }
+    //    public DateTime LastestUpdate { get; set; }
+    //    public string sLastestUpdate { get; set; }
+    //    public eQuotation_CustomsProcess Quotation { get; set; }
+    //    public eCustomsProcess_FeeType FeeType { get; set; }
+    //    public string sFeeTypeName { get; set; }
+    //}
 
     public class eCustomerQuotation_Custom_Filter
     {
@@ -48,10 +48,9 @@ namespace SmileLogistics.DAL.Entities
         public DateTime Expire_Start { get; set; }
         public DateTime Expire_End { get; set; }
         public double USDRate { get; set; }
-        public int QuotationID { get; set; }
         public double Total_In { get; set; }
         public double Total_Out { get; set; }
-        public double DecreasePercentFromSecondCont { get; set; }
+        public string Description { get; set; }
 
         public bool IsDeleted { get; set; }
         public eSys_User UpdatedBy { get; set; }
@@ -69,10 +68,7 @@ namespace SmileLogistics.DAL.Entities
         public int QuotationID { get; set; }
         public int FeeDetailID { get; set; }
         public double Price { get; set; }
-        public int Quantity { get; set; }
-        public int Order { get; set; }
-        public double Total_In { get; set; }
-        public double Total_Out { get; set; }
+        public string Description { get; set; }
 
         public bool IsDeleted { get; set; }
         public eSys_User UpdatedBy { get; set; }
