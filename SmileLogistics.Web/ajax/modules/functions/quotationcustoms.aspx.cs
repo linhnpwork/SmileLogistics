@@ -57,7 +57,7 @@ namespace SmileLogistics.Web.ajax.modules.functions
             using (DALTools dalTools = new DALTools())
             {
                 int id = int.Parse(sId);
-                Quotation_CustomsProcess obj = dalTools.Quotation_CustomsProcess_Get(id);
+                CustomsProcess_Quotation obj = dalTools.CustomsProcess_Quotation_Get(id);
                 if (obj == null)
                 {
                     DoResponse(JsonConvert.SerializeObject(new GlobalValues.ResponseData()
@@ -71,7 +71,7 @@ namespace SmileLogistics.Web.ajax.modules.functions
                 }
 
                 obj.UpdatedBy = CurrentSys_User.ID;
-                if (!dalTools.Quotation_CustomsProcess_Delete(obj))
+                if (!dalTools.CustomsProcess_Quotation_Delete(obj))
                     DoResponse(JsonConvert.SerializeObject(new GlobalValues.ResponseData()
                     {
                         Data = null,
@@ -121,9 +121,9 @@ namespace SmileLogistics.Web.ajax.modules.functions
 
             using (DALTools dalTools = new DALTools())
             {
-                List<aCustomsProcess_FeeType> feeTypes = JsonConvert.DeserializeObject<List<aCustomsProcess_FeeType>>(data.feetypes.ToString());
+                List<aCustomsProcess_FeeType_VehicleLoad> feeTypes = JsonConvert.DeserializeObject<List<aCustomsProcess_FeeType_VehicleLoad>>(data.feetypes.ToString());
 
-                Quotation_CustomsProcess obj = new Quotation_CustomsProcess()
+                CustomsProcess_Quotation obj = new CustomsProcess_Quotation()
                 {
                     ID = int.Parse(data.id.ToString()),
                     ExpireFrom = CommonUtils.ConvertDateFromVNString(data.expirefrom.ToString()),
@@ -132,7 +132,7 @@ namespace SmileLogistics.Web.ajax.modules.functions
                     LastestUpdated = DateTime.Now,
                 };
 
-                int result = dalTools.Quotation_CustomsProcess_Update(obj, feeTypes);
+                int result = dalTools.CustomsProcess_Quotation_Update(obj, feeTypes);
                 if (result != 0)
                     DoResponse(JsonConvert.SerializeObject(new GlobalValues.ResponseData()
                     {
@@ -183,9 +183,9 @@ namespace SmileLogistics.Web.ajax.modules.functions
 
             using (DALTools dalTools = new DALTools())
             {
-                List<aCustomsProcess_FeeType> feeTypes = JsonConvert.DeserializeObject<List<aCustomsProcess_FeeType>>(data.feetypes.ToString());
+                List<aCustomsProcess_FeeType_VehicleLoad> feeTypes = JsonConvert.DeserializeObject<List<aCustomsProcess_FeeType_VehicleLoad>>(data.feetypes.ToString());
 
-                Quotation_CustomsProcess obj = new Quotation_CustomsProcess()
+                CustomsProcess_Quotation obj = new CustomsProcess_Quotation()
                 {
                     ExpireFrom = CommonUtils.ConvertDateFromVNString(data.expirefrom.ToString()),
                     IsUSD = bool.Parse(data.isusd.ToString()),
@@ -195,7 +195,7 @@ namespace SmileLogistics.Web.ajax.modules.functions
 
                 };
 
-                int result = dalTools.Quotation_CustomsProcess_Create(obj, feeTypes);
+                int result = dalTools.CustomsProcess_Quotation_Create(obj, feeTypes);
                 if (result != 0)
                     DoResponse(JsonConvert.SerializeObject(new GlobalValues.ResponseData()
                     {
@@ -223,7 +223,7 @@ namespace SmileLogistics.Web.ajax.modules.functions
             using (DALTools dalTools = new DALTools())
             {
                 int totalPages = 0;
-                List<eQuotation_CustomsProcess> all = dalTools.Quotation_CustomsProcess_GetEs(pageIndex, GlobalValues.DefaultPagingSize, out totalPages);
+                List<eCustomsProcess_Quotation> all = dalTools.CustomsProcess_Quotation_GetEs(pageIndex, GlobalValues.DefaultPagingSize, out totalPages);
 
                 if (all == null || all.Count == 0)
                     DoResponse(JsonConvert.SerializeObject(new GlobalValues.ResponseData()

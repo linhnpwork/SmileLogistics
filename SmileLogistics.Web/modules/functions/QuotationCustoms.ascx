@@ -166,7 +166,7 @@
                     "<table id=\"tblList_FeeTypes\" class=\"table table-vcenter table-striped table-condensed table-hover table-bordered\">" +
                         "<thead>" +
                             "<tr>" +
-                                "<th class=\"text-center\" width=\"60%\">Tên</th>" +
+                                "<th class=\"text-center\" width=\"60%\">Loại tải trọng</th>" +
                                 "<th class=\"text-center\">Phí</th>" +
                             "</tr>" +
                         "</thead>" +
@@ -182,20 +182,37 @@
                 }
                 else {
                     var total = 0;
-                    for (var i = 0; i < this.allTypes.length; i++) {
-                        var obj = this.allTypes[i];
-                        var detail = this.currentobj == null ? null : this.getobj(obj.ID, this.currentobj.FeeDetails, "FeeTypeID");
-                        if (detail == null && obj.IsDeleted) continue;
 
-                        total++;
+                    for (var i = 0; i < this.allTypes.length; i++) {
+                        var type = this.allTypes[i];
+                        if (type.VehicleLoads == null || type.VehicleLoads.length == 0) continue;
+
+                        var detailLoads = null;
+                        if (this.currentobj != null)
+                            detailLoads = globalhelpers.GetListInList(type.ID, this.currentobj.FeeDetails, "FeeTypeID");
+
+                        var htmlType = "";
+                        for (var j = 0; j < type.VehicleLoads.length; j++) {
+                            var load = type.VehicleLoads[j];
+                            var detail = this.currentobj == null ? null : this.getobj(load.ID, detailLoads, "CustomsFeeVehicleLoadID");
+                            if (detail == null && load.IsDeleted) continue;
+
+                            total++;
+
+                            htmlType +=
+                                "<tr id=\"row-feeload-" + type.ID + "-" + load.ID + "\" class=\"row-feeload\">" +
+                                    "<td class=\"text-left\">" + load.VehicleLoadName + "</td>" +
+                                    "<td class=\"text-left\">" +
+                                        "<input type=\"text\" id=\"info-price-" + type.ID + "-" + load.ID + "\" class=\"form-control\" placeholder=\"Phí\" value=\"" + (detail == null ? "0" : detail.Price) + "\">" +
+                                    "</td>" +
+                                "</tr>";
+                        }
 
                         html +=
-                            "<tr id=\"row-feetype-" + obj.ID + "\" class=\"row-feetype\" dat-id=\"" + obj.ID + "\">" +
-                                "<td class=\"text-center\">" + obj.Name + "</td>" +
-                                "<td class=\"text-left\">" +
-                                    "<input type=\"text\" id=\"info-detail-" + obj.ID + "\" class=\"form-control\" placeholder=\"Phí\" value=\"" + (detail == null ? "0" : detail.Price) + "\">" +
-                                "</td>" +
-                            "</tr>";
+                            "<tr>" +
+                                "<td colspan=\"2\" class=\"text-left\" style=\"font-weight: bold;\">" + type.Name + "</td>" +
+                            "</tr>" +
+                            htmlType;
                     }
 
                     if (total == 0)
@@ -265,37 +282,6 @@
                 $('#modal-info').modal('show');
             },
 
-            generateobjdata_types: function () {
-                if (this.allTypes == null || this.allTypes.length == 0) return;
-
-                for (var i = 0; i < this.allTypes.length; i++) {
-                    var type = this.allTypes[i];
-                    var rowType = $('#row-vehicletype-' + type.ID);
-
-                    var eType = this.getobjVType(this.currentobj.VehicleTypes, type.ID);
-                    $('#vehicletype-select-' + type.ID).prop('checked', eType != null);
-
-                    if (eType == null) {
-                        $(rowType).find('.switch-vehicleload').prop('checked', false);
-                        continue;
-                    }
-                    else {
-                        if (eType.Loads == null || eType.Loads.length == 0) {
-                            $(rowType).find('.switch-vehicleload').prop('checked', false);
-                            continue;
-                        }
-
-                        for (var j = 0; j < type.VehicleLoads.length; j++) {
-                            var load = type.VehicleLoads[j];
-                            var switchLoad = $('#row-vehicleload-' + load.ID);
-
-                            var eLoad = this.getobjVLoad(eType.Loads, load.ID);
-                            $(switchLoad).prop('checked', eLoad != null);
-                        }
-                    }
-                }
-            },
-
             doAdd: function () {
                 var postdata = quotationcustoms.validateForm();
                 if (postdata == null)
@@ -342,22 +328,30 @@
 
                 data.feetypes = new Array();
 
-                var types = $('#divFeeTypes .row-feetype');
-                for (var i = 0; i < types.length; i++) {
-                    var typeDOM = types[i];
-                    var typeId = Number($(typeDOM).attr('dat-id'));
-                    var type = this.getobj(typeId, this.allTypes);
+                for (var i = 0; i < this.allTypes.length; i++) {
+                    var type = this.allTypes[i];
+                    if (type.VehicleLoads == null || type.VehicleLoads.length == 0) continue;
 
-                    if (type != null) {
-                        var value = Number($('#info-detail-' + type.ID).val());
-                        if (isNaN(value))
-                            message += '- Loại phí <b>' + type.Name + '</b> không hợp lệ!<br/>';
+                    var detailLoads = null;
+                    if (this.currentobj != null)
+                        detailLoads = globalhelpers.GetListInList(type.ID, this.currentobj.FeeDetails, "FeeTypeID");
 
-                        var typeObj = new Object();
-                        typeObj.ID = typeId;
-                        typeObj.Value = value;
+                    var htmlType = "";
+                    for (var j = 0; j < type.VehicleLoads.length; j++) {
+                        var load = type.VehicleLoads[j];
+                        var detail = this.currentobj == null ? null : this.getobj(load.ID, detailLoads, "CustomsFeeVehicleLoadID");
+                        if (detail == null && load.IsDeleted) continue;
 
-                        data.feetypes.push(typeObj);
+                        var objLoad = new Object();
+
+                        objLoad.Price = Number($('#info-price-' + type.ID + '-' + load.ID).val());
+                        if (isNaN(objLoad.Price))
+                            message += '- Loại phí [' + type.Name + ']-[' + load.VehicleLoadName + '] không hợp lệ!<br/>';
+
+                        objLoad.ID = load.ID;
+                        objLoad.TypeID = type.ID;
+
+                        data.feetypes.push(objLoad);
                     }
                 }
 
@@ -405,7 +399,6 @@
                                                     "<th class=\"text-center\">STT</th>" +
                                                     "<th class=\"text-center\">Ngày bắt đầu hiệu lực</th>" +
                                                     "<th class=\"text-center\">Sử dụng USD</th>" +
-                                                    "<th class=\"text-center\">Thông tin</th>" +
                                                     "<th class=\"text-center\">#</th>" +
                                                 "</tr>" +
                                             "</thead>" +
@@ -427,19 +420,19 @@
 
                                         for (var i = 0; i < quotationcustoms.all.length; i++) {
                                             var obj = quotationcustoms.all[i];
-                                            var htmlFees = "";
-                                            if (obj.FeeDetails != null && obj.FeeDetails.length > 0) {
-                                                for (var j = 0; j < obj.FeeDetails.length; j++) {
-                                                    var fee = obj.FeeDetails[j];
-                                                    htmlFees +=
-                                                        "<div class=\"form-group\">" +
-                                                            "<label class=\"col-md-4 control-label\">" + fee.FeeType.Name + "</label>" +
-                                                            "<div class=\"col-md-8 text-left\">" +
-                                                                "<p class=\"form-control-static\">" + globalhelpers.Format_Money(fee.Price.toFixed(2)) + "</p>" +
-                                                            "</div>" +
-                                                        "</div>";
-                                                }
-                                            }
+                                            //var htmlFees = "";
+                                            //if (obj.FeeDetails != null && obj.FeeDetails.length > 0) {
+                                            //    for (var j = 0; j < obj.FeeDetails.length; j++) {
+                                            //        var fee = obj.FeeDetails[j];
+                                            //        htmlFees +=
+                                            //            "<div class=\"form-group\">" +
+                                            //                "<label class=\"col-md-4 control-label\">" + fee.FeeType.Name + "</label>" +
+                                            //                "<div class=\"col-md-8 text-left\">" +
+                                            //                    "<p class=\"form-control-static\">" + globalhelpers.Format_Money(fee.Price.toFixed(2)) + "</p>" +
+                                            //                "</div>" +
+                                            //            "</div>";
+                                            //    }
+                                            //}
 
                                             html +=
                                                 "<tr>" +
@@ -448,7 +441,7 @@
                                                     "</td>" +
                                                     "<td class=\"text-center\">" + obj.sExpireFrom + "</td>" +
                                                     "<td class=\"text-center\">" + (obj.IsUSD ? "<i class=\"gi gi-ok_2\"></i>" : "") + "</td>" +
-                                                    "<td class=\"text-center\">" + htmlFees + "</td>" +
+                                                    //"<td class=\"text-center\">" + htmlFees + "</td>" +
                                                     "<td class=\"text-center\">" +
                                                         //"<div class=\"btn-group\">" +
                                                             "<a onclick=\"quotationcustoms.startedit('" + obj.ID + "');\" href=\"javascript:void(0)\" data-toggle=\"tooltip\" title=\"Sửa\" class=\"btn btn-xs btn-default\"><i class=\"fa fa-pencil\"></i></a>" +

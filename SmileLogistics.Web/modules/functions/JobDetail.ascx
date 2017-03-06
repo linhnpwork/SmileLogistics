@@ -128,12 +128,12 @@
             <div class="block full block-related-edit">
                 <div class="block-title">
                     <h2>Báo giá <strong>TTHQ</strong></h2>
-                    <div id="divControl-quotation-customer-settings" class="block-options pull-right">
+                    <div id="divQuotation-customs-settings" class="block-options pull-right">
                         <a onclick="jobs.startAdd_quotation_customs();" class="btn btn-sm btn-success" data-toggle="tooltip" title="Thiết lập báo giá"><i class="hi hi-cog"></i></a>
                     </div>
                 </div>
                 <div id="divQuotation-customs-details" class="form-horizontal">
-                    <div class="form-group">
+                    <div id="divQuotationCustoms_Row_Customers" class="form-group">
                         <label class="col-md-3 control-label">Báo giá theo Khách hàng</label>
                         <div id="divQuotationCustoms_By_Customers" class="col-md-9">
                         </div>
@@ -177,9 +177,9 @@
                         </div>
                     </div>
                 </div>
-                <div class="form-horizontal form-bordered">
+                <div id="divQuotation-customs-controls" class="form-horizontal form-bordered">
                     <div class="form-group form-actions text-right">
-                        <a id="btn-do-save-quotationcustoms" onclick="jobs" class="btn btn-sm btn-primary">Lưu</a>
+                        <a id="btn-do-save-quotationcustoms" onclick="jobs.doAdd_quotation_customs();" class="btn btn-sm btn-primary">Lưu</a>
                     </div>
                 </div>
             </div>
@@ -476,6 +476,12 @@
 
             //-----------------------------------------------------------------------------------------------
 
+            startAdd_quotation_customs: function () {
+                $('#divQuotation-customs-settings').hide();
+                $('#divQuotation-customs-details').show();
+                $('#divQuotation-customs-controls').show();
+            },
+
             doAdd_quotation_customs: function () {
                 var postdata = jobs.validateForm_quotation_customs();
                 if (postdata == null)
@@ -524,7 +530,18 @@
                 if (data.isusd && (isNaN(data.usdrate) || data.usdrate <= 0))
                     message += '- Tỉ giá USD không hợp lệ!<br/>';
 
-                //data.id = jobs.mode_quotationroute == "create" ? 0 : jobs.currentobj_quotation_route.ID;
+                data.feetypes = new Array();
+                for (var i = 0; i < jobs.allCustomsFeeTypes.length; i++) {
+                    var fee = jobs.allCustomsFeeTypes[i];
+                    var detail = new Object();
+                    detail.ID = fee.ID;
+                    detail.Description = $('#info-quotationcustoms-description-' + detail.ID).val();
+                    detail.Price = Number($('#info-quotationcustoms-price-' + detail.ID).val());
+                    if (isNaN(detail.Price) || detail.Price < 0)
+                        message += '- Phí ' + fee.Name + ' không hợp lệ!<br/>';
+
+                    data.feetypes.push(detail);
+                }
 
                 if (message != '') {
                     jobs.alert_quotation_customs(message);
@@ -535,13 +552,46 @@
             },
 
             generate_quotationcustoms_values: function () {
-                if (this.currentobj == null) return;
+                if (this.currentobj == null) {
+                    $('#divQuotation-customs-settings').show();
+                    $('#divQuotation-customs-details').hide();
+                    $('#divQuotation-customs-controls').hide();
+                    return;
+                }
+
+                if (this.currentobj.QuotationCustoms == null)
+                {
+                    $('#divQuotation-customs-settings').show();
+                    $('#divQuotation-customs-details').hide();
+                    $('#divQuotation-customs-controls').hide();
+                }
+                else
+                {
+                    $('#divQuotation-customs-settings').hide();
+                    $('#divQuotation-customs-details').show();
+                    $('#divQuotation-customs-controls').show();
+                }
 
                 var quotationcustoms_customerID = Number($('#info-quotation-customs-quotation-by-customers').val());
                 if (isNaN(quotationcustoms_customerID)) return;
 
                 var quotationcustoms_Customer = jobs.getobj(quotationcustoms_customerID, jobs.allQuotationCustoms_Customers);
-                var feeDetails = quotationcustoms_Customer == null ? jobs.allCustomsFeeTypes : quotationcustoms_Customer.FeeDetails;
+                var quotation = jobs.currentobj.QuotationCustoms != null ? jobs.currentobj.QuotationCustoms : quotationcustoms_Customer != null ? quotationcustoms_Customer : null;
+                if (quotation != null) {
+                    //$('#info-quotation-customs-quotation-by-customers').attr('disabled', 'disabled');
+                    $('#divQuotationCustoms_Row_Customers').hide();
+
+                    $('#info-quotation-customs-description').val(quotation.Description);
+
+                    $('#info-quotation-customs-isusd').prop('checked', quotation.IsUSD);
+
+                    $('#info-quotation-customs-expire-start').val(quotation.sExpireStart);
+                    $('#info-quotation-customs-expire-end').val(quotation.sExpireEnd);
+
+                    $('#info-quotation-customs-usdrate').val(quotation.USDRate);
+                }
+
+                var feeDetails = quotation == null ? jobs.allCustomsFeeTypes : quotation.FeeDetails;
 
                 if (feeDetails == null || feeDetails.length == 0) {
                     $('#divQuotation_Customs_FeeDetails').html('<label class="control-label label-quicklink"><a href="/loai-phi-tthq">Không tìm thấy Loại phí TTHQ! Chuyển sang trang Quản lý?</a></label>');
@@ -560,19 +610,21 @@
 
                 for (var i = 0; i < feeDetails.length; i++) {
                     var detail = feeDetails[i];
-                    var id = quotationcustoms_Customer == null ? detail.ID : detail.FeeTypeID;
-                    var name = quotationcustoms_Customer == null ? detail.Name : detail.sFeeTypeName;
+                    var id = quotation == null ? detail.ID : detail.FeeTypeID;
+                    var name = quotation == null ? detail.Name : detail.sFeeTypeName;
+                    var price = quotation == null ? 0 : detail.Price;
+                    var description = quotation == null ? "" : detail.Description;
 
                     html +=
                         "<tr>" +
                             "<td class=\"text-center\">" +
-                                (quotationcustoms_Customer == null ? detail.Name : detail.sFeeTypeName) +
-                            "</td>" +                            
-                            "<td class=\"text-center\">" +
-                                "<input type=\"text\" id=\"info-quotationcustoms-price-" + id + "\" class=\"form-control\" placeholder=\"Phí " + name + "\" style=\"width: 100%;\" value=\"0\">" +
+                                (quotation == null ? detail.Name : detail.sFeeTypeName) +
                             "</td>" +
                             "<td class=\"text-center\">" +
-                                "<input type=\"text\" id=\"info-quotationcustoms-description-" + id + "\" class=\"form-control\" placeholder=\"Ghi chú\" style=\"width: 100%;\">" +
+                                "<input type=\"text\" id=\"info-quotationcustoms-price-" + id + "\" class=\"form-control\" placeholder=\"Phí " + name + "\" style=\"width: 100%;\" value=\"" + price + "\">" +
+                            "</td>" +
+                            "<td class=\"text-center\">" +
+                                "<input type=\"text\" id=\"info-quotationcustoms-description-" + id + "\" class=\"form-control\" placeholder=\"Ghi chú\" style=\"width: 100%;\" value=\"" + description + "\">" +
                             "</td>" +
                         "</tr>";
                 }
@@ -605,8 +657,8 @@
 
                 $('#divQuotationCustoms_By_Customers').html(html);
 
-                //if (jobs.mode_quotationroute == 'edit')
-                //    $('#info-quotation-route-quotation-by-comp').val(jobs.currentobj_quotation_route.QuotationCompID);
+                if (jobs.currentobj.QuotationCustoms != null)
+                    $('#info-quotation-customs-quotation-by-customers').val(jobs.currentobj.QuotationCustoms.ID);
 
                 jobs.generate_quotationcustoms_values();
 

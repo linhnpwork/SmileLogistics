@@ -8,15 +8,29 @@ using SmileLogistics.Web.bases;
 using SmileLogistics.DAL;
 using SmileLogistics.DAL.Entities;
 using SmileLogistics.DAL.Helpers;
+using Newtonsoft.Json;
 
 namespace SmileLogistics.Web.modules.functions
-{
+{   
     public partial class CustomsProcess_FeeTypes : BaseControl
     {
+        public string _VehicleTypes = string.Empty;
         protected void Page_Load(object sender, EventArgs e)
         {
             if (!IsPostBack)
             {
+                LoadVehicleTypes();
+            }
+        }
+
+        private void LoadVehicleTypes()
+        {
+            _VehicleTypes = string.Empty;
+            using (DALTools dalTools = new DALTools())
+            {
+                List<eVehicleType> all = dalTools.VehicleType_GetEs();
+                if (all != null)
+                    _VehicleTypes = JsonConvert.SerializeObject(all);
             }
         }
     }

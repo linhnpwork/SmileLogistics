@@ -134,16 +134,18 @@ namespace SmileLogistics.Web.ajax.modules.functions
                     return;
                 }
 
-                CustomsProcess_FeeType obj = new CustomsProcess_FeeType()
+                List<aCustomsProcess_FeeType_VehicleLoad> vehicleLoads = JsonConvert.DeserializeObject<List<aCustomsProcess_FeeType_VehicleLoad>>(data.vehicleloads.ToString());
+
+                eCustomsProcess_FeeType obj = new eCustomsProcess_FeeType()
                 {
                     ID = int.Parse(data.id.ToString()),
                     Description = data.description.ToString(),
                     Name = data.name.ToString(),
-                    UpdatedBy = CurrentSys_User.ID,
-                    LastestUpdated = DateTime.Now,
+                    UpdatedByID = CurrentSys_User.ID,
+                    LastestUpdate = DateTime.Now,
                 };
 
-                int result = dalTools.CustomsProcess_FeeType_Update(obj);
+                int result = dalTools.CustomsProcess_FeeType_Update(obj, vehicleLoads);
                 if (result != 0)
                     DoResponse(JsonConvert.SerializeObject(new GlobalValues.ResponseData()
                     {
@@ -207,16 +209,18 @@ namespace SmileLogistics.Web.ajax.modules.functions
                     return;
                 }
 
-                CustomsProcess_FeeType obj = new CustomsProcess_FeeType()
+                List<aCustomsProcess_FeeType_VehicleLoad> vehicleLoads = JsonConvert.DeserializeObject<List<aCustomsProcess_FeeType_VehicleLoad>>(data.vehicleloads.ToString());
+
+                eCustomsProcess_FeeType obj = new eCustomsProcess_FeeType()
                 {
                     Description = data.description.ToString(),
                     Name = data.name.ToString(),
                     IsDeleted = false,
-                    UpdatedBy = CurrentSys_User.ID,
-                    LastestUpdated = DateTime.Now,
+                    UpdatedByID = CurrentSys_User.ID,
+                    LastestUpdate = DateTime.Now,
                 };
 
-                int result = dalTools.CustomsProcess_FeeType_Create(obj);
+                int result = dalTools.CustomsProcess_FeeType_Create(obj, vehicleLoads);
                 if (result != 0)
                     DoResponse(JsonConvert.SerializeObject(new GlobalValues.ResponseData()
                     {

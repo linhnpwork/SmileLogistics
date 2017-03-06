@@ -57,6 +57,7 @@
   <ItemGroup>
     <Content Include="ajax\modules\functions\customers.aspx" />
     <Content Include="ajax\modules\functions\jobs.aspx" />
+    <Content Include="ajax\modules\functions\quotationcustoms.aspx" />
     <Content Include="ajax\modules\functions\quotationroutes.aspx" />
     <Content Include="ajax\modules\functions\transportcompanies.aspx" />
     <Content Include="ajax\modules\functions\transportplaces.aspx" />
@@ -218,6 +219,7 @@
     <Content Include="modules\functions\JobDetail.ascx" />
     <Content Include="modules\functions\Jobs.ascx" />
     <Content Include="modules\functions\CustomsProcess_FeeTypes.ascx" />
+    <Content Include="modules\functions\QuotationCustoms.ascx" />
     <Content Include="modules\functions\QuotationRoutes.ascx" />
     <Content Include="modules\functions\TransportCompanies.ascx" />
     <Content Include="modules\functions\TransportPlaces.ascx" />
@@ -806,6 +808,13 @@
     <Compile Include="ajax\modules\functions\jobs.aspx.designer.cs">
       <DependentUpon>jobs.aspx</DependentUpon>
     </Compile>
+    <Compile Include="ajax\modules\functions\quotationcustoms.aspx.cs">
+      <DependentUpon>quotationcustoms.aspx</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="ajax\modules\functions\quotationcustoms.aspx.designer.cs">
+      <DependentUpon>quotationcustoms.aspx</DependentUpon>
+    </Compile>
     <Compile Include="ajax\modules\functions\quotationroutes.aspx.cs">
       <DependentUpon>quotationroutes.aspx</DependentUpon>
       <SubType>ASPXCodeBehind</SubType>
@@ -948,6 +957,13 @@
     </Compile>
     <Compile Include="modules\functions\CustomsProcess_FeeTypes.ascx.designer.cs">
       <DependentUpon>CustomsProcess_FeeTypes.ascx</DependentUpon>
+    </Compile>
+    <Compile Include="modules\functions\QuotationCustoms.ascx.cs">
+      <DependentUpon>QuotationCustoms.ascx</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="modules\functions\QuotationCustoms.ascx.designer.cs">
+      <DependentUpon>QuotationCustoms.ascx</DependentUpon>
     </Compile>
     <Compile Include="modules\functions\QuotationRoutes.ascx.cs">
       <DependentUpon>QuotationRoutes.ascx</DependentUpon>

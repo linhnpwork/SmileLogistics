@@ -30,6 +30,20 @@
             return null;
         },
 
+        GetListInList: function (value, list, field) {
+            if (field == undefined) return null;
+            if (list == undefined || list == null || list.length == 0) return null;
+            if (value == undefined || value == null) return null;
+
+            var result = new Array();
+
+            for (var i = 0; i < list.length; i++) {
+                if (list[i][field] == value) result.push(list[i]);
+            }
+
+            return result.length == 0 ? null : result;
+        },
+
         Format_Money: function (nStr) {
             nStr += '';
             x = nStr.split('.');

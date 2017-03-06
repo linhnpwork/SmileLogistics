@@ -29,8 +29,8 @@ namespace SmileLogistics.Web.modules.functions
                 List<eTransportPlace> all = dalTools.TransportPlace_GetEs();
                 if (all != null)
                 {
-                    string html1 = "<select id=\"info-transplace-1\" class=\"select-select2 select2-hidden-accessible\" style=\"width: auto;\">";
-                    string html2 = "<select id=\"info-transplace-2\" class=\"select-select2 select2-hidden-accessible\" style=\"width: auto;\">";
+                    string html1 = "<select id=\"info-transplace-1\" class=\"select-select2 select2-hidden-accessible\" style=\"width: 100%;\">";
+                    string html2 = "<select id=\"info-transplace-2\" class=\"select-select2 select2-hidden-accessible\" style=\"width: 100%;\">";
 
                     foreach (eTransportPlace obj in all)
                     {

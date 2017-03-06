@@ -51,6 +51,130 @@ namespace SmileLogistics.Web.ajax.modules.functions
                 case "edit_quotation_route":
                     Update_QuotationRoute();
                     break;
+                case "update_quotation_customs":
+                    Update_QuotationCustoms();
+                    break;
+            }
+        }
+
+        private void Update_QuotationCustoms()
+        {
+            string postdata = Request.Form["data"];
+            if (postdata == string.Empty)
+            {
+                DoResponse(JsonConvert.SerializeObject(new GlobalValues.ResponseData()
+                {
+                    Data = null,
+                    ErrorCode = -1,
+                    Message = "Dữ liệu không hợp lệ!",
+                }));
+
+                return;
+            }
+
+            dynamic data;
+            try { data = JsonConvert.DeserializeObject(postdata); }
+            catch { data = null; }
+
+            if (data == null)
+            {
+                DoResponse(JsonConvert.SerializeObject(new GlobalValues.ResponseData()
+                {
+                    Data = null,
+                    ErrorCode = -2,
+                    Message = "Dữ liệu không hợp lệ!",
+                }));
+
+                return;
+            }
+
+            using (DALTools dalTools = new DALTools())
+            {
+                Job job = dalTools.Job_Get(int.Parse(data.jobid.ToString()));
+                if (job == null)
+                {
+                    DoResponse(JsonConvert.SerializeObject(new GlobalValues.ResponseData()
+                    {
+                        Data = null,
+                        ErrorCode = 1,
+                        Message = "Dữ liệu không hợp lệ!",
+                    }));
+
+                    return;
+                }
+
+                DateTime expireStart = CommonUtils.ConvertDateFromVNString(data.expirestart.ToString());
+                DateTime expireEnd = CommonUtils.ConvertDateFromVNString(data.expireend.ToString());
+                if (expireStart == CommonUtils.SQLMinValue || expireEnd == CommonUtils.SQLMinValue)
+                {
+                    DoResponse(JsonConvert.SerializeObject(new GlobalValues.ResponseData()
+                    {
+                        Data = null,
+                        ErrorCode = 4,
+                        Message = "Dữ liệu không hợp lệ!",
+                    }));
+
+                    return;
+                }
+
+                if (expireEnd < DateTime.Now.AddDays(1))
+                {
+                    DoResponse(JsonConvert.SerializeObject(new GlobalValues.ResponseData()
+                    {
+                        Data = null,
+                        ErrorCode = 5,
+                        Message = "Hiệu lực báo giá không hợp lệ!",
+                    }));
+
+                    return;
+                }
+
+                bool isusd = bool.Parse(data.isusd.ToString());
+                double usdrate = double.Parse(data.usdrate.ToString());
+                if (isusd && usdrate <= 0)
+                {
+                    DoResponse(JsonConvert.SerializeObject(new GlobalValues.ResponseData()
+                    {
+                        Data = null,
+                        ErrorCode = 6,
+                        Message = "Tỉ giá USD không hợp lệ!",
+                    }));
+
+                    return;
+                }
+
+                List<aCustomerQuotation_Customs_ByType> feeTypes = JsonConvert.DeserializeObject<List<aCustomerQuotation_Customs_ByType>>(data.feetypes.ToString());
+
+                eCustomerQuotation_Custom obj = new eCustomerQuotation_Custom()
+                {
+                    CustomerID = (int)job.CustomerID,
+                    Description = data.description.ToString(),
+                    Expire_End = expireEnd,
+                    Expire_Start = expireStart,
+                    IsUSD = isusd,
+                    LastestUpdate = DateTime.Now,
+                    UpdatedByID = CurrentSys_User.ID,
+                    USDRate = usdrate,
+                    JobID = job.ID,
+                    aFeeTypes = feeTypes,
+                    DecreasePercentForSecondCont = double.Parse(data.decreasepercent.ToString()),
+                };
+
+                int res = dalTools.CustomerQuotation_Customs_Update(obj);
+                if (res != 0)
+                    DoResponse(JsonConvert.SerializeObject(new GlobalValues.ResponseData()
+                    {
+                        Data = null,
+                        ErrorCode = res,
+                        Message = "Cập nhật thất bại, vui lòng kiểm tra lại dữ liệu!",
+                    }));
+                else
+                    DoResponse(JsonConvert.SerializeObject(new GlobalValues.ResponseData()
+                    {
+                        Data = null,
+                        ErrorCode = 0,
+                        Message = "Cập nhật thành công! Đang chuyển...",
+                    }));
             }
         }
 
