@@ -60,50 +60,17 @@
                 <h3 class="modal-title">Thêm mới Loại phí TTHQ</h3>
             </div>
             <div class="modal-body">
-                <div id="clickable-wizard-vehicletypes" class="form-horizontal form-bordered ui-formwizard">
-                    <div id="tab-info" class="step ui-formwizard-content">
-                        <div class="form-group">
-                            <div class="col-xs-12">
-                                <ul class="nav nav-pills nav-justified clickable-steps">
-                                    <li class="active"><a href="javascript:void(0)" data-gotostep="tab-info"><strong>1. Thông tin</strong></a></li>
-                                    <li><a href="javascript:void(0)" data-gotostep="tab-vehicletypes"><strong>2. Thiết lập Loại tải trọng</strong></a></li>
-                                </ul>
-                            </div>
+                <div class="form-horizontal form-bordered">
+                    <div class="form-group">
+                        <label class="col-md-3 control-label">Tên</label>
+                        <div class="col-md-9">
+                            <input type="text" id="info-name" class="form-control" placeholder="Tên">
                         </div>
-                        <div class="form-group">
-                            <label class="col-md-3 control-label">Tên</label>
-                            <div class="col-md-9">
-                                <input type="text" id="info-name" class="form-control" placeholder="Tên">
-                            </div>
-                        </div>
-                        <div class="form-group">
-                            <label class="col-md-3 control-label">Ghi chú</label>
-                            <div class="col-md-9">
-                                <input type="text" id="info-description" class="form-control" placeholder="Ghi chú">
-                            </div>
-                        </div>
-                        <%--<div class="form-group">
-                            <label class="col-md-3 control-label">Tính theo số lượng?</label>
-                            <div class="col-md-9">
-                                <label class='switch switch-success'>
-                                    <input id="info-isapplybyquantity" type='checkbox' checked><span></span></label>
-                            </div>
-                        </div>--%>
                     </div>
-                    <div id="tab-vehicletypes" class="step ui-formwizard-content">
-                        <div class="form-group">
-                            <div class="col-xs-12">
-                                <ul class="nav nav-pills nav-justified clickable-steps">
-                                    <li><a href="javascript:void(0)" data-gotostep="tab-info"><strong>1. Thông tin</strong></a></li>
-                                    <li class="active"><a href="javascript:void(0)" data-gotostep="tab-vehicletypes"><strong>2. Thiết lập Loại tải trọng</strong></a></li>
-                                </ul>
-                            </div>
-                            <div class="form-group">
-                                <div class="col-md-12">
-                                    <div id="divVehicleTypes" class="table-responsive">
-                                    </div>
-                                </div>
-                            </div>
+                    <div class="form-group">
+                        <label class="col-md-3 control-label">Ghi chú</label>
+                        <div class="col-md-9">
+                            <input type="text" id="info-description" class="form-control" placeholder="Ghi chú">
                         </div>
                     </div>
                     <div id="divModalAlert" class="form-group" style="display: none;">
@@ -152,14 +119,9 @@
                 var sTypes = '<%= _VehicleTypes %>';
                 tthqfeetypes.allTypes = sTypes == '' ? null : JSON.parse(sTypes);
 
-                tthqfeetypes.initvehicletypes();
+                //tthqfeetypes.initvehicletypes();
 
                 tthqfeetypes.loadlist();
-
-                var s = $("#clickable-wizard-vehicletypes");
-                s.formwizard({ disableUIStyles: !0, inDuration: 0, outDuration: 0 });
-                $(".clickable-steps a").on("click", function ()
-                { var r = $(this).data("gotostep"); s.formwizard("show", r) });
             },
 
             initvehicletypes: function () {
@@ -350,29 +312,29 @@
                 data.description = $('#modal-info #info-description').val();
                 //data.isapplybyquantity = $('#modal-info #info-isapplybyquantity').prop('checked');
 
-                data.vehicleloads = new Array();
+                //data.vehicleloads = new Array();
 
-                var types = $('#divVehicleTypes .row-vehicletype');
-                for (var i = 0; i < types.length; i++) {
-                    var typeDOM = types[i];
-                    var typeId = Number($(typeDOM).attr('dat-id'));
-                    var type = this.getobj(typeId, this.allTypes);
-                    if (type != null) {
-                        var checked = $('#vehicletype-select-' + type.ID).prop('checked');
-                        if (!checked) continue;
+                //var types = $('#divVehicleTypes .row-vehicletype');
+                //for (var i = 0; i < types.length; i++) {
+                //    var typeDOM = types[i];
+                //    var typeId = Number($(typeDOM).attr('dat-id'));
+                //    var type = this.getobj(typeId, this.allTypes);
+                //    if (type != null) {
+                //        var checked = $('#vehicletype-select-' + type.ID).prop('checked');
+                //        if (!checked) continue;
 
-                        for (var j = 0; j < type.VehicleLoads.length; j++) {
-                            var load = type.VehicleLoads[j];
-                            var loadDOM = $('#row-vehicleload-' + load.ID);
-                            if (loadDOM.prop('checked')) {
-                                var loadObj = new Object();
-                                loadObj.ID = load.ID;
-                                loadObj.TypeID = type.ID;
-                                data.vehicleloads.push(loadObj);
-                            }
-                        }
-                    }
-                }
+                //        for (var j = 0; j < type.VehicleLoads.length; j++) {
+                //            var load = type.VehicleLoads[j];
+                //            var loadDOM = $('#row-vehicleload-' + load.ID);
+                //            if (loadDOM.prop('checked')) {
+                //                var loadObj = new Object();
+                //                loadObj.ID = load.ID;
+                //                loadObj.TypeID = type.ID;
+                //                data.vehicleloads.push(loadObj);
+                //            }
+                //        }
+                //    }
+                //}
 
                 data.id = tthqfeetypes.mode == "create" ? 0 : tthqfeetypes.currentobj.ID;
 

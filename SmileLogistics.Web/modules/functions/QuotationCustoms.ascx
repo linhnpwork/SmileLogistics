@@ -166,7 +166,7 @@
                     "<table id=\"tblList_FeeTypes\" class=\"table table-vcenter table-striped table-condensed table-hover table-bordered\">" +
                         "<thead>" +
                             "<tr>" +
-                                "<th class=\"text-center\" width=\"60%\">Loại tải trọng</th>" +
+                                "<th class=\"text-center\" width=\"60%\">Loại phí</th>" +
                                 "<th class=\"text-center\">Phí</th>" +
                             "</tr>" +
                         "</thead>" +
@@ -181,47 +181,18 @@
                         "</tr>";
                 }
                 else {
-                    var total = 0;
-
                     for (var i = 0; i < this.allTypes.length; i++) {
                         var type = this.allTypes[i];
-                        if (type.VehicleLoads == null || type.VehicleLoads.length == 0) continue;
-
-                        var detailLoads = null;
-                        if (this.currentobj != null)
-                            detailLoads = globalhelpers.GetListInList(type.ID, this.currentobj.FeeDetails, "FeeTypeID");
-
-                        var htmlType = "";
-                        for (var j = 0; j < type.VehicleLoads.length; j++) {
-                            var load = type.VehicleLoads[j];
-                            var detail = this.currentobj == null ? null : this.getobj(load.ID, detailLoads, "CustomsFeeVehicleLoadID");
-                            if (detail == null && load.IsDeleted) continue;
-
-                            total++;
-
-                            htmlType +=
-                                "<tr id=\"row-feeload-" + type.ID + "-" + load.ID + "\" class=\"row-feeload\">" +
-                                    "<td class=\"text-left\">" + load.VehicleLoadName + "</td>" +
-                                    "<td class=\"text-left\">" +
-                                        "<input type=\"text\" id=\"info-price-" + type.ID + "-" + load.ID + "\" class=\"form-control\" placeholder=\"Phí\" value=\"" + (detail == null ? "0" : detail.Price) + "\">" +
-                                    "</td>" +
-                                "</tr>";
-                        }
+                        var detail = this.currentobj == null ? null : globalhelpers.GetObjInList(type.ID, this.currentobj.FeeDetails, "FeeTypeID");
 
                         html +=
                             "<tr>" +
-                                "<td colspan=\"2\" class=\"text-left\" style=\"font-weight: bold;\">" + type.Name + "</td>" +
-                            "</tr>" +
-                            htmlType;
+                                "<td class=\"text-left\">" + type.Name + "</td>" +
+                                "<td class=\"text-left\">" +
+                                        "<input type=\"text\" id=\"info-price-" + type.ID + "\" class=\"form-control\" placeholder=\"Phí\" value=\"" + (detail == null ? "0" : detail.Price) + "\">" +
+                                    "</td>" +
+                            "</tr>";
                     }
-
-                    if (total == 0)
-                        html +=
-                        "<tr>" +
-                            "<td class=\"text-center\" colspan=\"2\">" +
-                                "<label class='control-label label-quicklink'><a href='/loai-phi-tthq'>Chưa có dữ liệu Loại phí! Nhấp chọn chuyển sang trang Quản lý!</a></label>" +
-                            "</td>" +
-                        "</tr>";
                 }
 
                 html += "</tbody></table>";
@@ -330,29 +301,11 @@
 
                 for (var i = 0; i < this.allTypes.length; i++) {
                     var type = this.allTypes[i];
-                    if (type.VehicleLoads == null || type.VehicleLoads.length == 0) continue;
-
-                    var detailLoads = null;
-                    if (this.currentobj != null)
-                        detailLoads = globalhelpers.GetListInList(type.ID, this.currentobj.FeeDetails, "FeeTypeID");
-
-                    var htmlType = "";
-                    for (var j = 0; j < type.VehicleLoads.length; j++) {
-                        var load = type.VehicleLoads[j];
-                        var detail = this.currentobj == null ? null : this.getobj(load.ID, detailLoads, "CustomsFeeVehicleLoadID");
-                        if (detail == null && load.IsDeleted) continue;
-
-                        var objLoad = new Object();
-
-                        objLoad.Price = Number($('#info-price-' + type.ID + '-' + load.ID).val());
-                        if (isNaN(objLoad.Price))
-                            message += '- Loại phí [' + type.Name + ']-[' + load.VehicleLoadName + '] không hợp lệ!<br/>';
-
-                        objLoad.ID = load.ID;
-                        objLoad.TypeID = type.ID;
-
-                        data.feetypes.push(objLoad);
-                    }
+                    var price = Number($('#info-price-' + type.ID).val());
+                    var objType = new Object();
+                    objType.FeeTypeID = type.ID;
+                    objType.Price = price;
+                    data.feetypes.push(objType);
                 }
 
                 data.id = quotationcustoms.mode == "create" ? 0 : quotationcustoms.currentobj.ID;

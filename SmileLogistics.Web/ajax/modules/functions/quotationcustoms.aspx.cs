@@ -121,7 +121,7 @@ namespace SmileLogistics.Web.ajax.modules.functions
 
             using (DALTools dalTools = new DALTools())
             {
-                List<aCustomsProcess_FeeType_VehicleLoad> feeTypes = JsonConvert.DeserializeObject<List<aCustomsProcess_FeeType_VehicleLoad>>(data.feetypes.ToString());
+                List<aCustomsProcess_QuotationDetail> feeTypes = JsonConvert.DeserializeObject<List<aCustomsProcess_QuotationDetail>>(data.feetypes.ToString());
 
                 CustomsProcess_Quotation obj = new CustomsProcess_Quotation()
                 {
@@ -183,7 +183,7 @@ namespace SmileLogistics.Web.ajax.modules.functions
 
             using (DALTools dalTools = new DALTools())
             {
-                List<aCustomsProcess_FeeType_VehicleLoad> feeTypes = JsonConvert.DeserializeObject<List<aCustomsProcess_FeeType_VehicleLoad>>(data.feetypes.ToString());
+                List<aCustomsProcess_QuotationDetail> feeTypes = JsonConvert.DeserializeObject<List<aCustomsProcess_QuotationDetail>>(data.feetypes.ToString());
 
                 CustomsProcess_Quotation obj = new CustomsProcess_Quotation()
                 {

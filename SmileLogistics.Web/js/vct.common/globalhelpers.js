@@ -18,6 +18,18 @@
             return statusColor.Class;
         },
 
+        GetIndexInList: function (value, list, field) {
+            if (field == undefined) field = "ID";
+            if (list == undefined || list == null || list.length == 0) return -1;
+            if (value == undefined || value == null) return -1;
+
+            for (var i = 0; i < list.length; i++) {
+                if (list[i][field] == value) return i;
+            }
+
+            return -1;
+        },
+
         GetObjInList: function (value, list, field) {
             if (field == undefined) field = "ID";
             if (list == undefined || list == null || list.length == 0) return null;

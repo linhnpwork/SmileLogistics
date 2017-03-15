@@ -134,8 +134,6 @@ namespace SmileLogistics.Web.ajax.modules.functions
                     return;
                 }
 
-                List<aCustomsProcess_FeeType_VehicleLoad> vehicleLoads = JsonConvert.DeserializeObject<List<aCustomsProcess_FeeType_VehicleLoad>>(data.vehicleloads.ToString());
-
                 eCustomsProcess_FeeType obj = new eCustomsProcess_FeeType()
                 {
                     ID = int.Parse(data.id.ToString()),
@@ -145,7 +143,7 @@ namespace SmileLogistics.Web.ajax.modules.functions
                     LastestUpdate = DateTime.Now,
                 };
 
-                int result = dalTools.CustomsProcess_FeeType_Update(obj, vehicleLoads);
+                int result = dalTools.CustomsProcess_FeeType_Update(obj);
                 if (result != 0)
                     DoResponse(JsonConvert.SerializeObject(new GlobalValues.ResponseData()
                     {
@@ -209,8 +207,6 @@ namespace SmileLogistics.Web.ajax.modules.functions
                     return;
                 }
 
-                List<aCustomsProcess_FeeType_VehicleLoad> vehicleLoads = JsonConvert.DeserializeObject<List<aCustomsProcess_FeeType_VehicleLoad>>(data.vehicleloads.ToString());
-
                 eCustomsProcess_FeeType obj = new eCustomsProcess_FeeType()
                 {
                     Description = data.description.ToString(),
@@ -220,7 +216,7 @@ namespace SmileLogistics.Web.ajax.modules.functions
                     LastestUpdate = DateTime.Now,
                 };
 
-                int result = dalTools.CustomsProcess_FeeType_Create(obj, vehicleLoads);
+                int result = dalTools.CustomsProcess_FeeType_Create(obj);
                 if (result != 0)
                     DoResponse(JsonConvert.SerializeObject(new GlobalValues.ResponseData()
                     {

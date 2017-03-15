@@ -143,8 +143,6 @@ namespace SmileLogistics.Web.ajax.modules.functions
                     return;
                 }
 
-                List<aCustomerQuotation_Customs_ByType> feeTypes = JsonConvert.DeserializeObject<List<aCustomerQuotation_Customs_ByType>>(data.feetypes.ToString());
-
                 eCustomerQuotation_Custom obj = new eCustomerQuotation_Custom()
                 {
                     CustomerID = (int)job.CustomerID,
@@ -156,7 +154,6 @@ namespace SmileLogistics.Web.ajax.modules.functions
                     UpdatedByID = CurrentSys_User.ID,
                     USDRate = usdrate,
                     JobID = job.ID,
-                    aFeeTypes = feeTypes,
                     DecreasePercentForSecondCont = double.Parse(data.decreasepercent.ToString()),
                 };
 

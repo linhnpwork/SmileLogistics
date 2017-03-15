@@ -15,7 +15,6 @@ namespace SmileLogistics.DAL.Entities
         public string TKHQNO { get; set; }
         public string JobID { get; set; }
         public int CustomerID { get; set; }
-        public int Quotation_CustomProcID { get; set; }
         public DateTime ProcessedDate { get; set; }
         public DateTime ConsignedDate { get; set; }
         public bool IsConsigned { get; set; }

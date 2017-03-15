@@ -20,7 +20,7 @@ namespace SmileLogistics.Web.modules.functions
         public string _JobID = string.Empty;
         public string _AllCompanies = string.Empty;
         public string _AllCustomsFeeTypes = string.Empty;
-        public string _AllCustomerQuotation_Customs = string.Empty;
+        public string _AllCustomerQuotation_Smiles = string.Empty;
 
         protected void Page_Load(object sender, EventArgs e)
         {
@@ -51,8 +51,8 @@ namespace SmileLogistics.Web.modules.functions
             List<eCustomsProcess_FeeType> allCustomsFeeTypes = dalTools.CustomsProcess_FeeType_GetEs();
             _AllCustomsFeeTypes = allCustomsFeeTypes == null ? string.Empty : JsonConvert.SerializeObject(allCustomsFeeTypes);
 
-            List<eCustomerQuotation_Custom> allCustomerQuotation_Customs = dalTools.CustomerQuotation_Custom_GetEs(new eCustomerQuotation_Custom_Filter() { CustomerID = job.CustomerID });
-            _AllCustomerQuotation_Customs = allCustomerQuotation_Customs == null ? string.Empty : JsonConvert.SerializeObject(allCustomerQuotation_Customs);
+            List<eCustomsProcess_Quotation> allCustomerQuotation_Smiles = dalTools.CustomsProcess_Quotation_GetEs();
+            _AllCustomerQuotation_Smiles = allCustomerQuotation_Smiles == null ? string.Empty : JsonConvert.SerializeObject(allCustomerQuotation_Smiles);
         }
 
         private void LoadTransportCompanies(DALTools dalTools)

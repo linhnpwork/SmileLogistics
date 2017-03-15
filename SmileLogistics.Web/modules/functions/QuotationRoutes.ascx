@@ -411,7 +411,7 @@
                     if (comp.Routes == null || comp.Routes.length == 0)
                         $('#divTransportRoutes').html('<label class="control-label label-quicklink"><a href="/tuyen-duong">Không tìm thấy Tuyến đường! Chuyển sang trang Quản lý?</a></label>');
                     else {
-                        var html = "<select id=\"info-transcomp-routes\" class=\"select-select2 select2-hidden-accessible\" style=\"width: auto;\">";
+                        var html = "<select id=\"info-transcomp-routes\" class=\"form-control\" style=\"width: auto;\">";
 
                         for (var i = 0; i < comp.Routes.length; i++) {
                             var route = comp.Routes[i];
@@ -437,7 +437,7 @@
                     if (comp.VehicleTypes == null || comp.VehicleTypes.length == 0)
                         $('#divVehicleLoads').html('<label class="control-label label-quicklink"><a href="/hang-van-chuyen">Không tìm thấy Thiết lập Loại xe! Chuyển sang trang Quản lý?</a></label>');
                     else {
-                        var html = "<select id=\"info-transcomp-loads\" class=\"select-select2 select2-hidden-accessible\" style=\"width: auto;\">";
+                        var html = "<select id=\"info-transcomp-loads\" class=\"form-control\" style=\"width: auto;\">";
 
                         for (var i = 0; i < comp.VehicleTypes.length; i++) {
                             var type = comp.VehicleTypes[i];
