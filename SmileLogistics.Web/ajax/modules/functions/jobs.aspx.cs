@@ -143,6 +143,8 @@ namespace SmileLogistics.Web.ajax.modules.functions
                     return;
                 }
 
+                List<aCustomerQuotation_CustomsDetail> feeDetails = JsonConvert.DeserializeObject<List<aCustomerQuotation_CustomsDetail>>(data.feetypes.ToString());
+
                 eCustomerQuotation_Custom obj = new eCustomerQuotation_Custom()
                 {
                     CustomerID = (int)job.CustomerID,
@@ -155,9 +157,10 @@ namespace SmileLogistics.Web.ajax.modules.functions
                     USDRate = usdrate,
                     JobID = job.ID,
                     DecreasePercentForSecondCont = double.Parse(data.decreasepercent.ToString()),
+                    BasicQuotationID = int.Parse(data.basequotationid.ToString()),
                 };
 
-                int res = dalTools.CustomerQuotation_Customs_Update(obj);
+                int res = dalTools.CustomerQuotation_Customs_Update(obj, feeDetails);
                 if (res != 0)
                     DoResponse(JsonConvert.SerializeObject(new GlobalValues.ResponseData()
                     {

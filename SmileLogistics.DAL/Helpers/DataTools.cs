@@ -4053,7 +4053,7 @@ namespace SmileLogistics.DAL.Helpers
             }
         }
 
-        public int CustomerQuotation_Customs_Update(eCustomerQuotation_Custom obj)
+        public int CustomerQuotation_Customs_Update(eCustomerQuotation_Custom obj, List<aCustomerQuotation_CustomsDetail> feeDetails)
         {
             try
             {
@@ -4061,6 +4061,11 @@ namespace SmileLogistics.DAL.Helpers
 
                 Job job = DB.Jobs.FirstOrDefault(o => !o.IsDeleted && o.ID == obj.JobID);
                 if (job == null) return 1;
+
+                if (feeDetails == null || feeDetails.Count == 0) return 2;
+
+                CustomsProcess_Quotation baseQuotation = DB.CustomsProcess_Quotations.FirstOrDefault(o => o.ID == obj.BasicQuotationID);
+                if (baseQuotation == null) return 3;
 
                 CustomerQuotation_Custom quotation = job.CustomerQuotation_Customs.FirstOrDefault();
                 if (quotation == null) //Tạo mới
@@ -4098,6 +4103,43 @@ namespace SmileLogistics.DAL.Helpers
                     quotation.USDRate = obj.USDRate;
                     quotation.DecreasePercentForSecondCont = obj.DecreasePercentForSecondCont;
                     quotation.JobID = obj.JobID;
+
+                    DB.SubmitChanges();
+                }
+
+                foreach (aCustomerQuotation_CustomsDetail detail in feeDetails)
+                {
+                    CustomsProcess_QuotationDetail dbBaseQuotationDetail = baseQuotation.CustomsProcess_QuotationDetails.FirstOrDefault(o => o.CustomsFeeID == detail.FeeTypeID);
+
+                    CustomerQuotation_CustomsDetail dbDetail = DB.CustomerQuotation_CustomsDetails.FirstOrDefault(o => o.QuotationID == quotation.ID && o.CustomsProcess_QuotationDetail.CustomsFeeID == detail.FeeTypeID);
+
+                    if (dbDetail == null)//Chưa có
+                    {
+                        dbDetail = new CustomerQuotation_CustomsDetail()
+                        {
+                            Description = detail.Description,
+                            FeeDetailID = dbBaseQuotationDetail.ID,
+                            IsDeleted = false,
+                            LastestUpdated = DateTime.Now,
+                            Order = 1,
+                            Quantity = detail.Quantity,
+                            QuotationID = quotation.ID,
+                            UpdatedBy = obj.UpdatedByID,
+                        };
+
+                        DB.CustomerQuotation_CustomsDetails.InsertOnSubmit(dbDetail);
+                        DB.SubmitChanges();
+                    }
+                    else
+                    {
+                        dbDetail.Description = detail.Description;
+                        dbDetail.IsDeleted = false;
+                        dbDetail.LastestUpdated = DateTime.Now;
+                        dbDetail.Quantity = detail.Quantity;
+                        dbDetail.QuotationID = quotation.ID;
+                        dbDetail.UpdatedBy = obj.UpdatedByID;
+                        DB.SubmitChanges();
+                    }
                 }
 
                 CustomerQuotation_Customs_CalculateFee(job.ID);
@@ -4114,7 +4156,28 @@ namespace SmileLogistics.DAL.Helpers
         {
             try
             {
+                Job job = DB.Jobs.FirstOrDefault(o => !o.IsDeleted && o.ID == jobID);
+                if (job == null) return;
 
+                if (job.CustomerQuotation_Customs == null) return;
+                if (job.CustomerQuotation_Customs.FirstOrDefault().CustomerQuotation_CustomsDetails == null) return;
+
+                bool isFirst = true;
+                foreach (CustomerQuotation_CustomsDetail detail in job.CustomerQuotation_Customs.FirstOrDefault().CustomerQuotation_CustomsDetails.OrderByDescending(o => o.CustomsProcess_QuotationDetail.Price))
+                {
+                    double total = 0;
+                    if (isFirst)
+                    {
+                        total = detail.CustomsProcess_QuotationDetail.Price + (detail.Quantity - 1) * detail.CustomsProcess_QuotationDetail.Price * (100 - job.CustomerQuotation_Customs.FirstOrDefault().DecreasePercentForSecondCont) / 100;
+                        isFirst = false;
+                    }
+                    else
+                        total = detail.Quantity * detail.CustomsProcess_QuotationDetail.Price * (100 - job.CustomerQuotation_Customs.FirstOrDefault().DecreasePercentForSecondCont) / 100;
+
+                    detail.Total = total;
+
+                    DB.SubmitChanges();
+                }
             }
             catch
             {

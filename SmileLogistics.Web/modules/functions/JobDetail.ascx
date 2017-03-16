@@ -706,6 +706,8 @@
                 if (isNaN(data.decreasepercent))
                     message += '- % giảm giá không hợp lệ!<br/>';
 
+                data.basequotationid = Number($('#info-quotation-customs-quotation-by-smiles').val());
+
                 data.feetypes = this.quotationcustoms_details_temp;
                 if (data.feetypes == null || data.feetypes.length == 0)
                     message += '- Báo giá TTHQ không hợp lệ!<br/>';
