@@ -189,6 +189,7 @@
       <Column Name="IsDeleted" Type="System.Boolean" DbType="Bit NOT NULL" CanBeNull="false" />
       <Column Name="LastestUpdated" Type="System.DateTime" DbType="DateTime NOT NULL" CanBeNull="false" />
       <Column Name="UpdatedBy" Type="System.Int32" DbType="Int NOT NULL" CanBeNull="false" />
+      <Column Name="IsUSD" Type="System.Boolean" DbType="Bit NOT NULL" CanBeNull="false" />
       <Association Name="Job_Job_InOutFee" Member="Job" ThisKey="JobID" OtherKey="ID" Type="Job" IsForeignKey="true" />
       <Association Name="Sys_User_Job_InOutFee" Member="Sys_User" ThisKey="UpdatedBy" OtherKey="ID" Type="Sys_User" IsForeignKey="true" />
     </Type>
@@ -264,6 +265,7 @@
       <Column Name="Total_Transport_Out" Type="System.Double" DbType="Float NOT NULL" CanBeNull="false" />
       <Column Name="Total_Customs_Out" Type="System.Double" DbType="Float NOT NULL" CanBeNull="false" />
       <Column Name="Total_Out" Type="System.Double" DbType="Float NOT NULL" CanBeNull="false" />
+      <Column Name="USDRate" Type="System.Double" DbType="Float NOT NULL" CanBeNull="false" />
       <Association Name="Job_Agent_Prepaid" Member="Agent_Prepaids" ThisKey="ID" OtherKey="JobID" Type="Agent_Prepaid" />
       <Association Name="Job_CustomerQuotation_Custom" Member="CustomerQuotation_Customs" ThisKey="ID" OtherKey="JobID" Type="CustomerQuotation_Custom" />
       <Association Name="Job_Job_InOutFee" Member="Job_InOutFees" ThisKey="ID" OtherKey="JobID" Type="Job_InOutFee" />

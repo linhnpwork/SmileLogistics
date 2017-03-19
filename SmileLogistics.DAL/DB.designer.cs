@@ -4364,6 +4364,8 @@ namespace SmileLogistics.DAL
 		
 		private int _UpdatedBy;
 		
+		private bool _IsUSD;
+		
 		private EntityRef<Job> _Job;
 		
 		private EntityRef<Sys_User> _Sys_User;
@@ -4394,6 +4396,8 @@ namespace SmileLogistics.DAL
     partial void OnLastestUpdatedChanged();
     partial void OnUpdatedByChanging(int value);
     partial void OnUpdatedByChanged();
+    partial void OnIsUSDChanging(bool value);
+    partial void OnIsUSDChanged();
     #endregion
 		
 		public Job_InOutFee()
@@ -4627,6 +4631,26 @@ namespace SmileLogistics.DAL
 					this._UpdatedBy = value;
 					this.SendPropertyChanged("UpdatedBy");
 					this.OnUpdatedByChanged();
+				}
+			}
+		}
+		
+		[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_IsUSD", DbType="Bit NOT NULL")]
+		public bool IsUSD
+		{
+			get
+			{
+				return this._IsUSD;
+			}
+			set
+			{
+				if ((this._IsUSD != value))
+				{
+					this.OnIsUSDChanging(value);
+					this.SendPropertyChanging();
+					this._IsUSD = value;
+					this.SendPropertyChanged("IsUSD");
+					this.OnIsUSDChanged();
 				}
 			}
 		}
@@ -5791,6 +5815,8 @@ namespace SmileLogistics.DAL
 		
 		private double _Total_Out;
 		
+		private double _USDRate;
+		
 		private EntitySet<Agent_Prepaid> _Agent_Prepaids;
 		
 		private EntitySet<CustomerQuotation_Custom> _CustomerQuotation_Customs;
@@ -5863,6 +5889,8 @@ namespace SmileLogistics.DAL
     partial void OnTotal_Customs_OutChanged();
     partial void OnTotal_OutChanging(double value);
     partial void OnTotal_OutChanged();
+    partial void OnUSDRateChanging(double value);
+    partial void OnUSDRateChanged();
     #endregion
 		
 		public Job()
@@ -6421,6 +6449,26 @@ namespace SmileLogistics.DAL
 					this._Total_Out = value;
 					this.SendPropertyChanged("Total_Out");
 					this.OnTotal_OutChanged();
+				}
+			}
+		}
+		
+		[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_USDRate", DbType="Float NOT NULL")]
+		public double USDRate
+		{
+			get
+			{
+				return this._USDRate;
+			}
+			set
+			{
+				if ((this._USDRate != value))
+				{
+					this.OnUSDRateChanging(value);
+					this.SendPropertyChanging();
+					this._USDRate = value;
+					this.SendPropertyChanged("USDRate");
+					this.OnUSDRateChanged();
 				}
 			}
 		}

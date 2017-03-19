@@ -3542,6 +3542,7 @@ namespace SmileLogistics.DAL.Helpers
                 updateObj.CustomerID = obj.CustomerID;
                 updateObj.LastestUpdated = DateTime.Now;
                 updateObj.UpdatedBy = obj.UpdatedBy;
+                updateObj.USDRate = obj.USDRate;
 
                 DB.SubmitChanges();
 
@@ -3800,6 +3801,7 @@ namespace SmileLogistics.DAL.Helpers
                     Total_Out = obj.Total_Out,
                     Total_Transport_In = obj.Total_Transport_In,
                     Total_Transport_Out = obj.Total_Transport_Out,
+                    USDRate = obj.USDRate,
 
                     IsDeleted = obj.IsDeleted,
                     LastestUpdate = obj.LastestUpdated,

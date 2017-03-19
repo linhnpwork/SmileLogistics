@@ -72,6 +72,13 @@
                         <div id="divCustomers" runat="server" class="col-md-9">
                         </div>
                     </div>
+                    <div class="form-group">
+                        <label class="col-md-3 control-label">Tỉ giá USD</label>
+                        <div class="col-md-9">
+                            <input type="text" id="info-usdrate" class="form-control" placeholder="1 USD = ? VND" style="width: auto;" value="0">
+                            <span class="help-block">(Dùng dấm chấm '.' để xác định số thập phân! Đây là tỉ giá USD tạm thời, được sử dụng để tính toán trong quá trình xử lý JOB. Nếu trong JOB có sử dụng đồng USD (ở các tính năng: Thu/Chi hộ, ...) thì phải cung cấp tỉ giá này!)</span>
+                        </div>
+                    </div>
                     <div class="form-group form-actions text-right">
                         <a id="btn-do-save-info" onclick="jobs.doAdd();" class="btn btn-sm btn-primary">Lưu</a>
                     </div>
@@ -120,6 +127,18 @@
                     </div>
                     <div class="form-group form-actions text-right">
                         <a id="btn-do-save-status" onclick="jobs.dosave_status();" class="btn btn-sm btn-primary">Lưu</a>
+                    </div>
+                </div>
+            </div>
+            <div class="block full block-related-edit">
+                <div class="block-title">
+                    <h2><strong>Thu/Chi hộ</strong></h2>
+                    <div class="block-options pull-right">
+                        <a onclick="jobs.startAdd_inoutfee();" class="btn btn-sm btn-success" data-toggle="tooltip" title="Thêm mới"><i class="gi gi-plus"></i></a>
+                    </div>
+                </div>
+                <div class="form-horizontal">
+                    <div id="divInOutFees" class="table-responsive">
                     </div>
                 </div>
             </div>
@@ -175,7 +194,8 @@
                             <table id="tblList" class="table table-vcenter table-striped table-condensed table-hover table-bordered">
                                 <thead>
                                     <tr id="tr-quotation-customs-controls" class="row-header-filter">
-                                        <th colspan="5" class="text-right"><a onclick="jobs.startAdd_quotation_customs_detail();" class="btn btn-sm btn-warning" data-toggle="tooltip" title="Thêm mới"><i class="gi gi-plus"></i></a></th>
+                                        <th colspan="4" class="text-left" style="font-weight: normal !important; font-style: italic;">(<b>Lưu ý:</b> mọi thao tác <b>Thêm/Sửa/Xóa</b> danh sách báo giá TTHQ chỉ có hiệu lực khi thực hiện <b>Lưu</b> dữ liệu! Hãy đảm bảo đã tiến hành <b>Lưu</b> khi muốn áp dụng thay đổi thông tin TTHQ!)</th>
+                                        <th class="text-right"><a onclick="jobs.startAdd_quotation_customs_detail();" class="btn btn-sm btn-warning" data-toggle="tooltip" title="Thêm mới"><i class="gi gi-plus"></i></a></th>
                                     </tr>
                                     <tr>
                                         <th class="text-center">Loại phí</th>
@@ -462,6 +482,64 @@
         </div>
     </div>
 </div>
+<div id="modal-info-inoutfee" class="modal fade" tabindex="-1" role="dialog" aria-hidden="true" style="display: none;">
+    <div class="modal-dialog modal-lg">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal" aria-hidden="true">×</button>
+                <h3 class="modal-title">Thêm mới Thu/Chi hộ</h3>
+            </div>
+            <div class="modal-body">
+                <div class="form-horizontal form-bordered">
+                    <div class="form-group">
+                        <label class="col-md-3 control-label">Tên</label>
+                        <div class="col-md-9">
+                            <input type="text" id="info-inoutfee-name" class="form-control" placeholder="Tên mục Thu/Chi hộ" style="width: 100%;">
+                            <%--<span class="help-block">(Dùng dấm chấm '.' để xác định số thập phân!)</span>--%>
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label class="col-md-3 control-label">Tên đơn vị</label>
+                        <div class="col-md-9">
+                            <input type="text" id="info-inoutfee-company" class="form-control" placeholder="Tên đơn vị xuất Hóa đơn" style="width: 100%;">
+                            <%--<span class="help-block">(Dùng dấm chấm '.' để xác định số thập phân!)</span>--%>
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label class="col-md-3 control-label">Số hóa đơn</label>
+                        <div class="col-md-9">
+                            <input type="text" id="info-inoutfee-invoiceno" class="form-control" placeholder="Số Hóa đơn" style="width: auto;">
+                            <%--<span class="help-block">(Dùng dấm chấm '.' để xác định số thập phân!)</span>--%>
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label class="col-md-3 control-label">Ngày xuất Hóa đơn</label>
+                        <div class="col-md-9">
+                            <input type="text" id="info-inoutfee-invoicedate" name="info-inoutfee-invoicedate" class="form-control input-datepicker" data-date-format="dd/mm/yyyy" placeholder="dd/mm/yyyy" style="width: auto;">
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label class="col-md-3 control-label">Số tiền</label>
+                        <div class="col-md-9">
+                            <input type="text" id="info-inoutfee-money" class="form-control" placeholder="Số tiền trên Hóa đơn" style="width: auto;">
+                            <span class="help-block">(Dùng dấm chấm '.' để xác định số thập phân!)</span>
+                        </div>
+                    </div>
+                    <div id="divModalAlert-InOutFees" class="form-group" style="display: none;">
+                        <div class="col-md-3">
+                        </div>
+                        <div id="divModalAlert-content-InOutFees" class="col-md-9">
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <a id="btn-modal-add-close-info-inoutfee" class="btn btn-sm btn-default" data-dismiss="modal">Hủy</a>
+                <a id="btn-do-save-info-inoutfee" onclick="jobs.doAdd_inoutfee();" class="btn btn-sm btn-primary">Lưu</a>
+            </div>
+        </div>
+    </div>
+</div>
 <script type="text/javascript">
     var jobs =
         {
@@ -551,6 +629,79 @@
 
             //-----------------------------------------------------------------------------------------------
 
+            doAdd_inoutfee: function () {
+                var postdata = jobs.validateForm_inoutfee();
+                if (postdata == null)
+                    return;
+
+                NProgress.start();
+                $('#btn-do-save-info-inoutfee').addClass('disabled');
+                $('#btn-do-save-info-inoutfee').html('Đang xử lý...');
+
+                var xhr = new XMLHttpRequest();
+                xhr.open('POST', jobs.ajaxPath + '?ts=' + new Date().getTime().toString());
+                xhr.onload = function () {
+                    NProgress.done();
+
+                    var result = JSON.parse(xhr.responseText);
+                    $('#btn-do-save-info-inoutfee').removeClass('disabled');
+                    $('#btn-do-save-info-inoutfee').html(jobs.mode_inoutfee == 'create' ? 'Thêm' : 'Lưu');
+                    alert(result.Message);
+
+                    if (result.ErrorCode == 0) {
+                        jobs.reloadpage();
+                    }
+                };
+
+                var form = new FormData();
+                form.append('mod', this.mode_inoutfee + '_inoutfee');
+                form.append('data', JSON.stringify(postdata));
+
+                xhr.send(form);
+            },
+
+            validateForm_inoutfee: function () {
+                //var message = '';
+                //var data = new Object();
+
+                //data.jobid = jobs.currentobj.ID;
+
+                //data.name = $('#info-inoutfee-name').val();
+                //if (data.name == "")
+                //    message += '- Tên mục Thu/Chi không hợp lệ!<br/>';
+
+                //data.company = $('#info-inoutfee-company').prop('checked');
+                //if (data.company == "")
+                //    message += '- Tên đơn vị không hợp lệ!<br/>';
+
+                //data.date = $('#info-inoutfee-invoicedate').val();
+                //if (data.date == "")
+                //    message += '- Thời gian xuất Hóa đơn không hợp lệ!<br/>';
+
+                //data.money = Number($('#info-inoutfee-money').val());
+                //if (isNaN(data.money))
+                //    message += '- Số tiền không hợp lệ!<br/>';
+
+                //data.decreasepercent = Number($('#info-quotation-customs-decreasepercent').val());
+                //if (isNaN(data.decreasepercent))
+                //    message += '- % giảm giá không hợp lệ!<br/>';
+
+                //data.basequotationid = Number($('#info-quotation-customs-quotation-by-smiles').val());
+
+                //data.feetypes = this.quotationcustoms_details_temp;
+                //if (data.feetypes == null || data.feetypes.length == 0)
+                //    message += '- Báo giá TTHQ không hợp lệ!<br/>';
+
+                //return data;
+            },
+
+            startAdd_inoutfee: function () {
+                this.mode_inoutfee = 'create';
+                $('#modal-info-inoutfee .modal-header .modal-title').html('Thêm mới Thu/Chi hộ');
+                $('#btn-do-save-inoutfee').html('Thêm');
+                $('#modal-info-inoutfee').modal('show');
+            },
+
             generate_quotationcustoms_feetypes: function () {
                 if (this.allCustomsFeeTypes == null || this.allCustomsFeeTypes.length == 0) {
                     $('#divQuotation_Customs_Detail_FeeTypes').html('<label class="control-label label-quicklink"><a href="/loai-phi-tthq">Chưa có dữ liệu Loại phí TTHQ! Nhấp chọn chuyển sang trang Quản lý!</a></label>');
@@ -584,7 +735,7 @@
             },
 
             doDelete_quotation_customs_detail: function (obj) {
-                
+
             },
 
             quotationcustoms_details_temp: null,
@@ -715,19 +866,18 @@
                 return data;
             },
 
-            generate_quotationcustoms_values_fees:function()
-            {
+            generate_quotationcustoms_values_fees: function () {
                 if (this.quotationcustoms_details_temp == null || this.quotationcustoms_details_temp.length == 0) return;
 
                 var quotationID = Number($('#info-quotation-customs-quotation-by-smiles').val());
                 var customsQuotation = globalhelpers.GetObjInList(quotationID, this.allQuotationCustoms_BySmiles, "ID");
-                if (customsQuotation == null) return;                
+                if (customsQuotation == null) return;
 
                 var html = "";
 
                 for (var i = 0; i < this.quotationcustoms_details_temp.length; i++) {
                     var feeType = this.quotationcustoms_details_temp[i];
-                    
+
                     var quotationDetail = globalhelpers.GetObjInList(feeType.FeeTypeID, customsQuotation.FeeDetails, "FeeTypeID");
                     if (quotationDetail == null) {
                         alert("Không tìm thấy dữ liệu Bảng giá phù hợp!");
@@ -1360,6 +1510,7 @@
                 $('#info-billladingno').val(jobs.currentobj.BillLadingNO);
                 $('#info-tkhq').val(jobs.currentobj.TKHQNO);
                 $('#info-customers').val(jobs.currentobj.CustomerID);
+                $('#info-usdrate').val(jobs.currentobj.USDRate);
 
                 //Status
                 $('#info-isconsigned').prop('checked', jobs.currentobj.IsConsigned);
@@ -1498,6 +1649,10 @@
                 data.tkhq = $('#info-tkhq').val();
 
                 data.customer = Number($('#info-customers').val());
+
+                data.usdrate = Number($('#info-usdrate').val());
+                if (isNaN(data.usdrate))
+                    message += '- Tỉ giá USD không hợp lệ!<br/>';
 
                 data.id = jobs.mode == "create" ? 0 : jobs.currentobj.ID;
 

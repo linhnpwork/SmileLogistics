@@ -837,7 +837,8 @@ namespace SmileLogistics.Web.ajax.modules.functions
                     TKHQNO = data.tkhq.ToString(),
                     CustomerID = int.Parse(data.customer.ToString()),
                     UpdatedBy = CurrentSys_User.ID,
-                    LastestUpdated = DateTime.Now
+                    LastestUpdated = DateTime.Now,
+                    USDRate = double.Parse(data.usdrate.ToString()),
                 };
 
                 int result = dalTools.Job_Update(obj);
@@ -1043,6 +1044,7 @@ namespace SmileLogistics.Web.ajax.modules.functions
                     IsDeleted = false,
                     UpdatedBy = CurrentSys_User.ID,
                     LastestUpdated = DateTime.Now,
+                    USDRate = double.Parse(data.usdrate.ToString()),
                 };
 
                 int result = dalTools.Job_Create(ref obj);

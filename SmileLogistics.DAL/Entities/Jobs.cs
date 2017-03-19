@@ -32,6 +32,7 @@ namespace SmileLogistics.DAL.Entities
         public double Total_Customs_Out { get; set; }
         public double Total_In { get; set; }
         public double Total_Out { get; set; }
+        public double USDRate { get; set; }
 
         public bool IsDeleted { get; set; }
         public eSys_User UpdatedBy { get; set; }
