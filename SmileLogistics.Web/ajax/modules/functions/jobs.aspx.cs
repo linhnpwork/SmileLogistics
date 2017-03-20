@@ -54,6 +54,343 @@ namespace SmileLogistics.Web.ajax.modules.functions
                 case "update_quotation_customs":
                     Update_QuotationCustoms();
                     break;
+                case "create_inoutfee":
+                    Create_InOutFee();
+                    break;
+                case "edit_inoutfee":
+                    Edit_InOutFee();
+                    break;
+                case "loadlist_inoutfees":
+                    LoadList_InOutFees();
+                    break;
+            }
+        }
+
+        private void LoadList_InOutFees()
+        {
+            int jobId = int.Parse(Request.Form["jobid"]);
+            using (DALTools dalTools = new DALTools())
+            {
+                List<eJob_InOutFee> all = dalTools.Job_InOutFee_GetEs(jobId);
+
+                if (all == null || all.Count == 0)
+                    DoResponse(JsonConvert.SerializeObject(new GlobalValues.ResponseData()
+                    {
+                        Data = null,
+                        ErrorCode = 1,
+                        Message = "Không có dữ liệu!",
+                    }));
+                else
+                {
+                    DoResponse(JsonConvert.SerializeObject(new GlobalValues.ResponseData()
+                    {
+                        Data = new
+                        {
+                            List = JsonConvert.SerializeObject(all)
+                        },
+                        ErrorCode = 0,
+                        Message = string.Empty,
+                    }));
+                }
+            }
+        }
+
+        private void Delete_InOutFee()
+        {
+            string sId = Request.Form["id"];
+            if (string.IsNullOrEmpty(sId))
+            {
+                DoResponse(JsonConvert.SerializeObject(new GlobalValues.ResponseData()
+                {
+                    Data = null,
+                    ErrorCode = -1,
+                    Message = "Dữ liệu không hợp lệ!",
+                }));
+
+                return;
+            }
+
+            using (DALTools dalTools = new DALTools())
+            {
+                int id = int.Parse(sId);
+                Job_InOutFee obj = dalTools.Job_InOutFee_Get(id);
+                if (obj == null)
+                {
+                    DoResponse(JsonConvert.SerializeObject(new GlobalValues.ResponseData()
+                    {
+                        Data = null,
+                        ErrorCode = -1,
+                        Message = "Không tìm thấy Mục Thu/Chi hộ!",
+                    }));
+
+                    return;
+                }
+
+                obj.UpdatedBy = CurrentSys_User.ID;
+                if (!dalTools.Job_InOutFee_Delete(obj))
+                    DoResponse(JsonConvert.SerializeObject(new GlobalValues.ResponseData()
+                    {
+                        Data = null,
+                        ErrorCode = 1,
+                        Message = "Xóa thất bại, vui lòng kiểm tra lại dữ liệu!",
+                    }));
+                else
+                    DoResponse(JsonConvert.SerializeObject(new GlobalValues.ResponseData()
+                    {
+                        Data = null,
+                        ErrorCode = 0,
+                        Message = "Xóa thành công! Đang chuyển ...",
+                    }));
+            }
+        }
+
+        private void Create_InOutFee()
+        {
+            string postdata = Request.Form["data"];
+            if (postdata == string.Empty)
+            {
+                DoResponse(JsonConvert.SerializeObject(new GlobalValues.ResponseData()
+                {
+                    Data = null,
+                    ErrorCode = -1,
+                    Message = "Dữ liệu không hợp lệ!",
+                }));
+
+                return;
+            }
+
+            if (Request.Files.Count == 0)
+            {
+                DoResponse(JsonConvert.SerializeObject(new GlobalValues.ResponseData()
+                {
+                    Data = null,
+                    ErrorCode = -1,
+                    Message = "Thiếu tệp đính kèm!",
+                }));
+
+                return;
+            }
+
+            dynamic data;
+            try { data = JsonConvert.DeserializeObject(postdata); }
+            catch { data = null; }
+
+            if (data == null)
+            {
+                DoResponse(JsonConvert.SerializeObject(new GlobalValues.ResponseData()
+                {
+                    Data = null,
+                    ErrorCode = -2,
+                    Message = "Dữ liệu không hợp lệ!",
+                }));
+
+                return;
+            }
+
+            using (DALTools dalTools = new DALTools())
+            {
+                eJob job = dalTools.Job_GetE(int.Parse(data.jobid.ToString()));
+                if (job == null)
+                {
+                    DoResponse(JsonConvert.SerializeObject(new GlobalValues.ResponseData()
+                    {
+                        Data = null,
+                        ErrorCode = 1,
+                        Message = "Dữ liệu không hợp lệ!",
+                    }));
+
+                    return;
+                }
+
+                string attached = string.Empty;
+                if (Request.Files.Count > 0)
+                {
+                    HttpPostedFile file = Request.Files[0];
+                    string ext = file.FileName.Substring(file.FileName.LastIndexOf('.') + 1).ToLower();
+
+                    string folder = "~/uploads/jobs/" + job.ID.ToString() + "/ThuChiHo/";
+                    if (!Directory.Exists(Server.MapPath(ResolveUrl(folder))))
+                        Directory.CreateDirectory(Server.MapPath(ResolveUrl(folder)));
+
+                    attached = folder + DateTime.Now.Ticks.ToString() + "." + ext;
+                    file.SaveAs(Server.MapPath(ResolveUrl(attached)));
+                }
+
+                DateTime invoiceDate = CommonUtils.ConvertDateFromVNString(data.date.ToString());
+                if (invoiceDate == CommonUtils.SQLMinValue)
+                {
+                    DoResponse(JsonConvert.SerializeObject(new GlobalValues.ResponseData()
+                    {
+                        Data = null,
+                        ErrorCode = 4,
+                        Message = "Dữ liệu không hợp lệ!",
+                    }));
+
+                    return;
+                }
+
+                double money = double.Parse(data.money.ToString());
+                if (money < 0)
+                {
+                    DoResponse(JsonConvert.SerializeObject(new GlobalValues.ResponseData()
+                    {
+                        Data = null,
+                        ErrorCode = 8,
+                        Message = "Số tiền không hợp lệ!",
+                    }));
+
+                    return;
+                }
+
+                Job_InOutFee obj = new Job_InOutFee()
+                {
+                    AttachedFiles = attached,
+                    Company = data.company.ToString(),
+                    InvoiceDate = invoiceDate,
+                    InvoiceNO = data.invoiceno.ToString(),
+                    IsDeleted = false,
+                    IsUSD = bool.Parse(data.isusd.ToString()),
+                    JobID = job.ID,
+                    LastestUpdated = DateTime.Now,
+                    Money = money,
+                    Name = data.name.ToString(),
+                    UpdatedBy = CurrentSys_User.ID,
+                };
+
+                int res = dalTools.Job_InOutFee_Create(ref obj);
+                if (res != 0)
+                    DoResponse(JsonConvert.SerializeObject(new GlobalValues.ResponseData()
+                    {
+                        Data = null,
+                        ErrorCode = res,
+                        Message = "Thêm mới thất bại, vui lòng kiểm tra lại dữ liệu!",
+                    }));
+                else
+                    DoResponse(JsonConvert.SerializeObject(new GlobalValues.ResponseData()
+                    {
+                        Data = obj.ID.ToString(),
+                        ErrorCode = 0,
+                        Message = "Thêm mới thành công! Đang chuyển...",
+                    }));
+            }
+        }
+
+        private void Edit_InOutFee()
+        {
+            string postdata = Request.Form["data"];
+            if (postdata == string.Empty)
+            {
+                DoResponse(JsonConvert.SerializeObject(new GlobalValues.ResponseData()
+                {
+                    Data = null,
+                    ErrorCode = -1,
+                    Message = "Dữ liệu không hợp lệ!",
+                }));
+
+                return;
+            }
+
+            dynamic data;
+            try { data = JsonConvert.DeserializeObject(postdata); }
+            catch { data = null; }
+
+            if (data == null)
+            {
+                DoResponse(JsonConvert.SerializeObject(new GlobalValues.ResponseData()
+                {
+                    Data = null,
+                    ErrorCode = -2,
+                    Message = "Dữ liệu không hợp lệ!",
+                }));
+
+                return;
+            }
+
+            using (DALTools dalTools = new DALTools())
+            {
+                eJob job = dalTools.Job_GetE(int.Parse(data.jobid.ToString()));
+                if (job == null)
+                {
+                    DoResponse(JsonConvert.SerializeObject(new GlobalValues.ResponseData()
+                    {
+                        Data = null,
+                        ErrorCode = 1,
+                        Message = "Dữ liệu không hợp lệ!",
+                    }));
+
+                    return;
+                }
+
+                string attached = string.Empty;
+                if (Request.Files.Count > 0)
+                {
+                    HttpPostedFile file = Request.Files[0];
+                    string ext = file.FileName.Substring(file.FileName.LastIndexOf('.') + 1).ToLower();
+
+                    string folder = "~/uploads/jobs/" + job.ID.ToString() + "/ThuChiHo/";
+                    if (!Directory.Exists(Server.MapPath(ResolveUrl(folder))))
+                        Directory.CreateDirectory(Server.MapPath(ResolveUrl(folder)));
+
+                    attached = folder + DateTime.Now.Ticks.ToString() + "." + ext;
+                    file.SaveAs(Server.MapPath(ResolveUrl(attached)));
+                }
+
+                DateTime invoiceDate = CommonUtils.ConvertDateFromVNString(data.date.ToString());
+                if (invoiceDate == CommonUtils.SQLMinValue)
+                {
+                    DoResponse(JsonConvert.SerializeObject(new GlobalValues.ResponseData()
+                    {
+                        Data = null,
+                        ErrorCode = 4,
+                        Message = "Dữ liệu không hợp lệ!",
+                    }));
+
+                    return;
+                }
+
+                double money = double.Parse(data.money.ToString());
+                if (money < 0)
+                {
+                    DoResponse(JsonConvert.SerializeObject(new GlobalValues.ResponseData()
+                    {
+                        Data = null,
+                        ErrorCode = 8,
+                        Message = "Số tiền không hợp lệ!",
+                    }));
+
+                    return;
+                }
+
+                Job_InOutFee obj = new Job_InOutFee()
+                {
+                    ID = int.Parse(data.id.ToString()),
+                    AttachedFiles = attached,
+                    Company = data.company.ToString(),
+                    InvoiceDate = invoiceDate,
+                    InvoiceNO = data.invoiceno.ToString(),
+                    IsUSD = bool.Parse(data.isusd.ToString()),
+                    JobID = job.ID,
+                    LastestUpdated = DateTime.Now,
+                    Money = money,
+                    Name = data.name.ToString(),
+                    UpdatedBy = CurrentSys_User.ID,
+                };
+
+                int res = dalTools.Job_InOutFee_Update(obj);
+                if (res != 0)
+                    DoResponse(JsonConvert.SerializeObject(new GlobalValues.ResponseData()
+                    {
+                        Data = null,
+                        ErrorCode = res,
+                        Message = "Cập nhật thất bại, vui lòng kiểm tra lại dữ liệu!",
+                    }));
+                else
+                    DoResponse(JsonConvert.SerializeObject(new GlobalValues.ResponseData()
+                    {
+                        Data = obj.ID.ToString(),
+                        ErrorCode = 0,
+                        Message = "Cập nhật thành công! Đang chuyển...",
+                    }));
             }
         }
 

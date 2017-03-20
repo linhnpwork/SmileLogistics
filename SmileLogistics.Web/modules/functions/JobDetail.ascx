@@ -525,6 +525,20 @@
                             <span class="help-block">(Dùng dấm chấm '.' để xác định số thập phân!)</span>
                         </div>
                     </div>
+                    <div class="form-group">
+                        <label class="col-md-3 control-label">Sử dụng đồng USD?</label>
+                        <div class="col-md-9">
+                            <label class='switch switch-success'>
+                                <input id="info-inoutfee-isusd" type='checkbox' checked><span></span></label>
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label class="col-md-3 control-label">Tệp đính kèm</label>
+                        <div class="col-md-9">
+                            <span id="info-inoutfee-currentattached" class="help-block"></span>
+                            <input type="file" id="info-inoutfee-attached">
+                        </div>
+                    </div>
                     <div id="divModalAlert-InOutFees" class="form-group" style="display: none;">
                         <div class="col-md-3">
                         </div>
@@ -536,6 +550,24 @@
             <div class="modal-footer">
                 <a id="btn-modal-add-close-info-inoutfee" class="btn btn-sm btn-default" data-dismiss="modal">Hủy</a>
                 <a id="btn-do-save-info-inoutfee" onclick="jobs.doAdd_inoutfee();" class="btn btn-sm btn-primary">Lưu</a>
+            </div>
+        </div>
+    </div>
+</div>
+<div id="modal-delete-inoutfee" class="modal fade" tabindex="-1" role="dialog" aria-hidden="true" style="display: none;">
+    <div class="modal-dialog modal-xs">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal" aria-hidden="true">×</button>
+                <h3 class="modal-title">Xóa Thu/Chi hộ?</h3>
+            </div>
+            <div class="modal-body">
+                Bạn chắc chắn muốn xóa Mục Thu/Chi hộ này <b id="bDeleteName"></b>?<br />
+                <%--<i class="text-danger">(Điều này đồng nghĩa việc xóa kèm theo lịch sử hoạt động!!!)</i>--%>
+            </div>
+            <div class="modal-footer">
+                <a id="btn-modal-delete-close-inoutfee" class="btn btn-sm btn-default" data-dismiss="modal">Hủy</a>
+                <a id="btn-do-delete-inoutfee" onclick="jobs.startdelete_inoutfee();" class="btn btn-sm btn-danger">Xóa</a>
             </div>
         </div>
     </div>
@@ -553,6 +585,7 @@
             allComps: null,
             allQuotation_Comp: null,
             allQuotation_Customer: null,
+            allInOutFees: null,
 
             allCustomsFeeTypes: null,
             allQuotationCustoms_BySmiles: null,
@@ -625,10 +658,135 @@
                 this.generate_companies();
                 this.generate_quotationcustoms_controls_bysmiles();
                 this.generate_quotationcustoms_values();
+                this.loadlist_inoutfees();
             },
 
             //-----------------------------------------------------------------------------------------------
+            currentobj_inoutfee: null,
+            startedit_inoutfee: function (id) {
+                jobs.mode_inoutfee = 'edit';
+                jobs.currentobj_inoutfee = jobs.getobj(id, this.currentobj.InOutFees);
+                if (jobs.currentobj_inoutfee == null) {
+                    alert('Không tìm thấy Mục Thu/Chi hộ!');
+                    return;
+                }
 
+                $('#info-inoutfee-name').val(jobs.currentobj_inoutfee.Name);
+                $('#info-inoutfee-company').val(jobs.currentobj_inoutfee.Company);
+                $('#info-inoutfee-invoiceno').val(jobs.currentobj_inoutfee.InvoiceNO);
+
+                $('#info-inoutfee-invoicedate').val(jobs.currentobj_inoutfee.sInvoiceDate);
+                $('#info-inoutfee-money').val(jobs.currentobj_inoutfee.Money);
+                $('#info-inoutfee-isusd').prop('checked', jobs.currentobj_inoutfee.IsUSD);
+                var file = jobs.currentobj_inoutfee.AttachedFiles.replace('~', '');
+                $('#info-inoutfee-currentattached').html('<a target="_blank" href="' + file + '">' + file + '</a>');
+
+                $('#modal-info-inoutfee .modal-header .modal-title').html('Cập nhật Mục Thu/Chi hộ');
+                $('#btn-do-save-inoutfee').html('Lưu');
+                $('#modal-info-inoutfee').modal('show');
+            },
+
+            startdelete_inoutfee: function (id) {
+                jobs.currentobj_inoutfee = jobs.getobj(id, jobs.currentobj.InOutFees);
+                if (jobs.currentobj_inoutfee == null) {
+                    alert('Không tìm thấy Mục Thu/Chi hộ!');
+                    return;
+                }
+
+                //$('#modal-delete-quotation-route #bDeleteName').html(jobs.currentobj.Name);
+                $('#modal-delete-inoutfee').modal('show');
+            },
+
+            dodelete_inoutfee: function () {
+                NProgress.start();
+                $('#btn-do-delete-inoutfee').addClass('disabled');
+                $('#btn-modal-delete-close-inoutfee').addClass('disabled');
+                $('#btn-do-delete-inoutfee').html('Đang xử lý...');
+
+                $.post(jobs.ajaxPath + '?ts=' + new Date().getTime().toString(),
+                    { 'mod': 'delete_inoutfee', 'id': jobs.currentobj_inoutfee.ID },
+                                function (data) {
+                                    NProgress.done();
+
+                                    var result = JSON.parse(data);
+                                    $('#btn-do-delete-inoutfee').removeClass('disabled');
+                                    $('#btn-modal-delete-close-inoutfee').removeClass('disabled');
+                                    $('#btn-do-delete-inoutfee').html('Xóa');
+                                    alert(result.Message);
+
+                                    if (result.ErrorCode == 0)
+                                        jobs.reloadpage();
+                                });
+            },
+
+            loadlist_inoutfees: function () {
+                //NProgress.start();
+
+                //$.post(jobs.ajaxPath + '?ts=' + new Date().getTime().toString(),
+                //    { 'mod': "loadlist_inoutfees", 'jobid': jobs.currentobj.ID },
+                //                function (data) {
+                //                    NProgress.done();
+                //                    var result = JSON.parse(data);
+
+                var html =
+                    "<table id=\"tblList\" class=\"table table-vcenter table-striped table-condensed table-hover table-bordered\">" +
+                        "<thead>" +
+                            "<tr>" +
+                                "<th class=\"text-center\">STT</th>" +
+                                "<th class=\"text-center\">Tên mục</th>" +
+                                "<th class=\"text-center\">Tên đơn vị</th>" +
+                                "<th class=\"text-center\">Mã Hóa đơn</th>" +
+                                "<th class=\"text-center\">Ngày xuất</th>" +
+                                "<th class=\"text-center\">Số tiền</th>" +
+                                "<th class=\"text-center\">#</th>" +
+                            "</tr>" +
+                        "</thead>" +
+                        "<tbody>";
+
+                if (jobs.currentobj.InOutFees == null) {
+                    html +=
+                        "<tr>" +
+                            "<td class=\"text-center\" colspan=\"7\">" +
+                                "Không có dữ liệu!" +
+                            "</td>" +
+                        "</tr>";
+                }
+                else {
+                    //jobs.allInOutFees = JSON.parse(result.Data.List);
+
+                    for (var i = 0; i < jobs.currentobj.InOutFees.length; i++) {
+                        var obj = jobs.currentobj.InOutFees[i];
+
+                        html +=
+                            "<tr>" +
+                                "<td class=\"text-center\">" +
+                                    (i + 1) +
+                                "</td>" +
+                                "<td class=\"text-center\">" + obj.Name + "</td>" +
+                                "<td class=\"text-center\">" + obj.Company + "</td>" +
+                                "<td class=\"text-center\">" + obj.InvoiceNO + "</td>" +
+                                "<td class=\"text-center\">" + obj.sInvoiceDate + "</td>" +
+                                "<td class=\"text-center\">" + globalhelpers.Format_Money(obj.Money.toFixed(2)) + "</td>" +
+                                "<td class=\"text-center\">" +
+                                    //"<div class=\"btn-group\">" +
+                                        "<a onclick=\"jobs.startedit_inoutfee('" + obj.ID + "');\" href=\"javascript:void(0)\" data-toggle=\"tooltip\" title=\"Sửa\" class=\"btn btn-xs btn-default\"><i class=\"fa fa-pencil\"></i></a>" +
+                                        "<a onclick=\"jobs.startdelete_inoutfee('" + obj.ID + "');\" href=\"javascript:void(0)\" data-toggle=\"tooltip\" title=\"Xóa\" class=\"btn btn-xs btn-danger\"><i class=\"fa fa-times\"></i></a>" +
+                                        "<a target=\"_blank\" href=\"" + obj.AttachedFiles.replace('~', '') + "\" data-toggle=\"tooltip\" title=\"Xem tệp đính kèm\" class=\"btn btn-xs btn-success\"><i class=\"hi hi-paperclip\"></i></a>" +
+                                    //"</div>" +
+                                "</td>" +
+                            "</tr>";
+                    }
+                }
+
+                html += "</tbody></table>";
+
+                $('#divInOutFees').html(html);
+
+                $('[data-toggle="tooltip"]').tooltip();
+                //                    });
+            },
+
+            mode_inoutfee: 'create',
             doAdd_inoutfee: function () {
                 var postdata = jobs.validateForm_inoutfee();
                 if (postdata == null)
@@ -655,44 +813,44 @@
 
                 var form = new FormData();
                 form.append('mod', this.mode_inoutfee + '_inoutfee');
+                form.append('attached', $('#info-inoutfee-attached')[0].files[0]);
                 form.append('data', JSON.stringify(postdata));
 
                 xhr.send(form);
             },
 
+            currentInOutFeeID: null,
             validateForm_inoutfee: function () {
-                //var message = '';
-                //var data = new Object();
+                var message = '';
+                var data = new Object();
 
-                //data.jobid = jobs.currentobj.ID;
+                data.jobid = jobs.currentobj.ID;
 
-                //data.name = $('#info-inoutfee-name').val();
-                //if (data.name == "")
-                //    message += '- Tên mục Thu/Chi không hợp lệ!<br/>';
+                data.name = $('#info-inoutfee-name').val();
+                if (data.name == "")
+                    message += '- Tên mục Thu/Chi không hợp lệ!<br/>';
 
-                //data.company = $('#info-inoutfee-company').prop('checked');
-                //if (data.company == "")
-                //    message += '- Tên đơn vị không hợp lệ!<br/>';
+                data.company = $('#info-inoutfee-company').val();
+                if (data.company == "")
+                    message += '- Tên đơn vị không hợp lệ!<br/>';
 
-                //data.date = $('#info-inoutfee-invoicedate').val();
-                //if (data.date == "")
-                //    message += '- Thời gian xuất Hóa đơn không hợp lệ!<br/>';
+                data.invoiceno = $('#info-inoutfee-invoiceno').val();
+                if (data.company == "")
+                    message += '- Số hóa đơn không hợp lệ!<br/>';
 
-                //data.money = Number($('#info-inoutfee-money').val());
-                //if (isNaN(data.money))
-                //    message += '- Số tiền không hợp lệ!<br/>';
+                data.date = $('#info-inoutfee-invoicedate').val();
+                if (data.date == "")
+                    message += '- Thời gian xuất Hóa đơn không hợp lệ!<br/>';
 
-                //data.decreasepercent = Number($('#info-quotation-customs-decreasepercent').val());
-                //if (isNaN(data.decreasepercent))
-                //    message += '- % giảm giá không hợp lệ!<br/>';
+                data.money = Number($('#info-inoutfee-money').val());
+                if (isNaN(data.money))
+                    message += '- Số tiền không hợp lệ!<br/>';
 
-                //data.basequotationid = Number($('#info-quotation-customs-quotation-by-smiles').val());
+                data.isusd = $('#info-inoutfee-isusd').prop('checked');
 
-                //data.feetypes = this.quotationcustoms_details_temp;
-                //if (data.feetypes == null || data.feetypes.length == 0)
-                //    message += '- Báo giá TTHQ không hợp lệ!<br/>';
+                data.id = jobs.mode_inoutfee == "create" ? 0 : jobs.currentobj_inoutfee.ID;
 
-                //return data;
+                return data;
             },
 
             startAdd_inoutfee: function () {

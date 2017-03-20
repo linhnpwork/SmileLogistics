@@ -3775,6 +3775,11 @@ namespace SmileLogistics.DAL.Helpers
                 foreach (Job_QuotationRoute route in routes)
                     quotationRoutes.Add(Job_QuotationRoute_Entity(route));
 
+                var inoutfees = obj.Job_InOutFees.Where(o => !o.IsDeleted);
+                List<eJob_InOutFee> inoutFees = new List<eJob_InOutFee>();
+                foreach (Job_InOutFee inoutfee in inoutfees)
+                    inoutFees.Add(Job_InOutFee_Entity(inoutfee));
+
                 return new eJob()
                 {
                     AttachedFiles = obj.AttachedFiles,
@@ -3815,6 +3820,7 @@ namespace SmileLogistics.DAL.Helpers
                     Customer = obj.CustomerID == null ? null : Customer_GetE((int)obj.CustomerID),
                     Routes = quotationRoutes.Count == 0 ? null : quotationRoutes,
                     QuotationCustoms = CustomerQuotation_Custom_Entity(obj.CustomerQuotation_Customs.FirstOrDefault(o => !o.IsDeleted)),
+                    InOutFees = inoutFees.Count == 0 ? null : inoutFees,
                 };
             }
             catch
@@ -4478,6 +4484,167 @@ namespace SmileLogistics.DAL.Helpers
                     VehicleLoadID = obj.CustomerQuotation_Route.Quotation_Route.TransportCompany_VehicleType_Load.VehicleLoadID,
                     QuotationCompID = obj.CustomerQuotation_Route.QuotationID,
                     QuotationCustomerID = obj.RouteID,
+                };
+            }
+            catch
+            {
+                return null;
+            }
+        }
+
+        #endregion
+
+        #region Job_InOutFee
+
+        public int Job_InOutFee_Update(Job_InOutFee route)
+        {
+            try
+            {
+                Job_InOutFee obj = DB.Job_InOutFees.FirstOrDefault(o => o.ID == route.ID);
+                if (obj == null) return -1;
+
+                if (!string.IsNullOrEmpty(route.AttachedFiles))
+                    obj.AttachedFiles = route.AttachedFiles;
+                obj.Company = route.Company;
+                obj.InvoiceDate = route.InvoiceDate;
+                obj.InvoiceNO = route.InvoiceNO;
+                obj.IsUSD = route.IsUSD;
+                obj.Money = route.Money;
+                obj.Name = route.Name;
+                obj.LastestUpdated = DateTime.Now;
+                obj.UpdatedBy = route.UpdatedBy;
+
+                DB.SubmitChanges();
+
+                return 0;
+            }
+            catch
+            {
+                return int.MinValue;
+            }
+        }
+
+        public bool Job_InOutFee_Delete(Job_InOutFee job)
+        {
+            try
+            {
+                Job_InOutFee obj = DB.Job_InOutFees.FirstOrDefault(o => o.ID == job.ID);
+                if (obj == null) return false;
+
+                obj.IsDeleted = true;
+                obj.LastestUpdated = DateTime.Now;
+                obj.UpdatedBy = job.UpdatedBy;
+                DB.SubmitChanges();
+
+                Job_CalculateProfit(job.JobID);
+
+                return true;
+            }
+            catch
+            {
+                return false;
+            }
+        }
+
+        public int Job_InOutFee_Create(ref Job_InOutFee obj)
+        {
+            try
+            {
+                DB.Job_InOutFees.InsertOnSubmit(obj);
+                DB.SubmitChanges();
+
+                Job_CalculateProfit(obj.JobID);
+
+                return 0;
+            }
+            catch
+            {
+                return int.MinValue;
+            }
+        }
+
+        public Job_InOutFee Job_InOutFee_Get(int id)
+        {
+            try
+            {
+                return DB.Job_InOutFees.FirstOrDefault(o => !o.IsDeleted && o.ID == id);
+            }
+            catch
+            {
+                return null;
+            }
+        }
+
+        public eJob_InOutFee Job_InOutFee_GetE(int id)
+        {
+            try
+            {
+                return Job_InOutFee_Entity(Job_InOutFee_Get(id));
+            }
+            catch
+            {
+                return null;
+            }
+        }
+
+        public List<Job_InOutFee> Job_InOutFee_Gets(int jobID)
+        {
+            try
+            {
+                var all = DB.Job_InOutFees.Where(o => !o.IsDeleted &&
+                    o.JobID == jobID);
+
+                if (all.Count() == 0) return null;
+
+                return all.OrderBy(o => o.ID).ToList();
+            }
+            catch
+            {
+                return null;
+            }
+        }
+
+        public List<eJob_InOutFee> Job_InOutFee_GetEs(int jobID)
+        {
+            try
+            {
+                var all = Job_InOutFee_Gets(jobID);
+                if (all == null) return null;
+
+                List<eJob_InOutFee> result = new List<eJob_InOutFee>();
+                foreach (Job_InOutFee obj in all)
+                    result.Add(Job_InOutFee_Entity(obj));
+
+                return result;
+            }
+            catch
+            {
+                return null;
+            }
+        }
+
+        public eJob_InOutFee Job_InOutFee_Entity(Job_InOutFee obj, bool includeEntity = true)
+        {
+            try
+            {
+                if (obj == null) return null;
+
+                return new eJob_InOutFee()
+                {
+                    ID = obj.ID,
+                    AttachedFiles = obj.AttachedFiles,
+                    Company = obj.Company,
+                    InvoiceDate = obj.InvoiceDate,
+                    InvoiceNO = obj.InvoiceNO,
+                    IsUSD = obj.IsUSD,
+                    Money = obj.Money,
+                    Name = obj.Name,
+
+                    IsDeleted = obj.IsDeleted,
+                    LastestUpdate = obj.LastestUpdated,
+                    sLastestUpdate = obj.LastestUpdated.ToString(GlobalValues.DateFormat_VN),
+                    UpdatedBy = Sys_User_GetE(obj.UpdatedBy),
+                    sInvoiceDate = obj.InvoiceDate.ToString(GlobalValues.DateFormat_VN),
                 };
             }
             catch
