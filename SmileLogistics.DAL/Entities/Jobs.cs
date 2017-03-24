@@ -47,6 +47,7 @@ namespace SmileLogistics.DAL.Entities
         public List<eJob_QuotationRoute> Routes { get; set; }
         public eCustomerQuotation_Custom QuotationCustoms { get; set; }
         public List<eJob_InOutFee> InOutFees { get; set; }
+        public List<eJob_Prepaid> Prepaids { get; set; }
     }
 
     public class eJobFilter

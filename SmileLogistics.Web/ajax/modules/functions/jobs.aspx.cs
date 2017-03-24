@@ -60,8 +60,20 @@ namespace SmileLogistics.Web.ajax.modules.functions
                 case "edit_inoutfee":
                     Edit_InOutFee();
                     break;
+                case "delete_inoutfee":
+                    Delete_InOutFee();
+                    break;
                 case "loadlist_inoutfees":
                     LoadList_InOutFees();
+                    break;
+                case "create_prepaid":
+                    Create_InOutFee();
+                    break;
+                case "edit_prepaid":
+                    Edit_InOutFee();
+                    break;
+                case "delete_prepaid":
+                    Delete_InOutFee();
                     break;
             }
         }

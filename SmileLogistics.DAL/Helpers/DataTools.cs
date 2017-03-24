@@ -762,6 +762,44 @@ namespace SmileLogistics.DAL.Helpers
             }
         }
 
+        public List<Sys_User> Sys_User_Gets()
+        {
+            try
+            {
+                var all = DB.Sys_Users.Where(o => !o.IsDeleted && o.ID > 1);
+                if (all.Count() == 0) return null;
+
+                List<Sys_User> res = all.OrderBy(o => o.Firstname).ThenBy(o => o.Lastname).ToList();
+
+                if (res.Count == 0) return null;
+
+                return res;
+            }
+            catch
+            {
+                return null;
+            }
+        }
+
+        public List<eSys_User> Sys_User_GetEs()
+        {
+            try
+            {
+                var all = Sys_User_Gets();
+                if (all == null) return null;
+
+                List<eSys_User> result = new List<eSys_User>();
+                foreach (Sys_User obj in all)
+                    result.Add(Sys_User_Entity(obj));
+
+                return result;
+            }
+            catch
+            {
+                return null;
+            }
+        }
+
         public List<Sys_User> Sys_User_Gets(int pageIndex, int pageSize, out int totalPages)
         {
             totalPages = 0;
@@ -3780,6 +3818,11 @@ namespace SmileLogistics.DAL.Helpers
                 foreach (Job_InOutFee inoutfee in inoutfees)
                     inoutFees.Add(Job_InOutFee_Entity(inoutfee));
 
+                //var prepaids = obj.Job_Prepaids.Where(o => !o.IsDeleted);
+                //List<eJob_InOutFee> inoutFees = new List<eJob_InOutFee>();
+                //foreach (Job_InOutFee inoutfee in inoutfees)
+                //    inoutFees.Add(Job_InOutFee_Entity(inoutfee));
+
                 return new eJob()
                 {
                     AttachedFiles = obj.AttachedFiles,
@@ -4481,7 +4524,7 @@ namespace SmileLogistics.DAL.Helpers
                     sVehicleTypeLoad = loadtype.TransportCompany_VehicleType.VehicleType.Name + "-" + loadtype.VehicleLoad.Name,
                     TransCompID = obj.CustomerQuotation_Route.Quotation_Route.TransportCompany_Route.TransCompID,
                     VehicleTypeID = obj.CustomerQuotation_Route.Quotation_Route.TransportCompany_VehicleType_Load.VehicleLoad.VehicleTypeID,
-                    VehicleLoadID = obj.CustomerQuotation_Route.Quotation_Route.TransportCompany_VehicleType_Load.VehicleLoadID,
+                    VehicleLoadID = obj.CustomerQuotation_Route.Quotation_Route.TransportCompany_VehicleType_Load.ID,//.VehicleLoad.ID,
                     QuotationCompID = obj.CustomerQuotation_Route.QuotationID,
                     QuotationCustomerID = obj.RouteID,
                 };

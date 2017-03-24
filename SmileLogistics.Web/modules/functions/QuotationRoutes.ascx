@@ -212,7 +212,7 @@
                 }
 
                 $('#modal-info #info-transcomp').val(quotationroutes.currentobj.Route.TransCompID);
-                $('#modal-info #info-route').val(quotationroutes.currentobj.RouteID);
+                $('#modal-info #info-transcomp-routes').val(quotationroutes.currentobj.RouteID);
                 $('#modal-info #info-load').val(quotationroutes.currentobj.VehicleLoadID);
                 $('#modal-info #info-price').val(quotationroutes.currentobj.Price);
                 $('#modal-info #info-issameprice').prop('checked', quotationroutes.currentobj.IsSamePrice);

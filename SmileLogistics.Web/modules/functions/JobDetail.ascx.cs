@@ -21,6 +21,7 @@ namespace SmileLogistics.Web.modules.functions
         public string _AllCompanies = string.Empty;
         public string _AllCustomsFeeTypes = string.Empty;
         public string _AllCustomerQuotation_Smiles = string.Empty;
+        public string _AllEmployees = string.Empty;
 
         protected void Page_Load(object sender, EventArgs e)
         {
@@ -39,8 +40,32 @@ namespace SmileLogistics.Web.modules.functions
 
                     LoadCustomsFeeTypes(dalTools);
 
+                    LoadEmployees(dalTools);
+
                     LoadJobDetail(dalTools);
                 }
+            }
+        }
+
+        private void LoadEmployees(DALTools dalTools)
+        {
+            List<eSys_User> all = dalTools.Sys_User_GetEs();
+            if (all != null)
+            {
+                string html = "<select id=\"info-prepaid-employee\" class=\"form-control\" style=\"width: auto;\">";
+
+                foreach (eSys_User obj in all)
+                {
+                    html += "<option value=\"" + obj.ID.ToString() + "\">" + obj.Firstname + ", " + obj.Lastname + "</option>";
+                }
+
+                html += "</select>";
+
+                divPrepaidEmployees.InnerHtml = html;
+            }
+            else
+            {
+                divPrepaidEmployees.InnerHtml = "<label class='control-label label-quicklink'><a href='/sysadmins'>Chưa có dữ liệu Nhân viên! Nhấp chọn chuyển sang trang Quản lý!</a></label>";
             }
         }
 

@@ -260,13 +260,11 @@
                 <div class="block-title">
                     <h2>Tạm ứng cho <strong>Nhân viên</strong></h2>
                     <div class="block-options pull-right">
-                        <a onclick="vehicletypes.startAdd();" class="btn btn-sm btn-success" data-toggle="tooltip" title="Thêm mới"><i class="gi gi-plus"></i></a>
+                        <a onclick="jobs.startAdd_prepaid();" class="btn btn-sm btn-success" data-toggle="tooltip" title="Thêm mới"><i class="gi gi-plus"></i></a>
                     </div>
                 </div>
                 <div class="form-horizontal">
                     <div id="divAgentPrepaids" class="table-responsive">
-                    </div>
-                    <div id="divPaging_AgentPrepaids" class="form-group form-actions">
                     </div>
                 </div>
             </div>
@@ -573,6 +571,66 @@
         </div>
     </div>
 </div>
+<div id="modal-info-prepaid" class="modal fade" tabindex="-1" role="dialog" aria-hidden="true" style="display: none;">
+    <div class="modal-dialog modal-lg">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal" aria-hidden="true">×</button>
+                <h3 class="modal-title">Thêm mới Tạm ứng</h3>
+            </div>
+            <div class="modal-body">
+                <div class="form-horizontal form-bordered">
+                    <div class="form-group">
+                        <label class="col-md-3 control-label">Nhân viên</label>
+                        <div id="divPrepaidEmployees" runat="server" class="col-md-9">
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label class="col-md-3 control-label">Số tiền</label>
+                        <div class="col-md-9">
+                            <input type="text" id="info-prepaid-money" class="form-control" placeholder="Số tiền tạm ứng" style="width: auto;">
+                            <span class="help-block">(Dùng dấm chấm '.' để xác định số thập phân!)</span>
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label class="col-md-3 control-label">Ghi chú</label>
+                        <div class="col-md-9">
+                            <input type="text" id="info-prepaid-description" class="form-control" placeholder="Ghi chú" style="width: 100%;">
+                        </div>
+                    </div>
+                    <div id="divModalAlert-Prepaids" class="form-group" style="display: none;">
+                        <div class="col-md-3">
+                        </div>
+                        <div id="divModalAlert-content-Prepaids" class="col-md-9">
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <a id="btn-modal-add-close-info-prepaid" class="btn btn-sm btn-default" data-dismiss="modal">Hủy</a>
+                <a id="btn-do-save-info-prepaid" onclick="jobs.doAdd_prepaid();" class="btn btn-sm btn-primary">Lưu</a>
+            </div>
+        </div>
+    </div>
+</div>
+<div id="modal-delete-prepaid" class="modal fade" tabindex="-1" role="dialog" aria-hidden="true" style="display: none;">
+    <div class="modal-dialog modal-xs">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal" aria-hidden="true">×</button>
+                <h3 class="modal-title">Xóa Tạm ứng?</h3>
+            </div>
+            <div class="modal-body">
+                Bạn chắc chắn muốn xóa Tạm ứng này?<br />
+                <%--<i class="text-danger">(Điều này đồng nghĩa việc xóa kèm theo lịch sử hoạt động!!!)</i>--%>
+            </div>
+            <div class="modal-footer">
+                <a id="btn-modal-delete-close-prepaid" class="btn btn-sm btn-default" data-dismiss="modal">Hủy</a>
+                <a id="btn-do-delete-prepaid" onclick="jobs.startdelete_prepaid();" class="btn btn-sm btn-danger">Xóa</a>
+            </div>
+        </div>
+    </div>
+</div>
 <script type="text/javascript">
     var jobs =
         {
@@ -663,6 +721,179 @@
             },
 
             //-----------------------------------------------------------------------------------------------
+            currentobj_prepaid: null,
+            startedit_prepaid: function (id) {
+                jobs.mode_prepaid = 'edit';
+                jobs.currentobj_prepaid = jobs.getobj(id, this.currentobj.Prepaids);
+                if (jobs.currentobj_prepaid == null) {
+                    alert('Không tìm thấy Tạm ứng!');
+                    return;
+                }
+
+                $('#info-prepaid-employee').val(jobs.currentobj_prepaid.EmployID);
+                $('#info-prepaid-money').val(jobs.currentobj_prepaid.Money);
+                $('#info-prepaid-description').val(jobs.currentobj_prepaid.Description);
+
+                $('#modal-info-prepaid .modal-header .modal-title').html('Cập nhật Tạm ứng');
+                $('#btn-do-save-prepaid').html('Lưu');
+                $('#modal-info-prepaid').modal('show');
+            },
+
+            startdelete_prepaid: function (id) {
+                jobs.currentobj_prepaid = jobs.getobj(id, jobs.currentobj.Prepaids);
+                if (jobs.currentobj_prepaid == null) {
+                    alert('Không tìm thấy Tạm ứng!');
+                    return;
+                }
+
+                $('#modal-delete-prepaid').modal('show');
+            },
+
+            dodelete_prepaid: function () {
+                NProgress.start();
+                $('#btn-do-delete-prepaid').addClass('disabled');
+                $('#btn-modal-delete-close-prepaid').addClass('disabled');
+                $('#btn-do-delete-prepaid').html('Đang xử lý...');
+
+                $.post(jobs.ajaxPath + '?ts=' + new Date().getTime().toString(),
+                    { 'mod': 'delete_prepaid', 'id': jobs.currentobj_prepaid.ID },
+                                function (data) {
+                                    NProgress.done();
+
+                                    var result = JSON.parse(data);
+                                    $('#btn-do-delete-prepaid').removeClass('disabled');
+                                    $('#btn-modal-delete-close-prepaid').removeClass('disabled');
+                                    $('#btn-do-delete-prepaid').html('Xóa');
+                                    alert(result.Message);
+
+                                    if (result.ErrorCode == 0)
+                                        jobs.reloadpage();
+                                });
+            },
+
+            loadlist_prepaids: function () {
+                //NProgress.start();
+
+                //$.post(jobs.ajaxPath + '?ts=' + new Date().getTime().toString(),
+                //    { 'mod': "loadlist_prepaids", 'jobid': jobs.currentobj.ID },
+                //                function (data) {
+                //                    NProgress.done();
+                //                    var result = JSON.parse(data);
+
+                var html =
+                    "<table id=\"tblList\" class=\"table table-vcenter table-striped table-condensed table-hover table-bordered\">" +
+                        "<thead>" +
+                            "<tr>" +
+                                "<th class=\"text-center\">STT</th>" +
+                                "<th class=\"text-center\">Nhân viên</th>" +
+                                "<th class=\"text-center\">Ghi chú</th>" +
+                                "<th class=\"text-center\">Số tiền</th>" +
+                                "<th class=\"text-center\">Ngày tạm ứng</th>" +
+                                "<th class=\"text-center\">#</th>" +
+                            "</tr>" +
+                        "</thead>" +
+                        "<tbody>";
+
+                if (jobs.currentobj.Prepaids == null) {
+                    html +=
+                        "<tr>" +
+                            "<td class=\"text-center\" colspan=\"6\">" +
+                                "Không có dữ liệu!" +
+                            "</td>" +
+                        "</tr>";
+                }
+                else {
+                    //jobs.allprepaids = JSON.parse(result.Data.List);
+
+                    for (var i = 0; i < jobs.currentobj.Prepaids.length; i++) {
+                        var obj = jobs.currentobj.Prepaids[i];
+
+                        html +=
+                            "<tr>" +
+                                "<td class=\"text-center\">" +
+                                    (i + 1) +
+                                "</td>" +
+                                "<td class=\"text-center\">" + obj.EmployName + "</td>" +
+                                "<td class=\"text-center\">" + obj.Description + "</td>" +
+                                "<td class=\"text-center\">" + globalhelpers.Format_Money(obj.Money.toFixed(2)) + "</td>" +
+                                "<td class=\"text-center\">" + obj.sPrepaidDate + "</td>" +
+                                "<td class=\"text-center\">" +
+                                        "<a onclick=\"jobs.startedit_prepaid('" + obj.ID + "');\" href=\"javascript:void(0)\" data-toggle=\"tooltip\" title=\"Sửa\" class=\"btn btn-xs btn-default\"><i class=\"fa fa-pencil\"></i></a>" +
+                                        "<a onclick=\"jobs.startdelete_prepaid('" + obj.ID + "');\" href=\"javascript:void(0)\" data-toggle=\"tooltip\" title=\"Xóa\" class=\"btn btn-xs btn-danger\"><i class=\"fa fa-times\"></i></a>" +
+                                "</td>" +
+                            "</tr>";
+                    }
+                }
+
+                html += "</tbody></table>";
+
+                $('#divAgentPrepaids').html(html);
+
+                $('[data-toggle="tooltip"]').tooltip();
+                //                    });
+            },
+
+            mode_prepaid: 'create',
+            doAdd_prepaid: function () {
+                var postdata = jobs.validateForm_prepaid();
+                if (postdata == null)
+                    return;
+
+                NProgress.start();
+                $('#btn-do-save-info-prepaid').addClass('disabled');
+                $('#btn-do-save-info-prepaid').html('Đang xử lý...');
+
+                var xhr = new XMLHttpRequest();
+                xhr.open('POST', jobs.ajaxPath + '?ts=' + new Date().getTime().toString());
+                xhr.onload = function () {
+                    NProgress.done();
+
+                    var result = JSON.parse(xhr.responseText);
+                    $('#btn-do-save-info-prepaid').removeClass('disabled');
+                    $('#btn-do-save-info-prepaid').html(jobs.mode_inoutfee == 'create' ? 'Thêm' : 'Lưu');
+                    alert(result.Message);
+
+                    if (result.ErrorCode == 0) {
+                        jobs.reloadpage();
+                    }
+                };
+
+                var form = new FormData();
+                form.append('mod', this.mode_prepaid + '_prepaid');
+                form.append('data', JSON.stringify(postdata));
+
+                xhr.send(form);
+            },
+
+            currentPrepaidID: null,
+            validateForm_prepaid: function () {
+                var message = '';
+                var data = new Object();
+
+                data.jobid = jobs.currentobj.ID;
+
+                data.employID = Number($('#info-prepaid-employee').val());
+                if (isNaN(data.employID))
+                    message += '- Nhân viên không hợp lệ!<br/>';
+
+                data.description = $('#info-prepaid-description').val();
+
+                data.money = Number($('#info-prepaid-money').val());
+                if (isNaN(data.money))
+                    message += '- Số tiền không hợp lệ!<br/>';
+
+                data.id = jobs.mode_prepaid == "create" ? 0 : jobs.currentobj_prepaid.ID;
+
+                return data;
+            },
+
+            startAdd_prepaid: function () {
+                this.mode_prepaid = 'create';
+                $('#modal-info-prepaid .modal-header .modal-title').html('Thêm mới Tạm ứng');
+                $('#btn-do-save-prepaid').html('Thêm');
+                $('#modal-info-prepaid').modal('show');
+            },
+
             currentobj_inoutfee: null,
             startedit_inoutfee: function (id) {
                 jobs.mode_inoutfee = 'edit';

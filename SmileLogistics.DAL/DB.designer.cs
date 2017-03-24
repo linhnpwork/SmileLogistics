@@ -4766,9 +4766,13 @@ namespace SmileLogistics.DAL
 		
 		private int _UpdatedBy;
 		
+		private int _EmployID;
+		
 		private EntityRef<Job> _Job;
 		
 		private EntityRef<Sys_User> _Sys_User;
+		
+		private EntityRef<Sys_User> _Sys_User1;
 		
     #region Extensibility Method Definitions
     partial void OnLoaded();
@@ -4790,12 +4794,15 @@ namespace SmileLogistics.DAL
     partial void OnLastestUpdatedChanged();
     partial void OnUpdatedByChanging(int value);
     partial void OnUpdatedByChanged();
+    partial void OnEmployIDChanging(int value);
+    partial void OnEmployIDChanged();
     #endregion
 		
 		public Job_Prepaid()
 		{
 			this._Job = default(EntityRef<Job>);
 			this._Sys_User = default(EntityRef<Sys_User>);
+			this._Sys_User1 = default(EntityRef<Sys_User>);
 			OnCreated();
 		}
 		
@@ -4954,7 +4961,7 @@ namespace SmileLogistics.DAL
 			{
 				if ((this._UpdatedBy != value))
 				{
-					if (this._Sys_User.HasLoadedOrAssignedValue)
+					if (this._Sys_User1.HasLoadedOrAssignedValue)
 					{
 						throw new System.Data.Linq.ForeignKeyReferenceAlreadyHasValueException();
 					}
@@ -4963,6 +4970,30 @@ namespace SmileLogistics.DAL
 					this._UpdatedBy = value;
 					this.SendPropertyChanged("UpdatedBy");
 					this.OnUpdatedByChanged();
+				}
+			}
+		}
+		
+		[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_EmployID", DbType="Int NOT NULL")]
+		public int EmployID
+		{
+			get
+			{
+				return this._EmployID;
+			}
+			set
+			{
+				if ((this._EmployID != value))
+				{
+					if (this._Sys_User.HasLoadedOrAssignedValue)
+					{
+						throw new System.Data.Linq.ForeignKeyReferenceAlreadyHasValueException();
+					}
+					this.OnEmployIDChanging(value);
+					this.SendPropertyChanging();
+					this._EmployID = value;
+					this.SendPropertyChanged("EmployID");
+					this.OnEmployIDChanged();
 				}
 			}
 		}
@@ -5001,7 +5032,7 @@ namespace SmileLogistics.DAL
 			}
 		}
 		
-		[global::System.Data.Linq.Mapping.AssociationAttribute(Name="Sys_User_Job_Prepaid", Storage="_Sys_User", ThisKey="UpdatedBy", OtherKey="ID", IsForeignKey=true)]
+		[global::System.Data.Linq.Mapping.AssociationAttribute(Name="Sys_User_Job_Prepaid", Storage="_Sys_User", ThisKey="EmployID", OtherKey="ID", IsForeignKey=true)]
 		public Sys_User Sys_User
 		{
 			get
@@ -5024,13 +5055,47 @@ namespace SmileLogistics.DAL
 					if ((value != null))
 					{
 						value.Job_Prepaids.Add(this);
+						this._EmployID = value.ID;
+					}
+					else
+					{
+						this._EmployID = default(int);
+					}
+					this.SendPropertyChanged("Sys_User");
+				}
+			}
+		}
+		
+		[global::System.Data.Linq.Mapping.AssociationAttribute(Name="Sys_User_Job_Prepaid1", Storage="_Sys_User1", ThisKey="UpdatedBy", OtherKey="ID", IsForeignKey=true)]
+		public Sys_User Sys_User1
+		{
+			get
+			{
+				return this._Sys_User1.Entity;
+			}
+			set
+			{
+				Sys_User previousValue = this._Sys_User1.Entity;
+				if (((previousValue != value) 
+							|| (this._Sys_User1.HasLoadedOrAssignedValue == false)))
+				{
+					this.SendPropertyChanging();
+					if ((previousValue != null))
+					{
+						this._Sys_User1.Entity = null;
+						previousValue.Job_Prepaids1.Remove(this);
+					}
+					this._Sys_User1.Entity = value;
+					if ((value != null))
+					{
+						value.Job_Prepaids1.Add(this);
 						this._UpdatedBy = value.ID;
 					}
 					else
 					{
 						this._UpdatedBy = default(int);
 					}
-					this.SendPropertyChanged("Sys_User");
+					this.SendPropertyChanged("Sys_User1");
 				}
 			}
 		}
@@ -7982,6 +8047,8 @@ namespace SmileLogistics.DAL
 		
 		private EntitySet<Job_Prepaid> _Job_Prepaids;
 		
+		private EntitySet<Job_Prepaid> _Job_Prepaids1;
+		
 		private EntitySet<Job_QuotationRoute> _Job_QuotationRoutes;
 		
 		private EntitySet<Job> _Jobs;
@@ -8049,6 +8116,7 @@ namespace SmileLogistics.DAL
 			this._GoodsTypes = new EntitySet<GoodsType>(new Action<GoodsType>(this.attach_GoodsTypes), new Action<GoodsType>(this.detach_GoodsTypes));
 			this._Job_InOutFees = new EntitySet<Job_InOutFee>(new Action<Job_InOutFee>(this.attach_Job_InOutFees), new Action<Job_InOutFee>(this.detach_Job_InOutFees));
 			this._Job_Prepaids = new EntitySet<Job_Prepaid>(new Action<Job_Prepaid>(this.attach_Job_Prepaids), new Action<Job_Prepaid>(this.detach_Job_Prepaids));
+			this._Job_Prepaids1 = new EntitySet<Job_Prepaid>(new Action<Job_Prepaid>(this.attach_Job_Prepaids1), new Action<Job_Prepaid>(this.detach_Job_Prepaids1));
 			this._Job_QuotationRoutes = new EntitySet<Job_QuotationRoute>(new Action<Job_QuotationRoute>(this.attach_Job_QuotationRoutes), new Action<Job_QuotationRoute>(this.detach_Job_QuotationRoutes));
 			this._Jobs = new EntitySet<Job>(new Action<Job>(this.attach_Jobs), new Action<Job>(this.detach_Jobs));
 			this._Quotation_Routes = new EntitySet<Quotation_Route>(new Action<Quotation_Route>(this.attach_Quotation_Routes), new Action<Quotation_Route>(this.detach_Quotation_Routes));
@@ -8482,7 +8550,7 @@ namespace SmileLogistics.DAL
 			}
 		}
 		
-		[global::System.Data.Linq.Mapping.AssociationAttribute(Name="Sys_User_Job_Prepaid", Storage="_Job_Prepaids", ThisKey="ID", OtherKey="UpdatedBy")]
+		[global::System.Data.Linq.Mapping.AssociationAttribute(Name="Sys_User_Job_Prepaid", Storage="_Job_Prepaids", ThisKey="ID", OtherKey="EmployID")]
 		public EntitySet<Job_Prepaid> Job_Prepaids
 		{
 			get
@@ -8492,6 +8560,19 @@ namespace SmileLogistics.DAL
 			set
 			{
 				this._Job_Prepaids.Assign(value);
+			}
+		}
+		
+		[global::System.Data.Linq.Mapping.AssociationAttribute(Name="Sys_User_Job_Prepaid1", Storage="_Job_Prepaids1", ThisKey="ID", OtherKey="UpdatedBy")]
+		public EntitySet<Job_Prepaid> Job_Prepaids1
+		{
+			get
+			{
+				return this._Job_Prepaids1;
+			}
+			set
+			{
+				this._Job_Prepaids1.Assign(value);
 			}
 		}
 		
@@ -8820,6 +8901,18 @@ namespace SmileLogistics.DAL
 		{
 			this.SendPropertyChanging();
 			entity.Sys_User = null;
+		}
+		
+		private void attach_Job_Prepaids1(Job_Prepaid entity)
+		{
+			this.SendPropertyChanging();
+			entity.Sys_User1 = this;
+		}
+		
+		private void detach_Job_Prepaids1(Job_Prepaid entity)
+		{
+			this.SendPropertyChanging();
+			entity.Sys_User1 = null;
 		}
 		
 		private void attach_Job_QuotationRoutes(Job_QuotationRoute entity)
