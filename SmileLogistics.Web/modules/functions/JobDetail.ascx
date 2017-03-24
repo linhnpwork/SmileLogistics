@@ -132,13 +132,22 @@
             </div>
             <div class="block full block-related-edit">
                 <div class="block-title">
-                    <h2><strong>Thu/Chi hộ</strong></h2>
-                    <div class="block-options pull-right">
-                        <a onclick="jobs.startAdd_inoutfee();" class="btn btn-sm btn-success" data-toggle="tooltip" title="Thêm mới"><i class="gi gi-plus"></i></a>
-                    </div>
+                    <h2>Thanh toán từ <strong>Khách hàng</strong></h2>
                 </div>
-                <div class="form-horizontal">
-                    <div id="divInOutFees" class="table-responsive">
+                <div class="form-horizontal form-bordered">
+                    <div class="form-group">
+                        <label class="col-md-4 control-label">Khách hàng đã thanh toán?</label>
+                        <div class="col-md-8">
+                            <label class='switch switch-success'>
+                                <input id="info-ispaidfromcustomer" type='checkbox'><span></span></label>
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <div id="divCustomerPrepaids" class="table-responsive">
+                        </div>
+                    </div>
+                    <div class="form-group form-actions text-right">
+                        <a id="btn-do-save-customerpayment" class="btn btn-sm btn-primary">Lưu</a>
                     </div>
                 </div>
             </div>
@@ -237,6 +246,18 @@
             </div>
             <div class="block full block-related-edit">
                 <div class="block-title">
+                    <h2><strong>Thu/Chi hộ</strong></h2>
+                    <div class="block-options pull-right">
+                        <a onclick="jobs.startAdd_inoutfee();" class="btn btn-sm btn-success" data-toggle="tooltip" title="Thêm mới"><i class="gi gi-plus"></i></a>
+                    </div>
+                </div>
+                <div class="form-horizontal">
+                    <div id="divInOutFees" class="table-responsive">
+                    </div>
+                </div>
+            </div>
+            <div class="block full block-related-edit">
+                <div class="block-title">
                     <h2>Tạm ứng cho <strong>Nhân viên</strong></h2>
                     <div class="block-options pull-right">
                         <a onclick="vehicletypes.startAdd();" class="btn btn-sm btn-success" data-toggle="tooltip" title="Thêm mới"><i class="gi gi-plus"></i></a>
@@ -249,27 +270,7 @@
                     </div>
                 </div>
             </div>
-            <div class="block full block-related-edit">
-                <div class="block-title">
-                    <h2>Thanh toán từ <strong>Khách hàng</strong></h2>
-                </div>
-                <div class="form-horizontal form-bordered">
-                    <div class="form-group">
-                        <label class="col-md-4 control-label">Khách hàng đã thanh toán?</label>
-                        <div class="col-md-8">
-                            <label class='switch switch-success'>
-                                <input id="info-ispaidfromcustomer" type='checkbox'><span></span></label>
-                        </div>
-                    </div>
-                    <div class="form-group">
-                        <div id="divCustomerPrepaids" class="table-responsive">
-                        </div>
-                    </div>
-                    <div class="form-group form-actions text-right">
-                        <a id="btn-do-save-customerpayment" class="btn btn-sm btn-primary">Lưu</a>
-                    </div>
-                </div>
-            </div>
+
         </div>
     </div>
 </div>
@@ -738,6 +739,7 @@
                                 "<th class=\"text-center\">Mã Hóa đơn</th>" +
                                 "<th class=\"text-center\">Ngày xuất</th>" +
                                 "<th class=\"text-center\">Số tiền</th>" +
+                                "<th class=\"text-center\">Đính kèm</th>" +
                                 "<th class=\"text-center\">#</th>" +
                             "</tr>" +
                         "</thead>" +
@@ -746,7 +748,7 @@
                 if (jobs.currentobj.InOutFees == null) {
                     html +=
                         "<tr>" +
-                            "<td class=\"text-center\" colspan=\"7\">" +
+                            "<td class=\"text-center\" colspan=\"8\">" +
                                 "Không có dữ liệu!" +
                             "</td>" +
                         "</tr>";
@@ -768,11 +770,11 @@
                                 "<td class=\"text-center\">" + obj.sInvoiceDate + "</td>" +
                                 "<td class=\"text-center\">" + globalhelpers.Format_Money(obj.Money.toFixed(2)) + "</td>" +
                                 "<td class=\"text-center\">" +
-                                    //"<div class=\"btn-group\">" +
+                                        "<a target=\"_blank\" href=\"" + obj.AttachedFiles.replace('~', '') + "\" data-toggle=\"tooltip\" title=\"Xem tệp đính kèm\" class=\"btn btn-xs btn-success\"><i class=\"hi hi-paperclip\"></i></a>" +
+                                "</td>" +
+                                "<td class=\"text-center\">" +
                                         "<a onclick=\"jobs.startedit_inoutfee('" + obj.ID + "');\" href=\"javascript:void(0)\" data-toggle=\"tooltip\" title=\"Sửa\" class=\"btn btn-xs btn-default\"><i class=\"fa fa-pencil\"></i></a>" +
                                         "<a onclick=\"jobs.startdelete_inoutfee('" + obj.ID + "');\" href=\"javascript:void(0)\" data-toggle=\"tooltip\" title=\"Xóa\" class=\"btn btn-xs btn-danger\"><i class=\"fa fa-times\"></i></a>" +
-                                        "<a target=\"_blank\" href=\"" + obj.AttachedFiles.replace('~', '') + "\" data-toggle=\"tooltip\" title=\"Xem tệp đính kèm\" class=\"btn btn-xs btn-success\"><i class=\"hi hi-paperclip\"></i></a>" +
-                                    //"</div>" +
                                 "</td>" +
                             "</tr>";
                     }

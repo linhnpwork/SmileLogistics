@@ -281,7 +281,7 @@
                                                     "<td class=\"text-center\">" + (obj.IsPaidFromCustomer ? "<i class=\"gi gi-ok_2\"></i>" : "") + "</td>" +
                                                     "<td class=\"text-center\">" + (obj.IsInformTransportComp ? "<i class=\"gi gi-ok_2\"></i>" : "") + "</td>" +
                                                     "<td class=\"text-center\">" + (obj.IsPayedForTransportComp ? "<i class=\"gi gi-ok_2\"></i>" : "") + "</td>" +
-                                                    "<td class=\"text-center\">" + (obj.IsConsigned ? (obj.sConsignedTime + " " + sConsignedDate) : "---") + "</td>" +
+                                                    "<td class=\"text-center\">" + (obj.IsConsigned ? (obj.sConsignedTime + " " + obj.sConsignedTime) : "---") + "</td>" +
                                                     "<td class=\"text-center\"><span class=\"" + (statusClassName == "" ? "" : ("text-" + statusClassName)) + "\">" + obj.sStatus + "</span></td>" +
                                                     "<td class=\"text-center\">" +
                                                         //"<div class=\"btn-group\">" +
