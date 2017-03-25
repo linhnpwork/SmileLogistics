@@ -16,7 +16,8 @@
       <Column Name="LastestUpdate" Type="System.DateTime" DbType="DateTime NOT NULL" CanBeNull="false" />
       <Column Name="UpdatedBy" Type="System.Int32" DbType="Int NOT NULL" CanBeNull="false" />
       <Association Name="Job_Agent_Prepaid" Member="Job" ThisKey="JobID" OtherKey="ID" Type="Job" IsForeignKey="true" />
-      <Association Name="Sys_User_Agent_Prepaid" Member="Sys_User" ThisKey="UpdatedBy" OtherKey="ID" Type="Sys_User" IsForeignKey="true" />
+      <Association Name="Sys_User_Agent_Prepaid" Member="Sys_User" ThisKey="AgentID" OtherKey="ID" Type="Sys_User" IsForeignKey="true" />
+      <Association Name="Sys_User_Agent_Prepaid1" Member="Sys_User1" ThisKey="UpdatedBy" OtherKey="ID" Type="Sys_User" IsForeignKey="true" />
     </Type>
   </Table>
   <Table Name="dbo.VehicleTypes" Member="VehicleTypes">
@@ -347,7 +348,8 @@
       <Column Name="Status" Type="System.Int32" DbType="Int NOT NULL" CanBeNull="false" />
       <Column Name="RoleID" Type="System.Int32" DbType="Int NOT NULL" CanBeNull="false" />
       <Column Name="IsDeleted" Type="System.Boolean" DbType="Bit NOT NULL" CanBeNull="false" />
-      <Association Name="Sys_User_Agent_Prepaid" Member="Agent_Prepaids" ThisKey="ID" OtherKey="UpdatedBy" Type="Agent_Prepaid" />
+      <Association Name="Sys_User_Agent_Prepaid" Member="Agent_Prepaids" ThisKey="ID" OtherKey="AgentID" Type="Agent_Prepaid" />
+      <Association Name="Sys_User_Agent_Prepaid1" Member="Agent_Prepaids1" ThisKey="ID" OtherKey="UpdatedBy" Type="Agent_Prepaid" />
       <Association Name="Sys_User_VehicleType" Member="VehicleTypes" ThisKey="ID" OtherKey="UpdatedBy" Type="VehicleType" />
       <Association Name="Sys_User_Customer_Prepaid" Member="Customer_Prepaids" ThisKey="ID" OtherKey="UpdatedBy" Type="Customer_Prepaid" />
       <Association Name="Sys_User_CustomerQuotation_Custom" Member="CustomerQuotation_Customs" ThisKey="ID" OtherKey="UpdatedBy" Type="CustomerQuotation_Custom" />

@@ -26,5 +26,6 @@ namespace SmileLogistics.DAL.Entities
         public string sPaidDate { get; set; }
         public string sRequestedDate { get; set; }
         public string AgentName { get; set; }
+        public string sStatus { get; set; }
     }
 }

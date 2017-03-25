@@ -385,6 +385,8 @@ namespace SmileLogistics.DAL
 		
 		private EntityRef<Sys_User> _Sys_User;
 		
+		private EntityRef<Sys_User> _Sys_User1;
+		
     #region Extensibility Method Definitions
     partial void OnLoaded();
     partial void OnValidate(System.Data.Linq.ChangeAction action);
@@ -421,6 +423,7 @@ namespace SmileLogistics.DAL
 		{
 			this._Job = default(EntityRef<Job>);
 			this._Sys_User = default(EntityRef<Sys_User>);
+			this._Sys_User1 = default(EntityRef<Sys_User>);
 			OnCreated();
 		}
 		
@@ -479,6 +482,10 @@ namespace SmileLogistics.DAL
 			{
 				if ((this._AgentID != value))
 				{
+					if (this._Sys_User.HasLoadedOrAssignedValue)
+					{
+						throw new System.Data.Linq.ForeignKeyReferenceAlreadyHasValueException();
+					}
 					this.OnAgentIDChanging(value);
 					this.SendPropertyChanging();
 					this._AgentID = value;
@@ -679,7 +686,7 @@ namespace SmileLogistics.DAL
 			{
 				if ((this._UpdatedBy != value))
 				{
-					if (this._Sys_User.HasLoadedOrAssignedValue)
+					if (this._Sys_User1.HasLoadedOrAssignedValue)
 					{
 						throw new System.Data.Linq.ForeignKeyReferenceAlreadyHasValueException();
 					}
@@ -726,7 +733,7 @@ namespace SmileLogistics.DAL
 			}
 		}
 		
-		[global::System.Data.Linq.Mapping.AssociationAttribute(Name="Sys_User_Agent_Prepaid", Storage="_Sys_User", ThisKey="UpdatedBy", OtherKey="ID", IsForeignKey=true)]
+		[global::System.Data.Linq.Mapping.AssociationAttribute(Name="Sys_User_Agent_Prepaid", Storage="_Sys_User", ThisKey="AgentID", OtherKey="ID", IsForeignKey=true)]
 		public Sys_User Sys_User
 		{
 			get
@@ -749,13 +756,47 @@ namespace SmileLogistics.DAL
 					if ((value != null))
 					{
 						value.Agent_Prepaids.Add(this);
+						this._AgentID = value.ID;
+					}
+					else
+					{
+						this._AgentID = default(int);
+					}
+					this.SendPropertyChanged("Sys_User");
+				}
+			}
+		}
+		
+		[global::System.Data.Linq.Mapping.AssociationAttribute(Name="Sys_User_Agent_Prepaid1", Storage="_Sys_User1", ThisKey="UpdatedBy", OtherKey="ID", IsForeignKey=true)]
+		public Sys_User Sys_User1
+		{
+			get
+			{
+				return this._Sys_User1.Entity;
+			}
+			set
+			{
+				Sys_User previousValue = this._Sys_User1.Entity;
+				if (((previousValue != value) 
+							|| (this._Sys_User1.HasLoadedOrAssignedValue == false)))
+				{
+					this.SendPropertyChanging();
+					if ((previousValue != null))
+					{
+						this._Sys_User1.Entity = null;
+						previousValue.Agent_Prepaids1.Remove(this);
+					}
+					this._Sys_User1.Entity = value;
+					if ((value != null))
+					{
+						value.Agent_Prepaids1.Add(this);
 						this._UpdatedBy = value.ID;
 					}
 					else
 					{
 						this._UpdatedBy = default(int);
 					}
-					this.SendPropertyChanged("Sys_User");
+					this.SendPropertyChanged("Sys_User1");
 				}
 			}
 		}
@@ -7958,6 +7999,8 @@ namespace SmileLogistics.DAL
 		
 		private EntitySet<Agent_Prepaid> _Agent_Prepaids;
 		
+		private EntitySet<Agent_Prepaid> _Agent_Prepaids1;
+		
 		private EntitySet<VehicleType> _VehicleTypes;
 		
 		private EntitySet<Customer_Prepaid> _Customer_Prepaids;
@@ -8037,6 +8080,7 @@ namespace SmileLogistics.DAL
 		public Sys_User()
 		{
 			this._Agent_Prepaids = new EntitySet<Agent_Prepaid>(new Action<Agent_Prepaid>(this.attach_Agent_Prepaids), new Action<Agent_Prepaid>(this.detach_Agent_Prepaids));
+			this._Agent_Prepaids1 = new EntitySet<Agent_Prepaid>(new Action<Agent_Prepaid>(this.attach_Agent_Prepaids1), new Action<Agent_Prepaid>(this.detach_Agent_Prepaids1));
 			this._VehicleTypes = new EntitySet<VehicleType>(new Action<VehicleType>(this.attach_VehicleTypes), new Action<VehicleType>(this.detach_VehicleTypes));
 			this._Customer_Prepaids = new EntitySet<Customer_Prepaid>(new Action<Customer_Prepaid>(this.attach_Customer_Prepaids), new Action<Customer_Prepaid>(this.detach_Customer_Prepaids));
 			this._CustomerQuotation_Customs = new EntitySet<CustomerQuotation_Custom>(new Action<CustomerQuotation_Custom>(this.attach_CustomerQuotation_Customs), new Action<CustomerQuotation_Custom>(this.detach_CustomerQuotation_Customs));
@@ -8326,7 +8370,7 @@ namespace SmileLogistics.DAL
 			}
 		}
 		
-		[global::System.Data.Linq.Mapping.AssociationAttribute(Name="Sys_User_Agent_Prepaid", Storage="_Agent_Prepaids", ThisKey="ID", OtherKey="UpdatedBy")]
+		[global::System.Data.Linq.Mapping.AssociationAttribute(Name="Sys_User_Agent_Prepaid", Storage="_Agent_Prepaids", ThisKey="ID", OtherKey="AgentID")]
 		public EntitySet<Agent_Prepaid> Agent_Prepaids
 		{
 			get
@@ -8336,6 +8380,19 @@ namespace SmileLogistics.DAL
 			set
 			{
 				this._Agent_Prepaids.Assign(value);
+			}
+		}
+		
+		[global::System.Data.Linq.Mapping.AssociationAttribute(Name="Sys_User_Agent_Prepaid1", Storage="_Agent_Prepaids1", ThisKey="ID", OtherKey="UpdatedBy")]
+		public EntitySet<Agent_Prepaid> Agent_Prepaids1
+		{
+			get
+			{
+				return this._Agent_Prepaids1;
+			}
+			set
+			{
+				this._Agent_Prepaids1.Assign(value);
 			}
 		}
 		
@@ -8676,6 +8733,18 @@ namespace SmileLogistics.DAL
 		{
 			this.SendPropertyChanging();
 			entity.Sys_User = null;
+		}
+		
+		private void attach_Agent_Prepaids1(Agent_Prepaid entity)
+		{
+			this.SendPropertyChanging();
+			entity.Sys_User1 = this;
+		}
+		
+		private void detach_Agent_Prepaids1(Agent_Prepaid entity)
+		{
+			this.SendPropertyChanging();
+			entity.Sys_User1 = null;
 		}
 		
 		private void attach_VehicleTypes(VehicleType entity)

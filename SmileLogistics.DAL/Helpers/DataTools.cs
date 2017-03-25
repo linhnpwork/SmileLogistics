@@ -3800,25 +3800,7 @@ namespace SmileLogistics.DAL.Helpers
             {
                 return null;
             }
-        }
-
-        public eAgent_Prepaid Agent_Prepaid_Entity(Agent_Prepaid obj)
-        {
-            try
-            {
-                if (obj == null) return null;
-
-                return new eAgent_Prepaid()
-                {
-                     AgentID = obj.AgentID,
-                      AgentName = obj.U
-                };
-            }
-            catch
-            {
-                return null;
-            }
-        }
+        }        
 
         public eJob Job_Entity(Job obj)
         {
@@ -3836,10 +3818,10 @@ namespace SmileLogistics.DAL.Helpers
                 foreach (Job_InOutFee inoutfee in inoutfees)
                     inoutFees.Add(Job_InOutFee_Entity(inoutfee));
 
-                var agentPrepaids = obj.Agent_Prepaids.Where(o => !o.IsDeleted);
-                List<eAgent_Prepaid> result = new List<eAgent_Prepaid>();
-                foreach (Agent_Prepaid agentPrepaid in agentPrepaids)
-                    result.Add(Agent_Prepaid_Entity(agentPrepaid));
+                var agentprepaids = obj.Agent_Prepaids.Where(o => !o.IsDeleted);
+                List<eAgent_Prepaid> agentPrepaids = new List<eAgent_Prepaid>();
+                foreach (Agent_Prepaid agentprepaid in agentprepaids)
+                    agentPrepaids.Add(Agent_Prepaid_Entity(agentprepaid));
 
                 return new eJob()
                 {
@@ -4707,6 +4689,168 @@ namespace SmileLogistics.DAL.Helpers
                     sLastestUpdate = obj.LastestUpdated.ToString(GlobalValues.DateFormat_VN),
                     UpdatedBy = Sys_User_GetE(obj.UpdatedBy),
                     sInvoiceDate = obj.InvoiceDate.ToString(GlobalValues.DateFormat_VN),
+                };
+            }
+            catch
+            {
+                return null;
+            }
+        }
+
+        #endregion
+
+        #region Job_AgentPrepaid
+
+        public int Agent_Prepaid_Update(Agent_Prepaid data)
+        {
+            try
+            {
+                Agent_Prepaid obj = DB.Agent_Prepaids.FirstOrDefault(o => o.ID == data.ID);
+                if (obj == null) return -1;
+
+                obj.AttachedFiles = data.AttachedFiles;
+                obj.AgentID = data.AgentID;
+                obj.Description = data.Description;
+                obj.TotalRequest = data.TotalRequest;
+                obj.TotalPaid = data.TotalPaid;
+                obj.LastestUpdate = DateTime.Now;
+                obj.UpdatedBy = data.UpdatedBy;
+
+                DB.SubmitChanges();
+
+                return 0;
+            }
+            catch
+            {
+                return int.MinValue;
+            }
+        }
+
+        public bool Agent_Prepaid_Delete(Agent_Prepaid job)
+        {
+            try
+            {
+                Agent_Prepaid obj = DB.Agent_Prepaids.FirstOrDefault(o => o.ID == job.ID);
+                if (obj == null) return false;
+
+                obj.IsDeleted = true;
+                obj.LastestUpdate = DateTime.Now;
+                obj.UpdatedBy = job.UpdatedBy;
+                DB.SubmitChanges();
+
+                Job_CalculateProfit(job.JobID);
+
+                return true;
+            }
+            catch
+            {
+                return false;
+            }
+        }
+
+        public int Agent_Prepaid_Create(ref Agent_Prepaid obj)
+        {
+            try
+            {
+                DB.Agent_Prepaids.InsertOnSubmit(obj);
+                DB.SubmitChanges();
+
+                Job_CalculateProfit(obj.JobID);
+
+                return 0;
+            }
+            catch
+            {
+                return int.MinValue;
+            }
+        }
+
+        public Agent_Prepaid Agent_Prepaid_Get(int id)
+        {
+            try
+            {
+                return DB.Agent_Prepaids.FirstOrDefault(o => !o.IsDeleted && o.ID == id);
+            }
+            catch
+            {
+                return null;
+            }
+        }
+
+        public eAgent_Prepaid Agent_Prepaid_GetE(int id)
+        {
+            try
+            {
+                return Agent_Prepaid_Entity(Agent_Prepaid_Get(id));
+            }
+            catch
+            {
+                return null;
+            }
+        }
+
+        public List<Agent_Prepaid> Agent_Prepaid_Gets(int jobID)
+        {
+            try
+            {
+                var all = DB.Agent_Prepaids.Where(o => !o.IsDeleted &&
+                    o.JobID == jobID);
+
+                if (all.Count() == 0) return null;
+
+                return all.OrderBy(o => o.ID).ToList();
+            }
+            catch
+            {
+                return null;
+            }
+        }
+
+        public List<eAgent_Prepaid> Agent_Prepaid_GetEs(int jobID)
+        {
+            try
+            {
+                var all = Agent_Prepaid_Gets(jobID);
+                if (all == null) return null;
+
+                List<eAgent_Prepaid> result = new List<eAgent_Prepaid>();
+                foreach (Agent_Prepaid obj in all)
+                    result.Add(Agent_Prepaid_Entity(obj));
+
+                return result;
+            }
+            catch
+            {
+                return null;
+            }
+        }
+
+        public eAgent_Prepaid Agent_Prepaid_Entity(Agent_Prepaid obj)
+        {
+            try
+            {
+                if (obj == null) return null;
+
+                return new eAgent_Prepaid()
+                {
+                    AgentID = obj.AgentID,
+                    AgentName = obj.Sys_User1.Firstname + ", " + obj.Sys_User1.Lastname,
+                    AttachedFiles = obj.AttachedFiles,
+                    Description = obj.Description,
+                    ID = obj.ID,
+                    IsDeleted = obj.IsDeleted,
+                    JobID = obj.JobID,
+                    LastestUpdate = obj.LastestUpdate,
+                    PaidDate = obj.PaidDate,
+                    RequestedDate = obj.RequestedDate,
+                    sLastestUpdate = obj.LastestUpdate.ToString(GlobalValues.DateFormat_VN),
+                    sPaidDate = obj.PaidDate.ToString(GlobalValues.DateFormat_VN),
+                    sRequestedDate = obj.RequestedDate.ToString(GlobalValues.DateFormat_VN),
+                    Status = obj.Status,
+                    TotalPaid = obj.TotalPaid,
+                    TotalRequest = obj.TotalRequest,
+                    UpdatedBy = Sys_User_Entity(obj.Sys_User),
+                    sStatus = GlobalValues.Job_AgentPrepaid_Status.FirstOrDefault(o => o.ID == obj.Status).Name,
                 };
             }
             catch

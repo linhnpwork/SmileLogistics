@@ -287,6 +287,26 @@ namespace SmileLogistics.DAL.Helpers
 
         #region DAL defines
 
+        private static List<Commons.eStatus> _Job_AgentPrepaid_Status = null;
+        public static List<Commons.eStatus> Job_AgentPrepaid_Status
+        {
+            get
+            {
+                if (_Job_AgentPrepaid_Status == null)
+                {
+                    _Job_AgentPrepaid_Status = new List<Commons.eStatus>()
+                    {
+                        new Commons.eStatus() { ID = 0, Name = "Yêu cầu từ nhân viên"},
+                        new Commons.eStatus() { ID = 1, Name = "Kết toán đã duyệt chi"},
+                        new Commons.eStatus() { ID = 2, Name = "Đã hoàn tất xử lý"},
+                    };
+                }
+
+                return _Job_AgentPrepaid_Status;
+            }
+            set { _Job_AgentPrepaid_Status = value; }
+        }
+
         private static List<Commons.eStatus> _Job_QuotationRoute_Status = null;
         public static List<Commons.eStatus> Job_QuotationRoute_Status
         {
