@@ -61,11 +61,11 @@ namespace SmileLogistics.Web.modules.functions
 
                 html += "</select>";
 
-                divPrepaidEmployees.InnerHtml = html;
+                divAgentPrepaidEmployees.InnerHtml = html;
             }
             else
             {
-                divPrepaidEmployees.InnerHtml = "<label class='control-label label-quicklink'><a href='/sysadmins'>Chưa có dữ liệu Nhân viên! Nhấp chọn chuyển sang trang Quản lý!</a></label>";
+                divAgentPrepaidEmployees.InnerHtml = "<label class='control-label label-quicklink'><a href='/sysadmins'>Chưa có dữ liệu Nhân viên! Nhấp chọn chuyển sang trang Quản lý!</a></label>";
             }
         }
 

@@ -3802,6 +3802,24 @@ namespace SmileLogistics.DAL.Helpers
             }
         }
 
+        public eAgent_Prepaid Agent_Prepaid_Entity(Agent_Prepaid obj)
+        {
+            try
+            {
+                if (obj == null) return null;
+
+                return new eAgent_Prepaid()
+                {
+                     AgentID = obj.AgentID,
+                      AgentName = obj.U
+                };
+            }
+            catch
+            {
+                return null;
+            }
+        }
+
         public eJob Job_Entity(Job obj)
         {
             try
@@ -3818,10 +3836,10 @@ namespace SmileLogistics.DAL.Helpers
                 foreach (Job_InOutFee inoutfee in inoutfees)
                     inoutFees.Add(Job_InOutFee_Entity(inoutfee));
 
-                //var prepaids = obj.Job_Prepaids.Where(o => !o.IsDeleted);
-                //List<eJob_InOutFee> inoutFees = new List<eJob_InOutFee>();
-                //foreach (Job_InOutFee inoutfee in inoutfees)
-                //    inoutFees.Add(Job_InOutFee_Entity(inoutfee));
+                var agentPrepaids = obj.Agent_Prepaids.Where(o => !o.IsDeleted);
+                List<eAgent_Prepaid> result = new List<eAgent_Prepaid>();
+                foreach (Agent_Prepaid agentPrepaid in agentPrepaids)
+                    result.Add(Agent_Prepaid_Entity(agentPrepaid));
 
                 return new eJob()
                 {
@@ -3864,6 +3882,7 @@ namespace SmileLogistics.DAL.Helpers
                     Routes = quotationRoutes.Count == 0 ? null : quotationRoutes,
                     QuotationCustoms = CustomerQuotation_Custom_Entity(obj.CustomerQuotation_Customs.FirstOrDefault(o => !o.IsDeleted)),
                     InOutFees = inoutFees.Count == 0 ? null : inoutFees,
+                    List_AgentPrepaids = agentPrepaids,
                 };
             }
             catch

@@ -52,7 +52,7 @@
     <Compile Include="Entities\Commons.cs" />
     <Compile Include="Entities\CustomsProcess_FeeTypes.cs" />
     <Compile Include="Entities\Customers.cs" />
-    <Compile Include="Entities\Job_Prepaids.cs" />
+    <Compile Include="Entities\Prepaids.cs" />
     <Compile Include="Entities\Job_InOutFees.cs" />
     <Compile Include="Entities\QuotationRoutes.cs" />
     <Compile Include="Entities\QuotationCustoms.cs" />

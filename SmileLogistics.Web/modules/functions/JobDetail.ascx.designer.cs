@@ -49,12 +49,12 @@ namespace SmileLogistics.Web.modules.functions {
         protected global::System.Web.UI.HtmlControls.HtmlGenericControl divQuotationRoute_Place_End;
         
         /// <summary>
-        /// divPrepaidEmployees control.
+        /// divAgentPrepaidEmployees control.
         /// </summary>
         /// <remarks>
         /// Auto-generated field.
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
-        protected global::System.Web.UI.HtmlControls.HtmlGenericControl divPrepaidEmployees;
+        protected global::System.Web.UI.HtmlControls.HtmlGenericControl divAgentPrepaidEmployees;
     }
 }

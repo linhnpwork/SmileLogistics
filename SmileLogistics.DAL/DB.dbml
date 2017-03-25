@@ -204,10 +204,8 @@
       <Column Name="IsDeleted" Type="System.Boolean" DbType="Bit NOT NULL" CanBeNull="false" />
       <Column Name="LastestUpdated" Type="System.DateTime" DbType="DateTime NOT NULL" CanBeNull="false" />
       <Column Name="UpdatedBy" Type="System.Int32" DbType="Int NOT NULL" CanBeNull="false" />
-      <Column Name="EmployID" Type="System.Int32" DbType="Int NOT NULL" CanBeNull="false" />
       <Association Name="Job_Job_Prepaid" Member="Job" ThisKey="JobID" OtherKey="ID" Type="Job" IsForeignKey="true" />
-      <Association Name="Sys_User_Job_Prepaid" Member="Sys_User" ThisKey="EmployID" OtherKey="ID" Type="Sys_User" IsForeignKey="true" />
-      <Association Name="Sys_User_Job_Prepaid1" Member="Sys_User1" ThisKey="UpdatedBy" OtherKey="ID" Type="Sys_User" IsForeignKey="true" />
+      <Association Name="Sys_User_Job_Prepaid" Member="Sys_User" ThisKey="UpdatedBy" OtherKey="ID" Type="Sys_User" IsForeignKey="true" />
     </Type>
   </Table>
   <Table Name="dbo.Job_QuotationRoutes" Member="Job_QuotationRoutes">
@@ -361,8 +359,7 @@
       <Association Name="Sys_User_CustomsProcess_Quotation" Member="CustomsProcess_Quotations" ThisKey="ID" OtherKey="UpdatedBy" Type="CustomsProcess_Quotation" />
       <Association Name="Sys_User_GoodsType" Member="GoodsTypes" ThisKey="ID" OtherKey="UpdatedBy" Type="GoodsType" />
       <Association Name="Sys_User_Job_InOutFee" Member="Job_InOutFees" ThisKey="ID" OtherKey="UpdatedBy" Type="Job_InOutFee" />
-      <Association Name="Sys_User_Job_Prepaid" Member="Job_Prepaids" ThisKey="ID" OtherKey="EmployID" Type="Job_Prepaid" />
-      <Association Name="Sys_User_Job_Prepaid1" Member="Job_Prepaids1" ThisKey="ID" OtherKey="UpdatedBy" Type="Job_Prepaid" />
+      <Association Name="Sys_User_Job_Prepaid" Member="Job_Prepaids" ThisKey="ID" OtherKey="UpdatedBy" Type="Job_Prepaid" />
       <Association Name="Sys_User_Job_QuotationRoute" Member="Job_QuotationRoutes" ThisKey="ID" OtherKey="UpdatedBy" Type="Job_QuotationRoute" />
       <Association Name="Sys_User_Job" Member="Jobs" ThisKey="ID" OtherKey="UpdatedBy" Type="Job" />
       <Association Name="Sys_User_Quotation_Route" Member="Quotation_Routes" ThisKey="ID" OtherKey="UpdatedBy" Type="Quotation_Route" />

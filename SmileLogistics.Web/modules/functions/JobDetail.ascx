@@ -260,7 +260,7 @@
                 <div class="block-title">
                     <h2>Tạm ứng cho <strong>Nhân viên</strong></h2>
                     <div class="block-options pull-right">
-                        <a onclick="jobs.startAdd_prepaid();" class="btn btn-sm btn-success" data-toggle="tooltip" title="Thêm mới"><i class="gi gi-plus"></i></a>
+                        <a onclick="jobs.startAdd_agentprepaid();" class="btn btn-sm btn-success" data-toggle="tooltip" title="Thêm mới"><i class="gi gi-plus"></i></a>
                     </div>
                 </div>
                 <div class="form-horizontal">
@@ -268,7 +268,6 @@
                     </div>
                 </div>
             </div>
-
         </div>
     </div>
 </div>
@@ -571,7 +570,7 @@
         </div>
     </div>
 </div>
-<div id="modal-info-prepaid" class="modal fade" tabindex="-1" role="dialog" aria-hidden="true" style="display: none;">
+<div id="modal-info-agentprepaid" class="modal fade" tabindex="-1" role="dialog" aria-hidden="true" style="display: none;">
     <div class="modal-dialog modal-lg">
         <div class="modal-content">
             <div class="modal-header">
@@ -582,7 +581,7 @@
                 <div class="form-horizontal form-bordered">
                     <div class="form-group">
                         <label class="col-md-3 control-label">Nhân viên</label>
-                        <div id="divPrepaidEmployees" runat="server" class="col-md-9">
+                        <div id="divAgentPrepaidEmployees" runat="server" class="col-md-9">
                         </div>
                     </div>
                     <div class="form-group">
