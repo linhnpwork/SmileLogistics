@@ -1327,7 +1327,7 @@
                 $('#modal-info-agentprepaid').modal('show');
                 $('#div-agentprepaid-result').hide();
                 $('#btn-do-confirm-agentprepaid').hide();
-                $('#info-prepaid-employee').val('<%= CurrentSys_User.ID %>');
+                //$('#info-prepaid-employee').val('<%= CurrentSys_User.ID %>');
                 this.agentprepaid_attacheds = null;
             },
 
