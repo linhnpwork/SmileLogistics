@@ -81,6 +81,277 @@ namespace SmileLogistics.Web.ajax.modules.functions
                 case "attached_agentprepaid":
                     Attached_AgentPrepaid();
                     break;
+
+                case "create_jobprepaid":
+                    Create_JobPrepaid();
+                    break;
+                case "edit_jobprepaid":
+                    Edit_JobPrepaid();
+                    break;
+                case "delete_jobprepaid":
+                    Delete_JobPrepaid();
+                    break;
+            }
+        }
+
+        private void Create_JobPrepaid()
+        {
+            string postdata = Request.Form["data"];
+            if (postdata == string.Empty)
+            {
+                DoResponse(JsonConvert.SerializeObject(new GlobalValues.ResponseData()
+                {
+                    Data = null,
+                    ErrorCode = -1,
+                    Message = "Dữ liệu không hợp lệ!",
+                }));
+
+                return;
+            }
+
+            dynamic data;
+            try { data = JsonConvert.DeserializeObject(postdata); }
+            catch { data = null; }
+
+            if (data == null)
+            {
+                DoResponse(JsonConvert.SerializeObject(new GlobalValues.ResponseData()
+                {
+                    Data = null,
+                    ErrorCode = -2,
+                    Message = "Dữ liệu không hợp lệ!",
+                }));
+
+                return;
+            }
+
+            using (DALTools dalTools = new DALTools())
+            {
+                eJob job = dalTools.Job_GetE(int.Parse(data.jobid.ToString()));
+                if (job == null)
+                {
+                    DoResponse(JsonConvert.SerializeObject(new GlobalValues.ResponseData()
+                    {
+                        Data = null,
+                        ErrorCode = 1,
+                        Message = "Dữ liệu không hợp lệ!",
+                    }));
+
+                    return;
+                }
+
+                double money = double.Parse(data.money.ToString());
+                if (money < 0)
+                {
+                    DoResponse(JsonConvert.SerializeObject(new GlobalValues.ResponseData()
+                    {
+                        Data = null,
+                        ErrorCode = 8,
+                        Message = "Số tiền không hợp lệ!",
+                    }));
+
+                    return;
+                }
+
+                if(job.Customer.Prepaids<money)
+                {
+                    DoResponse(JsonConvert.SerializeObject(new GlobalValues.ResponseData()
+                    {
+                        Data = null,
+                        ErrorCode = 8,
+                        Message = "Số tiền tạm ứng của khách không đủ!",
+                    }));
+
+                    return;
+                }
+
+                Job_Prepaid obj = new Job_Prepaid()
+                {
+                    Money = money,
+                    PrepaidDate = DateTime.Now,
+                    Description = data.description.ToString(),
+                    IsDeleted = false,
+                    JobID = job.ID,
+                    LastestUpdated = DateTime.Now,
+                    UpdatedBy = CurrentSys_User.ID,
+                };
+
+                int res = dalTools.Job_Prepaid_Create(obj);
+                if (res != 0)
+                    DoResponse(JsonConvert.SerializeObject(new GlobalValues.ResponseData()
+                    {
+                        Data = null,
+                        ErrorCode = res,
+                        Message = "Thêm mới thất bại, vui lòng kiểm tra lại dữ liệu!",
+                    }));
+                else
+                    DoResponse(JsonConvert.SerializeObject(new GlobalValues.ResponseData()
+                    {
+                        Data = obj.ID.ToString(),
+                        ErrorCode = 0,
+                        Message = "Thêm mới thành công! Đang chuyển...",
+                    }));
+            }
+        }
+
+        private void Edit_JobPrepaid()
+        {
+            string postdata = Request.Form["data"];
+            if (postdata == string.Empty)
+            {
+                DoResponse(JsonConvert.SerializeObject(new GlobalValues.ResponseData()
+                {
+                    Data = null,
+                    ErrorCode = -1,
+                    Message = "Dữ liệu không hợp lệ!",
+                }));
+
+                return;
+            }
+
+            dynamic data;
+            try { data = JsonConvert.DeserializeObject(postdata); }
+            catch { data = null; }
+
+            if (data == null)
+            {
+                DoResponse(JsonConvert.SerializeObject(new GlobalValues.ResponseData()
+                {
+                    Data = null,
+                    ErrorCode = -2,
+                    Message = "Dữ liệu không hợp lệ!",
+                }));
+
+                return;
+            }
+
+            using (DALTools dalTools = new DALTools())
+            {
+                eJob job = dalTools.Job_GetE(int.Parse(data.jobid.ToString()));
+                if (job == null)
+                {
+                    DoResponse(JsonConvert.SerializeObject(new GlobalValues.ResponseData()
+                    {
+                        Data = null,
+                        ErrorCode = 1,
+                        Message = "Dữ liệu không hợp lệ!",
+                    }));
+
+                    return;
+                }
+
+                Job_Prepaid prepaid = dalTools.Job_Prepaid_Get(int.Parse(data.id.ToString()));
+                if (prepaid == null)
+                {
+                    DoResponse(JsonConvert.SerializeObject(new GlobalValues.ResponseData()
+                    {
+                        Data = null,
+                        ErrorCode = 1,
+                        Message = "Dữ liệu không hợp lệ!",
+                    }));
+
+                    return;
+                }
+
+                double money = double.Parse(data.money.ToString());
+                if (money < 0)
+                {
+                    DoResponse(JsonConvert.SerializeObject(new GlobalValues.ResponseData()
+                    {
+                        Data = null,
+                        ErrorCode = 8,
+                        Message = "Số tiền không hợp lệ!",
+                    }));
+
+                    return;
+                }
+
+                if(job.Customer.Prepaids< money-prepaid.Money)
+                {
+                    DoResponse(JsonConvert.SerializeObject(new GlobalValues.ResponseData()
+                    {
+                        Data = null,
+                        ErrorCode = 8,
+                        Message = "Số tiền tạm ứng của khách không đủ!",
+                    }));
+
+                    return;
+                }
+
+                Job_Prepaid obj = new Job_Prepaid()
+                {
+                    ID = int.Parse(data.id.ToString()),
+                    Money = money,
+                    Description = data.description.ToString(),
+                    LastestUpdated = DateTime.Now,
+                    UpdatedBy = CurrentSys_User.ID,
+                    JobID = job.ID,
+                };
+
+                int res = dalTools.Job_Prepaid_Update(obj);
+                if (res != 0)
+                    DoResponse(JsonConvert.SerializeObject(new GlobalValues.ResponseData()
+                    {
+                        Data = null,
+                        ErrorCode = res,
+                        Message = "Cập nhật thất bại, vui lòng kiểm tra lại dữ liệu!",
+                    }));
+                else
+                    DoResponse(JsonConvert.SerializeObject(new GlobalValues.ResponseData()
+                    {
+                        Data = obj.ID.ToString(),
+                        ErrorCode = 0,
+                        Message = "Cập nhật thành công! Đang chuyển...",
+                    }));
+            }
+        }
+
+        private void Delete_JobPrepaid()
+        {
+            string sId = Request.Form["id"];
+            if (string.IsNullOrEmpty(sId))
+            {
+                DoResponse(JsonConvert.SerializeObject(new GlobalValues.ResponseData()
+                {
+                    Data = null,
+                    ErrorCode = -1,
+                    Message = "Dữ liệu không hợp lệ!",
+                }));
+
+                return;
+            }
+
+            using (DALTools dalTools = new DALTools())
+            {
+                int id = int.Parse(sId);
+                Job_Prepaid obj = dalTools.Job_Prepaid_Get(id);
+                if (obj == null)
+                {
+                    DoResponse(JsonConvert.SerializeObject(new GlobalValues.ResponseData()
+                    {
+                        Data = null,
+                        ErrorCode = -1,
+                        Message = "Không tìm thấy Chi tạm ứng!",
+                    }));
+
+                    return;
+                }
+
+                obj.UpdatedBy = CurrentSys_User.ID;
+                if (!dalTools.Job_Prepaid_Delete(obj))
+                    DoResponse(JsonConvert.SerializeObject(new GlobalValues.ResponseData()
+                    {
+                        Data = null,
+                        ErrorCode = 1,
+                        Message = "Xóa thất bại, vui lòng kiểm tra lại dữ liệu!",
+                    }));
+                else
+                    DoResponse(JsonConvert.SerializeObject(new GlobalValues.ResponseData()
+                    {
+                        Data = null,
+                        ErrorCode = 0,
+                        Message = "Xóa thành công! Đang chuyển ...",
+                    }));
             }
         }
 

@@ -60,6 +60,7 @@
   </ItemGroup>
   <ItemGroup>
     <Content Include="ajax\modules\functions\customers.aspx" />
+    <Content Include="ajax\modules\functions\customerprepaids.aspx" />
     <Content Include="ajax\modules\functions\jobs.aspx" />
     <Content Include="ajax\modules\functions\quotationcustoms.aspx" />
     <Content Include="ajax\modules\functions\quotationroutes.aspx" />
@@ -229,6 +230,7 @@
     <Content Include="modules\functions\TransportPlaces.ascx" />
     <Content Include="modules\functions\Routes.ascx" />
     <Content Include="modules\functions\VehicleLoads.ascx" />
+    <Content Include="modules\functions\CustomerPrepaids.ascx" />
     <Content Include="modules\functions\VehicleTypes.ascx" />
     <Content Include="modules\functions\GoodsTypes.ascx" />
     <Content Include="ProUI.Master" />
@@ -805,6 +807,13 @@
     <Compile Include="ajax\modules\functions\customers.aspx.designer.cs">
       <DependentUpon>customers.aspx</DependentUpon>
     </Compile>
+    <Compile Include="ajax\modules\functions\customerprepaids.aspx.cs">
+      <DependentUpon>customerprepaids.aspx</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="ajax\modules\functions\customerprepaids.aspx.designer.cs">
+      <DependentUpon>customerprepaids.aspx</DependentUpon>
+    </Compile>
     <Compile Include="ajax\modules\functions\jobs.aspx.cs">
       <DependentUpon>jobs.aspx</DependentUpon>
       <SubType>ASPXCodeBehind</SubType>
@@ -1003,6 +1012,13 @@
     </Compile>
     <Compile Include="modules\functions\VehicleLoads.ascx.designer.cs">
       <DependentUpon>VehicleLoads.ascx</DependentUpon>
+    </Compile>
+    <Compile Include="modules\functions\CustomerPrepaids.ascx.cs">
+      <DependentUpon>CustomerPrepaids.ascx</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="modules\functions\CustomerPrepaids.ascx.designer.cs">
+      <DependentUpon>CustomerPrepaids.ascx</DependentUpon>
     </Compile>
     <Compile Include="modules\functions\VehicleTypes.ascx.cs">
       <DependentUpon>VehicleTypes.ascx</DependentUpon>

@@ -3505,7 +3505,8 @@ namespace SmileLogistics.DAL.Helpers
                     LastestUpdate = obj.LastestUpdated,
                     Name = obj.Name,
                     sLastestUpdate = obj.LastestUpdated.ToString(GlobalValues.DateFormat_VN),
-                    UpdatedBy = Sys_User_GetE(obj.UpdatedBy)
+                    UpdatedBy = Sys_User_GetE(obj.UpdatedBy),
+                    Prepaids = obj.Prepaids,
                 };
             }
             catch
@@ -3800,7 +3801,7 @@ namespace SmileLogistics.DAL.Helpers
             {
                 return null;
             }
-        }        
+        }
 
         public eJob Job_Entity(Job obj)
         {
@@ -3822,6 +3823,11 @@ namespace SmileLogistics.DAL.Helpers
                 List<eAgent_Prepaid> agentPrepaids = new List<eAgent_Prepaid>();
                 foreach (Agent_Prepaid agentprepaid in agentprepaids)
                     agentPrepaids.Add(Agent_Prepaid_Entity(agentprepaid));
+
+                var jobprepaids = obj.Job_Prepaids.Where(o => !o.IsDeleted);
+                List<eJob_Prepaid> jobPrepaids = new List<eJob_Prepaid>();
+                foreach (Job_Prepaid jobprepaid in jobprepaids)
+                    jobPrepaids.Add(Job_Prepaid_Entity(jobprepaid));
 
                 return new eJob()
                 {
@@ -3864,7 +3870,8 @@ namespace SmileLogistics.DAL.Helpers
                     Routes = quotationRoutes.Count == 0 ? null : quotationRoutes,
                     QuotationCustoms = CustomerQuotation_Custom_Entity(obj.CustomerQuotation_Customs.FirstOrDefault(o => !o.IsDeleted)),
                     InOutFees = inoutFees.Count == 0 ? null : inoutFees,
-                    List_AgentPrepaids = agentPrepaids,
+                    List_AgentPrepaids = agentPrepaids.Count == 0 ? null : agentPrepaids,
+                    List_JobPrepaids = jobPrepaids.Count == 0 ? null : jobPrepaids,
                 };
             }
             catch
@@ -4281,7 +4288,7 @@ namespace SmileLogistics.DAL.Helpers
                 List<eCustomerQuotation_CustomsDetail> details = new List<eCustomerQuotation_CustomsDetail>();
                 if (obj.CustomerQuotation_CustomsDetails != null && obj.CustomerQuotation_CustomsDetails.Count > 0)
                 {
-                    foreach (CustomerQuotation_CustomsDetail detail in obj.CustomerQuotation_CustomsDetails.OrderByDescending(o => o.CustomsProcess_QuotationDetail.Price))
+                    foreach (CustomerQuotation_CustomsDetail detail in obj.CustomerQuotation_CustomsDetails.Where(o => !o.IsDeleted).OrderByDescending(o => o.CustomsProcess_QuotationDetail.Price))
                     {
                         details.Add(CustomerQuotation_CustomsDetail_Entity(detail));
                     }
@@ -4870,6 +4877,444 @@ namespace SmileLogistics.DAL.Helpers
                     TotalRequest = obj.TotalRequest,
                     UpdatedBy = Sys_User_Entity(obj.Sys_User),
                     sStatus = GlobalValues.Job_AgentPrepaid_Status.FirstOrDefault(o => o.ID == obj.Status).Name,
+                };
+            }
+            catch
+            {
+                return null;
+            }
+        }
+        
+        #endregion
+
+        #region CustomerPrepaids
+
+        public bool Customer_Prepaid_Delete(Customer_Prepaid Customer_Prepaid)
+        {
+            try
+            {
+                Customer_Prepaid obj = DB.Customer_Prepaids.FirstOrDefault(o => o.ID == Customer_Prepaid.ID);
+                if (obj == null) return false;
+
+                obj.IsDeleted = true;
+                obj.LastestUpdated = DateTime.Now;
+                obj.UpdatedBy = Customer_Prepaid.UpdatedBy;
+                DB.SubmitChanges();
+
+                return true;
+            }
+            catch
+            {
+                return false;
+            }
+        }
+
+        public int Customer_Prepaid_Update(Customer_Prepaid obj)
+        {
+            try
+            {
+                Customer_Prepaid updateObj = DB.Customer_Prepaids.FirstOrDefault(o => o.ID == obj.ID);
+                if (updateObj == null) return 1;
+
+                Customer customer = DB.Customers.FirstOrDefault(o => o.ID == obj.CustomerID);
+                if (customer == null) return 2;
+
+                double oldMoney = updateObj.Money;
+                double addMoney = 0;
+
+                if (updateObj.CustomerID != obj.CustomerID)
+                {
+                    Customer oldCustomer = DB.Customers.FirstOrDefault(o => o.ID == updateObj.CustomerID);
+                    if (oldCustomer == null) return 3;
+
+                    oldCustomer.Prepaids -= updateObj.Money;
+                    DB.SubmitChanges();
+
+                    addMoney = obj.Money;
+                }
+                else
+                {
+                    addMoney = obj.Money - updateObj.Money;
+                }
+
+                updateObj.CustomerID = obj.CustomerID;
+                updateObj.Description = obj.Description;
+                updateObj.LastestUpdated = DateTime.Now;
+                updateObj.Money = obj.Money;
+                updateObj.UpdatedBy = obj.UpdatedBy;
+
+                customer.Prepaids += addMoney;
+
+                DB.SubmitChanges();
+
+                return 0;
+            }
+            catch (Exception ex)
+            {
+                return int.MinValue;
+            }
+        }
+
+        public int Customer_Prepaid_Create(Customer_Prepaid obj)
+        {
+            try
+            {
+                Customer customer = DB.Customers.FirstOrDefault(o => o.ID == obj.CustomerID);
+                if (customer == null) return 1;
+
+                DB.Customer_Prepaids.InsertOnSubmit(obj);
+                DB.SubmitChanges();
+
+                customer.Prepaids += obj.Money;
+                DB.SubmitChanges();
+
+                return 0;
+            }
+            catch
+            {
+                return int.MinValue;
+            }
+        }
+
+        public List<Customer_Prepaid> Customer_Prepaid_Gets(int pageIndex, int pageSize, out int totalPages)
+        {
+            totalPages = 0;
+            try
+            {
+                var all = DB.Customer_Prepaids.Where(o => !o.IsDeleted);
+                if (all.Count() == 0) return null;
+
+                int startIndex = pageIndex * pageSize;
+                List<Customer_Prepaid> res = all.OrderByDescending(o => o.PrepaidDate).Skip(startIndex).Take(pageSize).ToList();
+
+                if (res.Count == 0) return null;
+
+                int div = all.Count() / pageSize;
+                int mod = all.Count() % pageSize;
+                totalPages = div + (mod > 0 ? 1 : 0);
+
+                return res;
+            }
+            catch
+            {
+                return null;
+            }
+        }
+
+        public List<eCustomer_Prepaid> Customer_Prepaid_GetEs(int pageIndex, int pageSize, out int totalPages)
+        {
+            totalPages = 0;
+            try
+            {
+                var all = Customer_Prepaid_Gets(pageIndex, pageSize, out totalPages);
+                if (all == null) return null;
+
+                List<eCustomer_Prepaid> result = new List<eCustomer_Prepaid>();
+                foreach (Customer_Prepaid obj in all)
+                    result.Add(Customer_Prepaid_Entity(obj));
+
+                return result;
+            }
+            catch
+            {
+                return null;
+            }
+        }
+
+        public List<Customer_Prepaid> Customer_Prepaid_Gets()
+        {
+            try
+            {
+                var all = DB.Customer_Prepaids.Where(o => !o.IsDeleted);
+                if (all.Count() == 0) return null;
+
+                return all.OrderByDescending(o => o.PrepaidDate).ToList();
+            }
+            catch
+            {
+                return null;
+            }
+        }
+
+        public List<eCustomer_Prepaid> Customer_Prepaid_GetEs()
+        {
+            try
+            {
+                var all = Customer_Prepaid_Gets();
+                if (all == null) return null;
+
+                List<eCustomer_Prepaid> result = new List<eCustomer_Prepaid>();
+                foreach (Customer_Prepaid obj in all)
+                    result.Add(Customer_Prepaid_Entity(obj));
+
+                return result;
+            }
+            catch
+            {
+                return null;
+            }
+        }
+
+        public Customer_Prepaid Customer_Prepaid_Get(int id)
+        {
+            try
+            {
+                return DB.Customer_Prepaids.FirstOrDefault(o =>
+                    o.ID == id);
+            }
+            catch
+            {
+                return null;
+            }
+        }
+
+        public eCustomer_Prepaid Customer_Prepaid_GetE(int id)
+        {
+            try
+            {
+                return Customer_Prepaid_Entity(Customer_Prepaid_Get(id));
+            }
+            catch
+            {
+                return null;
+            }
+        }
+
+        public eCustomer_Prepaid Customer_Prepaid_Entity(Customer_Prepaid obj)
+        {
+            try
+            {
+                if (obj == null) return null;
+
+                return new eCustomer_Prepaid()
+                {
+                    CustomerID = obj.CustomerID,
+                    CustomerName = obj.Customer.Name,
+                    Money = obj.Money,
+                    PrepaidDate = obj.PrepaidDate,
+                    sPrepaidDate = obj.PrepaidDate.ToString(GlobalValues.DateFormat_VN),
+                    Description = obj.Description,
+                    ID = obj.ID,
+                    IsDeleted = obj.IsDeleted,
+                    LastestUpdate = obj.LastestUpdated,
+                    sLastestUpdate = obj.LastestUpdated.ToString(GlobalValues.DateFormat_VN),
+                    UpdatedBy = Sys_User_GetE(obj.UpdatedBy)
+                };
+            }
+            catch
+            {
+                return null;
+            }
+        }
+
+        #endregion
+
+        #region JobPrepaids
+
+        public bool Job_Prepaid_Delete(Job_Prepaid Job_Prepaid)
+        {
+            try
+            {
+                Job_Prepaid obj = DB.Job_Prepaids.FirstOrDefault(o => o.ID == Job_Prepaid.ID);
+                if (obj == null) return false;
+
+                obj.IsDeleted = true;
+                obj.LastestUpdated = DateTime.Now;
+                obj.UpdatedBy = Job_Prepaid.UpdatedBy;
+
+                obj.Job.Customer.Prepaids += obj.Money;
+
+                DB.SubmitChanges();
+
+                return true;
+            }
+            catch
+            {
+                return false;
+            }
+        }
+
+        public int Job_Prepaid_Update(Job_Prepaid obj)
+        {
+            try
+            {
+                Job job = DB.Jobs.FirstOrDefault(o => o.ID == obj.JobID);
+                if (job == null) return 1;
+
+                Job_Prepaid updateObj = DB.Job_Prepaids.FirstOrDefault(o => o.ID == obj.ID);
+                if (updateObj == null) return 2;
+
+                Customer customer = DB.Customers.FirstOrDefault(o => o.ID == job.CustomerID);
+                if (customer == null) return 3;
+
+                double addMoney = obj.Money - updateObj.Money;
+                if (customer.Prepaids < addMoney) return 4;
+
+                updateObj.Description = obj.Description;
+                updateObj.LastestUpdated = DateTime.Now;
+                updateObj.Money = obj.Money;
+                updateObj.UpdatedBy = obj.UpdatedBy;
+
+                customer.Prepaids -= addMoney;
+
+                DB.SubmitChanges();
+
+                return 0;
+            }
+            catch (Exception ex)
+            {
+                return int.MinValue;
+            }
+        }
+
+        public int Job_Prepaid_Create(Job_Prepaid obj)
+        {
+            try
+            {
+                Job job = DB.Jobs.FirstOrDefault(o => o.ID == obj.JobID);
+                if (job == null) return 1;
+
+                Customer customer = DB.Customers.FirstOrDefault(o => o.ID == job.CustomerID);
+                if (customer == null) return 2;
+
+                if (customer.Prepaids < obj.Money) return 3;
+
+                DB.Job_Prepaids.InsertOnSubmit(obj);
+                DB.SubmitChanges();
+
+                customer.Prepaids -= obj.Money;
+                DB.SubmitChanges();
+
+                return 0;
+            }
+            catch
+            {
+                return int.MinValue;
+            }
+        }
+
+        public List<Job_Prepaid> Job_Prepaid_Gets(int pageIndex, int pageSize, out int totalPages)
+        {
+            totalPages = 0;
+            try
+            {
+                var all = DB.Job_Prepaids.Where(o => !o.IsDeleted);
+                if (all.Count() == 0) return null;
+
+                int startIndex = pageIndex * pageSize;
+                List<Job_Prepaid> res = all.OrderByDescending(o => o.PrepaidDate).Skip(startIndex).Take(pageSize).ToList();
+
+                if (res.Count == 0) return null;
+
+                int div = all.Count() / pageSize;
+                int mod = all.Count() % pageSize;
+                totalPages = div + (mod > 0 ? 1 : 0);
+
+                return res;
+            }
+            catch
+            {
+                return null;
+            }
+        }
+
+        public List<eJob_Prepaid> Job_Prepaid_GetEs(int pageIndex, int pageSize, out int totalPages)
+        {
+            totalPages = 0;
+            try
+            {
+                var all = Job_Prepaid_Gets(pageIndex, pageSize, out totalPages);
+                if (all == null) return null;
+
+                List<eJob_Prepaid> result = new List<eJob_Prepaid>();
+                foreach (Job_Prepaid obj in all)
+                    result.Add(Job_Prepaid_Entity(obj));
+
+                return result;
+            }
+            catch
+            {
+                return null;
+            }
+        }
+
+        public List<Job_Prepaid> Job_Prepaid_Gets()
+        {
+            try
+            {
+                var all = DB.Job_Prepaids.Where(o => !o.IsDeleted);
+                if (all.Count() == 0) return null;
+
+                return all.OrderByDescending(o => o.PrepaidDate).ToList();
+            }
+            catch
+            {
+                return null;
+            }
+        }
+
+        public List<eJob_Prepaid> Job_Prepaid_GetEs()
+        {
+            try
+            {
+                var all = Job_Prepaid_Gets();
+                if (all == null) return null;
+
+                List<eJob_Prepaid> result = new List<eJob_Prepaid>();
+                foreach (Job_Prepaid obj in all)
+                    result.Add(Job_Prepaid_Entity(obj));
+
+                return result;
+            }
+            catch
+            {
+                return null;
+            }
+        }
+
+        public Job_Prepaid Job_Prepaid_Get(int id)
+        {
+            try
+            {
+                return DB.Job_Prepaids.FirstOrDefault(o =>
+                    o.ID == id);
+            }
+            catch
+            {
+                return null;
+            }
+        }
+
+        public eJob_Prepaid Job_Prepaid_GetE(int id)
+        {
+            try
+            {
+                return Job_Prepaid_Entity(Job_Prepaid_Get(id));
+            }
+            catch
+            {
+                return null;
+            }
+        }
+
+        public eJob_Prepaid Job_Prepaid_Entity(Job_Prepaid obj)
+        {
+            try
+            {
+                if (obj == null) return null;
+
+                return new eJob_Prepaid()
+                {
+                    Description = obj.Description,
+                    ID = obj.ID,
+                    IsDeleted = obj.IsDeleted,
+                    JobID = obj.JobID,
+                    LastestUpdate = obj.LastestUpdated,
+                    PrepaidDate = obj.PrepaidDate,
+                    sLastestUpdate = obj.LastestUpdated.ToString(GlobalValues.DateFormat_VN),
+                    sPrepaidDate = obj.PrepaidDate.ToString(GlobalValues.DateFormat_VN),
+                    UpdatedBy = Sys_User_Entity(obj.Sys_User),
+                    Money = obj.Money,
                 };
             }
             catch
