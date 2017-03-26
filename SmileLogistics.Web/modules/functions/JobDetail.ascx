@@ -645,7 +645,7 @@
                                 <div class="form-group">
                                     <label class="col-md-3 control-label">Upload tệp đính kèm</label>
                                     <div class="col-md-9">
-                                        <input type="file" id="info-agentprepaid-attached" onchange="alert('ok');">
+                                        <input type="file" id="info-agentprepaid-attached" onchange="jobs.onchange_agentprepaid_attachedfile(this);">
                                     </div>
                                 </div>
                             </div>
@@ -783,6 +783,106 @@
             },
 
             //-----------------------------------------------------------------------------------------------
+            dodelete_agentprepaid_attached: function (ctrl) {
+                var link = $(ctrl).attr('dat-link');
+                if (this.agentprepaid_attacheds != null && this.agentprepaid_attacheds.length > 0) {
+                    for (var i = 0; i < this.agentprepaid_attacheds.length; i++) {
+                        if (this.agentprepaid_attacheds[i] == link) {
+                            this.agentprepaid_attacheds.splice(i, 1);
+                            break;
+                        }
+                    }
+                }
+
+                var tr = $(ctrl).parent().parent();
+                $(tr).remove();
+            },
+
+            agentprepaid_attacheds: null,
+            onchange_agentprepaid_attachedfile: function () {
+                if (this.currentobj_agentprepaid == null) return;
+                if (this.currentobj_agentprepaid.Status != 1) return;
+
+                var postdata = new Object();
+                postdata.id = this.currentobj_agentprepaid.ID;
+
+                NProgress.start();
+                $('#btn-modal-add-close-agentprepaid').addClass('disabled');
+                $('#btn-do-save-agentprepaid').addClass('disabled');
+                $('#btn-do-save-agentprepaid').html('Đang xử lý...');
+
+                var xhr = new XMLHttpRequest();
+                xhr.open('POST', jobs.ajaxPath + '?ts=' + new Date().getTime().toString());
+                xhr.onload = function () {
+                    NProgress.done();
+
+                    var result = JSON.parse(xhr.responseText);
+                    $('#btn-modal-add-close-agentprepaid').removeClass('disabled');
+                    $('#btn-do-save-agentprepaid').removeClass('disabled');
+                    $('#btn-do-save-agentprepaid').html('Lưu');
+                    alert(result.Message);
+
+                    if (result.ErrorCode == 0) {
+                        var uploadeds = result.Data.split(';');
+                        var html = "";
+                        if (jobs.agentprepaid_attacheds == null) jobs.agentprepaid_attacheds = new Array();
+                        for (var i = 0; i < uploadeds.length; i++) {
+                            jobs.agentprepaid_attacheds.push(uploadeds[i]);
+                            var link = uploadeds[i].replace('~', '');
+                            html +=
+                            "<tr>" +
+                                "<td class=\"text-center\">" +
+                                    "<a target=\"_blank\" href=\"" + link + "\">" + link + "</a>" +
+                                "</td>" +
+                                "<td class=\"text-center\">" +
+                                    "<a dat-link=\"" + uploadeds[i] + "\" onclick=\"jobs.dodelete_agentprepaid_attached(this);\" href=\"javascript:void(0)\" data-toggle=\"tooltip\" title=\"Xóa\" class=\"btn btn-xs btn-danger\"><i class=\"fa fa-times\"></i></a>" +
+                                "</td>" +
+                            "</tr>";
+                        }
+
+                        $('#tbodyList-agentprepaids').append(html);
+                    }
+                };
+
+                var form = new FormData();
+                form.append('mod', 'attached_agentprepaid');
+                form.append('attached', $('#info-agentprepaid-attached')[0].files[0]);
+                form.append('data', JSON.stringify(postdata));
+
+                xhr.send(form);
+            },
+
+            doConfirm_agentprepaid: function () {
+                if (this.currentobj_agentprepaid == null) return;
+                if (this.currentobj_agentprepaid.Status != 0) {
+                    alert('Tạm ứng này đã Duyệt chi!');
+                    return;
+                }
+
+                NProgress.start();
+                $('#btn-modal-add-close-agentprepaid').addClass('disabled');
+                $('#btn-do-save-agentprepaid').addClass('disabled');
+                $('#btn-do-confirm-agentprepaid').addClass('disabled');
+                $('#btn-do-confirm-agentprepaid').html('Đang xử lý...');
+
+                $.post(jobs.ajaxPath + '?ts=' + new Date().getTime().toString(),
+                    { 'mod': 'confirm_agentprepaid', 'id': jobs.currentobj_agentprepaid.ID },
+                                function (data) {
+                                    NProgress.done();
+
+                                    var result = JSON.parse(data);
+                                    $('#btn-modal-add-close-agentprepaid').removeClass('disabled');
+                                    $('#btn-do-save-agentprepaid').removeClass('disabled');
+                                    $('#btn-do-confirm-agentprepaid').removeClass('disabled');
+                                    $('#btn-do-confirm-agentprepaid').html('Duyệt chi');
+                                    alert(result.Message);
+
+                                    if (result.ErrorCode == 0)
+                                        jobs.reloadpage();
+                                });
+            },
+
+
             currentobj_agentprepaid: null,
             startedit_agentprepaid: function (id) {
                 jobs.mode_agentprepaid = 'edit';
@@ -796,6 +896,24 @@
                 $('#info-agentprepaid-money').val(jobs.currentobj_agentprepaid.TotalRequest);
                 $('#info-agentprepaid-description').val(jobs.currentobj_agentprepaid.Description);
 
+                this.agentprepaid_attacheds = jobs.currentobj_agentprepaid.AttachedFiles == "" ? null : jobs.currentobj_agentprepaid.AttachedFiles.split(';');
+                if (this.agentprepaid_attacheds != null) {
+                    var html = "";
+                    for (var i = 0; i < this.agentprepaid_attacheds.length; i++) {
+                        var link = this.agentprepaid_attacheds[i].replace('~', '');
+                        html +=
+                            "<tr>" +
+                                "<td class=\"text-center\">" +
+                                    "<a target=\"_blank\" href=\"" + link + "\">" + link + "</a>" +
+                                "</td>" +
+                                "<td class=\"text-center\">" +
+                                    "<a dat-link=\"" + this.agentprepaid_attacheds[i] + "\" onclick=\"jobs.dodelete_agentprepaid_attached(this);\" href=\"javascript:void(0)\" data-toggle=\"tooltip\" title=\"Xóa\" class=\"btn btn-xs btn-danger\"><i class=\"fa fa-times\"></i></a>" +
+                                "</td>" +
+                            "</tr>";
+                    }
+                    $('#tbodyList-agentprepaids').html(html);
+                }
+
                 $('#modal-info-agentprepaid .modal-header .modal-title').html('Cập nhật Tạm ứng');
                 $('#btn-do-save-agentprepaid').html('Lưu');
                 $('#modal-info-agentprepaid').modal('show');
@@ -804,8 +922,7 @@
                     $('#div-agentprepaid-result').hide();
                     $('#btn-do-confirm-agentprepaid').show();
                 }
-                else
-                {
+                else {
                     $('#btn-do-confirm-agentprepaid').hide();
                 }
             },
@@ -827,7 +944,7 @@
                 $('#btn-do-delete-agentprepaid').html('Đang xử lý...');
 
                 $.post(jobs.ajaxPath + '?ts=' + new Date().getTime().toString(),
-                    { 'mod': 'delete_agentprepaid', 'id': jobs.currentobj_prepaid.ID },
+                    { 'mod': 'delete_agentprepaid', 'id': jobs.currentobj_agentprepaid.ID },
                                 function (data) {
                                     NProgress.done();
 
@@ -956,7 +1073,20 @@
 
                 data.totalrequest = Number($('#info-agentprepaid-money').val());
                 if (isNaN(data.money))
-                    message += '- Số tiền không hợp lệ!<br/>';
+                    message += '- Số tiền duyệt chi không hợp lệ!<br/>';
+
+                data.totalpaid = Number($('#info-agentprepaid-totalpaid').val());
+                if (jobs.mode_agentprepaid != "create" && isNaN(data.totalpaid))
+                    message += '- Số tiền chi thực tế không hợp lệ!<br/>';
+
+                data.attacheds = "";
+                if (this.agentprepaid_attacheds != null && this.agentprepaid_attacheds.length > 0) {
+                    var sAttacheds = "";
+                    for (var i = 0; i < this.agentprepaid_attacheds.length; i++) {
+                        if (data.attacheds != "") data.attacheds += ";";
+                        data.attacheds += this.agentprepaid_attacheds[i];
+                    }
+                }
 
                 data.id = jobs.mode_agentprepaid == "create" ? 0 : jobs.currentobj_agentprepaid.ID;
 
@@ -971,6 +1101,7 @@
                 $('#div-agentprepaid-result').hide();
                 $('#btn-do-confirm-agentprepaid').hide();
                 $('#info-prepaid-employee').val('<%= CurrentSys_User.ID %>');
+                this.agentprepaid_attacheds = null;
             },
 
             currentobj_inoutfee: null,

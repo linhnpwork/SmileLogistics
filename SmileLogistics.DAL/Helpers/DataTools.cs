@@ -4701,6 +4701,29 @@ namespace SmileLogistics.DAL.Helpers
 
         #region Job_AgentPrepaid
 
+        public bool Agent_Prepaid_Confirm(Agent_Prepaid job)
+        {
+            try
+            {
+                Agent_Prepaid obj = DB.Agent_Prepaids.FirstOrDefault(o => o.ID == job.ID);
+                if (obj == null) return false;
+
+                if (obj.Status != 0) return false;
+
+                obj.Status = 1;
+                obj.LastestUpdate = DateTime.Now;
+                obj.UpdatedBy = job.UpdatedBy;
+                obj.PaidDate = DateTime.Now;
+                DB.SubmitChanges();
+
+                return true;
+            }
+            catch
+            {
+                return false;
+            }
+        }
+
         public int Agent_Prepaid_Update(Agent_Prepaid data)
         {
             try
@@ -4738,8 +4761,6 @@ namespace SmileLogistics.DAL.Helpers
                 obj.UpdatedBy = job.UpdatedBy;
                 DB.SubmitChanges();
 
-                Job_CalculateProfit(job.JobID);
-
                 return true;
             }
             catch
@@ -4754,8 +4775,6 @@ namespace SmileLogistics.DAL.Helpers
             {
                 DB.Agent_Prepaids.InsertOnSubmit(obj);
                 DB.SubmitChanges();
-
-                Job_CalculateProfit(obj.JobID);
 
                 return 0;
             }

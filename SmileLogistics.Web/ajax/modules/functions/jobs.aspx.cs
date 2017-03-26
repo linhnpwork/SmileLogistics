@@ -75,6 +75,155 @@ namespace SmileLogistics.Web.ajax.modules.functions
                 case "delete_agentprepaid":
                     Delete_AgentPrepaid();
                     break;
+                case "confirm_agentprepaid":
+                    Confirm_AgentPrepaid();
+                    break;
+                case "attached_agentprepaid":
+                    Attached_AgentPrepaid();
+                    break;
+            }
+        }
+
+        private void Attached_AgentPrepaid()
+        {
+            string postdata = Request.Form["data"];
+            if (postdata == string.Empty)
+            {
+                DoResponse(JsonConvert.SerializeObject(new GlobalValues.ResponseData()
+                {
+                    Data = null,
+                    ErrorCode = -1,
+                    Message = "Dữ liệu không hợp lệ!",
+                }));
+
+                return;
+            }
+
+            dynamic data;
+            try { data = JsonConvert.DeserializeObject(postdata); }
+            catch { data = null; }
+
+            if (data == null)
+            {
+                DoResponse(JsonConvert.SerializeObject(new GlobalValues.ResponseData()
+                {
+                    Data = null,
+                    ErrorCode = -2,
+                    Message = "Dữ liệu không hợp lệ!",
+                }));
+
+                return;
+            }
+
+            using (DALTools dalTools = new DALTools())
+            {
+                eAgent_Prepaid prepaid = dalTools.Agent_Prepaid_GetE(int.Parse(data.id.ToString()));
+                if (prepaid == null)
+                {
+                    DoResponse(JsonConvert.SerializeObject(new GlobalValues.ResponseData()
+                    {
+                        Data = null,
+                        ErrorCode = 1,
+                        Message = "Dữ liệu không hợp lệ!",
+                    }));
+
+                    return;
+                }
+
+                string attacheds = string.Empty;
+                if (Request.Files.Count > 0)
+                {
+                    string folder = "/uploads/jobs/" + prepaid.JobID.ToString() + "/TamungNhanvien/" + prepaid.ID.ToString() + "/";
+                    if (!Directory.Exists(Server.MapPath(ResolveUrl(folder))))
+                        Directory.CreateDirectory(Server.MapPath(ResolveUrl(folder)));
+
+                    for (int i = 0; i < Request.Files.Count; i++)
+                    {
+                        HttpPostedFile file = Request.Files[i];
+                        string ext = file.FileName.Substring(file.FileName.LastIndexOf('.') + 1).ToLower();
+                        string attached = folder + DateTime.Now.Ticks.ToString() + "." + ext;
+                        file.SaveAs(Server.MapPath(ResolveUrl(attached)));
+
+                        if (!string.IsNullOrEmpty(attacheds)) attacheds += ";";
+                        attacheds += attached;
+                    }
+                }
+
+                if (string.IsNullOrEmpty(attacheds))
+                    DoResponse(JsonConvert.SerializeObject(new GlobalValues.ResponseData()
+                    {
+                        Data = null,
+                        ErrorCode = 2,
+                        Message = "Upload tệp thất bại, vui lòng kiểm tra lại dữ liệu!",
+                    }));
+                else
+                    DoResponse(JsonConvert.SerializeObject(new GlobalValues.ResponseData()
+                    {
+                        Data = attacheds,
+                        ErrorCode = 0,
+                        Message = "Upload tệp thành công!",
+                    }));
+            }
+        }
+
+        private void Confirm_AgentPrepaid()
+        {
+            string sId = Request.Form["id"];
+            if (string.IsNullOrEmpty(sId))
+            {
+                DoResponse(JsonConvert.SerializeObject(new GlobalValues.ResponseData()
+                {
+                    Data = null,
+                    ErrorCode = -1,
+                    Message = "Dữ liệu không hợp lệ!",
+                }));
+
+                return;
+            }
+
+            using (DALTools dalTools = new DALTools())
+            {
+                int id = int.Parse(sId);
+                Agent_Prepaid obj = dalTools.Agent_Prepaid_Get(id);
+                if (obj == null)
+                {
+                    DoResponse(JsonConvert.SerializeObject(new GlobalValues.ResponseData()
+                    {
+                        Data = null,
+                        ErrorCode = -1,
+                        Message = "Không tìm thấy Tạm ứng!",
+                    }));
+
+                    return;
+                }
+
+                if (obj.Status != 0)
+                {
+                    DoResponse(JsonConvert.SerializeObject(new GlobalValues.ResponseData()
+                    {
+                        Data = null,
+                        ErrorCode = 1,
+                        Message = "Tạm ứng này đã được Duyệt chi!",
+                    }));
+
+                    return;
+                }
+
+                obj.UpdatedBy = CurrentSys_User.ID;
+                if (!dalTools.Agent_Prepaid_Confirm(obj))
+                    DoResponse(JsonConvert.SerializeObject(new GlobalValues.ResponseData()
+                    {
+                        Data = null,
+                        ErrorCode = 2,
+                        Message = "Duyệt chi thất bại, vui lòng kiểm tra lại dữ liệu!",
+                    }));
+                else
+                    DoResponse(JsonConvert.SerializeObject(new GlobalValues.ResponseData()
+                    {
+                        Data = null,
+                        ErrorCode = 0,
+                        Message = "Duyệt chi thành công! Đang chuyển ...",
+                    }));
             }
         }
 
@@ -294,7 +443,7 @@ namespace SmileLogistics.Web.ajax.modules.functions
                 Agent_Prepaid obj = new Agent_Prepaid()
                 {
                     ID = int.Parse(data.id.ToString()),
-                    AttachedFiles = data.attachedfiles.ToString(),
+                    AttachedFiles = data.attacheds.ToString(),
                     AgentID = int.Parse(data.employid.ToString()),
                     Description = data.description.ToString(),
                     LastestUpdate = DateTime.Now,
