@@ -609,12 +609,11 @@ namespace SmileLogistics.Web.ajax.modules.functions
                 Agent_Prepaid obj = new Agent_Prepaid()
                 {
                     AgentID = int.Parse(data.employid.ToString()),
-                    AttachedFiles = string.Empty,
                     Description = data.description.ToString(),
                     IsDeleted = false,
                     JobID = job.ID,
                     LastestUpdate = DateTime.Now,
-                    PaidDate = DateTime.MaxValue,
+                    ConfirmedDate = DateTime.MaxValue,
                     RequestedDate = DateTime.Now,
                     Status = 0,
                     TotalPaid = 0,
@@ -714,7 +713,6 @@ namespace SmileLogistics.Web.ajax.modules.functions
                 Agent_Prepaid obj = new Agent_Prepaid()
                 {
                     ID = int.Parse(data.id.ToString()),
-                    AttachedFiles = data.attacheds.ToString(),
                     AgentID = int.Parse(data.employid.ToString()),
                     Description = data.description.ToString(),
                     LastestUpdate = DateTime.Now,

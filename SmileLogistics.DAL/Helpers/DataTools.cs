@@ -4720,7 +4720,7 @@ namespace SmileLogistics.DAL.Helpers
                 obj.Status = 1;
                 obj.LastestUpdate = DateTime.Now;
                 obj.UpdatedBy = job.UpdatedBy;
-                obj.PaidDate = DateTime.Now;
+                obj.ConfirmedDate = DateTime.Now;
                 DB.SubmitChanges();
 
                 return true;
@@ -4738,7 +4738,6 @@ namespace SmileLogistics.DAL.Helpers
                 Agent_Prepaid obj = DB.Agent_Prepaids.FirstOrDefault(o => o.ID == data.ID);
                 if (obj == null) return -1;
 
-                obj.AttachedFiles = data.AttachedFiles;
                 obj.AgentID = data.AgentID;
                 obj.Description = data.Description;
                 obj.TotalRequest = data.TotalRequest;
@@ -4861,16 +4860,13 @@ namespace SmileLogistics.DAL.Helpers
                 {
                     AgentID = obj.AgentID,
                     AgentName = obj.Sys_User1.Firstname + ", " + obj.Sys_User1.Lastname,
-                    AttachedFiles = obj.AttachedFiles,
                     Description = obj.Description,
                     ID = obj.ID,
                     IsDeleted = obj.IsDeleted,
                     JobID = obj.JobID,
                     LastestUpdate = obj.LastestUpdate,
-                    PaidDate = obj.PaidDate,
                     RequestedDate = obj.RequestedDate,
                     sLastestUpdate = obj.LastestUpdate.ToString(GlobalValues.DateFormat_VN),
-                    sPaidDate = obj.PaidDate.ToString(GlobalValues.DateFormat_VN),
                     sRequestedDate = obj.RequestedDate.ToString(GlobalValues.DateFormat_VN),
                     Status = obj.Status,
                     TotalPaid = obj.TotalPaid,
