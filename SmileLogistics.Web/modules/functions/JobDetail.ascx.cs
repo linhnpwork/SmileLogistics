@@ -61,7 +61,7 @@ namespace SmileLogistics.Web.modules.functions
                     html +=
                         "<div class=\"checkbox\">" +
                             "<label for=\"cbxAgentPrepaid_JobWorking_" + obj.ID.ToString() + "\">" +
-                                "<input type=\"checkbox\" id=\"cbxAgentPrepaid_JobWorking_" + obj.ID.ToString() + "\" name=\"cbxAgentPrepaid_JobWorking_" + obj.ID.ToString() + "\" value=\"" + obj.ID.ToString() + "\">" +
+                                "<input class=\"checked-agentprepaid-jobworking\" dat-id=\"" + obj.ID.ToString() + "\" type=\"checkbox\" id=\"cbxAgentPrepaid_JobWorking_" + obj.ID.ToString() + "\" name=\"cbxAgentPrepaid_JobWorking_" + obj.ID.ToString() + "\" value=\"" + obj.ID.ToString() + "\">" +
                                 obj.Name +
                             "</label>" +
                         "</div>";

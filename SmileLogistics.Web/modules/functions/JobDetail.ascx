@@ -75,7 +75,7 @@
                     <div class="form-group">
                         <label class="col-md-3 control-label">Tỉ giá USD</label>
                         <div class="col-md-9">
-                            <input type="text" id="info-usdrate" class="form-control" placeholder="1 USD = ? VND" style="width: auto;" value="0">
+                            <input type="text" id="info-usdrate" class="form-control" placeholder="1 USD = ? VND" style="width: auto;" value="0" onkeyup="globalhelpers.On_InputMoney_KeyPress(this);">
                             <span class="help-block">(Dùng dấm chấm '.' để xác định số thập phân! Đây là tỉ giá USD tạm thời, được sử dụng để tính toán trong quá trình xử lý JOB. Nếu trong JOB có sử dụng đồng USD (ở các tính năng: Thu/Chi hộ, ...) thì phải cung cấp tỉ giá này!)</span>
                         </div>
                     </div>
@@ -205,7 +205,7 @@
                         </div>
                         <label class="col-md-3 control-label">Tỉ giá USD</label>
                         <div class="col-md-3">
-                            <input type="text" id="info-quotation-customs-usdrate" class="form-control" placeholder="1 USD = ? VND">
+                            <input type="text" id="info-quotation-customs-usdrate" class="form-control" placeholder="1 USD = ? VND" onkeyup="globalhelpers.On_InputMoney_KeyPress(this);">
                         </div>
                     </div>
                     <div class="form-group">
@@ -358,7 +358,7 @@
                                     <div class="form-group">
                                         <label class="col-md-3 control-label">Giá</label>
                                         <div class="col-md-9">
-                                            <input type="text" id="info-quotationroute-value-price" class="form-control" placeholder="Giá" style="width: auto;">
+                                            <input type="text" id="info-quotationroute-value-price" class="form-control" placeholder="Giá" style="width: auto;" onkeyup="globalhelpers.On_InputMoney_KeyPress(this);">
                                             <span class="help-block">(Dùng dấm chấm '.' để xác định số thập phân!)</span>
                                         </div>
                                     </div>
@@ -376,7 +376,7 @@
                                         </div>
                                         <label class="col-md-3 control-label">Tỉ giá USD</label>
                                         <div class="col-md-4">
-                                            <input type="text" id="info-quotationroute-info-usdrate" class="form-control" placeholder="1 USD = ? VND" style="width: auto;" value="0">
+                                            <input type="text" id="info-quotationroute-info-usdrate" class="form-control" placeholder="1 USD = ? VND" style="width: auto;" value="0" onkeyup="globalhelpers.On_InputMoney_KeyPress(this);">
                                             <span class="help-block">(Dùng dấm chấm '.' để xác định số thập phân!)</span>
                                         </div>
                                     </div>
@@ -403,11 +403,11 @@
                                     <div class="form-group">
                                         <label class="col-md-3 control-label">Giảm giá từ Hãng</label>
                                         <div class="col-md-3">
-                                            <input type="text" id="info-quotationroute-info-comppromotion" class="form-control" placeholder="Giảm giá từ Hãng" style="width: auto;" value="0">
+                                            <input type="text" id="info-quotationroute-info-comppromotion" class="form-control" placeholder="Giảm giá từ Hãng" style="width: auto;" value="0" onkeyup="globalhelpers.On_InputMoney_KeyPress(this);">
                                         </div>
                                         <label class="col-md-3 control-label">Phí phụ thu</label>
                                         <div class="col-md-3">
-                                            <input type="text" id="info-quotationroute-info-extrafee" class="form-control" placeholder="Phí phụ thu (nếu có)" style="width: auto;" value="0">
+                                            <input type="text" id="info-quotationroute-info-extrafee" class="form-control" placeholder="Phí phụ thu (nếu có)" style="width: auto;" value="0" onkeyup="globalhelpers.On_InputMoney_KeyPress(this);">
                                         </div>
                                         <div class="col-md-3">
                                         </div>
@@ -434,7 +434,7 @@
                                     <div class="form-group">
                                         <label class="col-md-3 control-label">Trọng lượng hàng</label>
                                         <div class="col-md-9">
-                                            <input type="text" id="info-quotationroute-info-loads" class="form-control" placeholder="Trọng lượng hàng" style="width: auto;" value="0">
+                                            <input type="text" id="info-quotationroute-info-loads" class="form-control" placeholder="Trọng lượng hàng" style="width: auto;" value="0" onkeyup="globalhelpers.On_InputMoney_KeyPress(this);">
                                             <span class="help-block">(Dùng dấm chấm '.' để xác định số thập phân!)</span>
                                         </div>
                                     </div>
@@ -535,7 +535,7 @@
                     <div class="form-group">
                         <label class="col-md-3 control-label">Số tiền</label>
                         <div class="col-md-9">
-                            <input type="text" id="info-inoutfee-money" class="form-control" placeholder="Số tiền trên Hóa đơn" style="width: auto;">
+                            <input type="text" id="info-inoutfee-money" class="form-control" placeholder="Số tiền trên Hóa đơn" style="width: auto;" onkeyup="globalhelpers.On_InputMoney_KeyPress(this);">
                             <span class="help-block">(Dùng dấm chấm '.' để xác định số thập phân!)</span>
                         </div>
                     </div>
@@ -576,7 +576,7 @@
                 <h3 class="modal-title">Xóa Thu/Chi hộ?</h3>
             </div>
             <div class="modal-body">
-                Bạn chắc chắn muốn xóa Mục Thu/Chi hộ này <b id="bDeleteName"></b>?<br />
+                Bạn chắc chắn muốn xóa Mục Thu/Chi hộ này?<br />
                 <%--<i class="text-danger">(Điều này đồng nghĩa việc xóa kèm theo lịch sử hoạt động!!!)</i>--%>
             </div>
             <div class="modal-footer">
@@ -605,7 +605,7 @@
                             <div class="form-group">
                                 <label class="col-md-3 control-label">Số tiền</label>
                                 <div class="col-md-9">
-                                    <input type="text" id="info-agentprepaid-money" class="form-control" placeholder="Số tiền tạm ứng" style="width: auto;">
+                                    <input type="text" id="info-agentprepaid-money" class="form-control" placeholder="Số tiền tạm ứng" style="width: auto;" onkeyup="globalhelpers.On_InputMoney_KeyPress(this);">
                                     <span class="help-block">(Dùng dấm chấm '.' để xác định số thập phân!)</span>
                                 </div>
                             </div>
@@ -619,31 +619,13 @@
                                 <div class="form-group">
                                     <label class="col-md-3 control-label">Chi thực tế</label>
                                     <div class="col-md-9">
-                                        <input type="text" id="info-agentprepaid-totalpaid" class="form-control" placeholder="Số tiền đã chi thực tế" style="width: auto;">
+                                        <input type="text" id="info-agentprepaid-totalpaid" class="form-control" placeholder="Số tiền đã chi thực tế" style="width: auto;" onkeyup="globalhelpers.On_InputMoney_KeyPress(this);">
                                         <span class="help-block">(Dùng dấm chấm '.' để xác định số thập phân!)</span>
                                     </div>
                                 </div>
                                 <div class="form-group">
                                     <label class="col-md-3 control-label">Mục chi</label>
                                     <div id="divAgentPrepaidsJobWorkings" runat="server" class="col-md-9">
-                                        <%--<div class="checkbox">
-                                            <label for="example-checkbox1">
-                                                <input type="checkbox" id="example-checkbox1" name="example-checkbox1" value="option1">
-                                                Option 1
-                                            </label>
-                                        </div>
-                                        <div class="checkbox">
-                                            <label for="example-checkbox2">
-                                                <input type="checkbox" id="example-checkbox2" name="example-checkbox2" value="option2">
-                                                Option 2
-                                            </label>
-                                        </div>
-                                        <div class="checkbox">
-                                            <label for="example-checkbox3">
-                                                <input type="checkbox" id="example-checkbox3" name="example-checkbox3" value="option3">
-                                                Option 3
-                                            </label>
-                                        </div>--%>
                                     </div>
                                 </div>
                                 <div class="form-group">
@@ -722,7 +704,7 @@
                             <div class="form-group">
                                 <label class="col-md-3 control-label">Số tiền</label>
                                 <div class="col-md-9">
-                                    <input type="text" id="info-jobprepaid-money" class="form-control" placeholder="Số tiền chi từ tạm ứng" style="width: auto;">
+                                    <input type="text" id="info-jobprepaid-money" class="form-control" placeholder="Số tiền chi từ tạm ứng" style="width: auto;" onkeyup="globalhelpers.On_InputMoney_KeyPress(this);">
                                     <span class="help-block">(Dùng dấm chấm '.' để xác định số thập phân!)</span>
                                 </div>
                             </div>
@@ -1122,6 +1104,7 @@
                 $('#info-agentprepaid-employee').val(jobs.currentobj_agentprepaid.EmployID);
                 $('#info-agentprepaid-money').val(jobs.currentobj_agentprepaid.TotalRequest);
                 $('#info-agentprepaid-description').val(jobs.currentobj_agentprepaid.Description);
+                $('#info-agentprepaid-totalpaid').val(jobs.currentobj_agentprepaid.TotalPaid);
 
                 this.agentprepaid_attacheds = jobs.currentobj_agentprepaid.AttachedFiles == "" ? null : jobs.currentobj_agentprepaid.AttachedFiles.split(';');
                 if (this.agentprepaid_attacheds != null) {
@@ -1139,6 +1122,14 @@
                             "</tr>";
                     }
                     $('#tbodyList-agentprepaids').html(html);
+                }
+
+                $('.checked-agentprepaid-jobworking').prop('checked', false);
+                var jobIDs = this.currentobj_agentprepaid.JobWorkings.split(';');
+                for (var i = 0; i < jobIDs.length; i++) {
+                    var jobid = Number(jobIDs[i].replace('@', ''));
+                    if (!isNaN(jobid))
+                        $('#cbxAgentPrepaid_JobWorking_' + jobid).prop('checked', true);
                 }
 
                 $('#modal-info-agentprepaid .modal-header .modal-title').html('Cập nhật Tạm ứng');
@@ -1201,11 +1192,13 @@
                             "<tr>" +
                                 "<th class=\"text-center\">STT</th>" +
                                 "<th class=\"text-center\">Nhân viên</th>" +
+                                "<th class=\"text-center\">Ngày yêu cầu</th>" +
                                 "<th class=\"text-center\">Ghi chú</th>" +
                                 "<th class=\"text-center\">Số tiền</th>" +
-                                "<th class=\"text-center\">Ngày yêu cầu</th>" +
-                                "<th class=\"text-center\">Ngày chi</th>" +
-                                "<th class=\"text-center\">Số tiền chi thực tế</th>" +
+                                "<th class=\"text-center\">Người duyệt</th>" +
+                                "<th class=\"text-center\">Ngày duyệt</th>" +
+                                "<th class=\"text-center\">Chi thực tế</th>" +
+                                "<th class=\"text-center\">Hoàn ứng</th>" +
                                 "<th class=\"text-center\">Trạng thái</th>" +
                                 "<th class=\"text-center\">#</th>" +
                             "</tr>" +
@@ -1215,7 +1208,7 @@
                 if (jobs.currentobj.List_AgentPrepaids == null) {
                     html +=
                         "<tr>" +
-                            "<td class=\"text-center\" colspan=\"9\">" +
+                            "<td class=\"text-center\" colspan=\"11\">" +
                                 "Không có dữ liệu!" +
                             "</td>" +
                         "</tr>";
@@ -1232,11 +1225,13 @@
                                     (i + 1) +
                                 "</td>" +
                                 "<td class=\"text-center\">" + obj.AgentName + "</td>" +
+                                "<td class=\"text-center\">" + obj.sRequestedDate + "</td>" +
                                 "<td class=\"text-center\">" + obj.Description + "</td>" +
                                 "<td class=\"text-center\">" + globalhelpers.Format_Money(obj.TotalRequest.toFixed(2)) + "</td>" +
-                                "<td class=\"text-center\">" + obj.sRequestedDate + "</td>" +
-                                "<td class=\"text-center\">" + (obj.Status == 0 ? "---" : obj.sPaidDate) + "</td>" +
+                                "<td class=\"text-center\">" + (obj.Status == 0 ? "---" : obj.ConfirmerName) + "</td>" +
+                                "<td class=\"text-center\">" + (obj.Status == 0 ? "---" : obj.sConfirmedDate) + "</td>" +
                                 "<td class=\"text-center\">" + globalhelpers.Format_Money(obj.TotalPaid.toFixed(2)) + "</td>" +
+                                "<td class=\"text-center\">" + globalhelpers.Format_Money((obj.TotalRequest - obj.TotalPaid).toFixed(2)) + "</td>" +
                                 "<td class=\"text-center\">" + obj.sStatus + "</td>" +
                                 "<td class=\"text-center\">" +
                                         "<a onclick=\"jobs.startedit_agentprepaid('" + obj.ID + "');\" href=\"javascript:void(0)\" data-toggle=\"tooltip\" title=\"Sửa\" class=\"btn btn-xs btn-default\"><i class=\"fa fa-pencil\"></i></a>" +
@@ -1313,6 +1308,14 @@
                         if (data.attacheds != "") data.attacheds += ";";
                         data.attacheds += this.agentprepaid_attacheds[i];
                     }
+                }
+
+                data.jobworkings = "";
+                var cbxJobs = $('.checked-agentprepaid-jobworking');
+                for (var i = 0; i < $(cbxJobs).length; i++) {
+                    var cbxJob = $(cbxJobs[i]);
+                    if ($(cbxJob).prop('checked'))
+                        data.jobworkings += "@" + $(cbxJob).attr('dat-id') + ";";
                 }
 
                 data.id = jobs.mode_agentprepaid == "create" ? 0 : jobs.currentobj_agentprepaid.ID;
@@ -1957,10 +1960,11 @@
                 $('#info-quotation-route-place-start').val(jobs.currentobj_quotation_route.PlaceStart);
                 $('#info-quotation-route-place-end').val(jobs.currentobj_quotation_route.PlaceEnd);
                 $('#info-quotation-route-transcomps').val(jobs.currentobj_quotation_route.TransCompID);
+                jobs.generate_vehicletypes();
 
                 $('#info-quotation-route-vehicletypes').val(jobs.currentobj_quotation_route.VehicleTypeID);
+                jobs.generate_vehicleloads();
                 $('#info-quotation-route-vehicleloads').val(jobs.currentobj_quotation_route.VehicleLoadID);
-
                 jobs.load_quotations();
 
                 $('#info-quotationroute-value-quantity').val(jobs.currentobj_quotation_route.Quantity);
@@ -2307,7 +2311,7 @@
                     $('#divQuotationRoute_Vehicle_Loads').html('');
                 }
                 else {
-                    var html = "<select id=\"info-quotation-route-transcomps\" onchange=\"jobs.generate_vehicletypes();\" class=\"select-select2 select2-hidden-accessible\" style=\"width: auto;\">";
+                    var html = "<select id=\"info-quotation-route-transcomps\" onchange=\"jobs.generate_vehicletypes();\" class=\"form-control\" style=\"width: auto;\">";
 
                     for (var i = 0; i < this.allComps.length; i++) {
                         var comp = this.allComps[i];

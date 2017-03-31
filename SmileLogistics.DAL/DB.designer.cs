@@ -30,15 +30,12 @@ namespace SmileLogistics.DAL
 		
     #region Extensibility Method Definitions
     partial void OnCreated();
-    partial void InsertAgent_PrepaidDetail(Agent_PrepaidDetail instance);
-    partial void UpdateAgent_PrepaidDetail(Agent_PrepaidDetail instance);
-    partial void DeleteAgent_PrepaidDetail(Agent_PrepaidDetail instance);
-    partial void InsertVehicleType(VehicleType instance);
-    partial void UpdateVehicleType(VehicleType instance);
-    partial void DeleteVehicleType(VehicleType instance);
     partial void InsertAgent_Prepaid(Agent_Prepaid instance);
     partial void UpdateAgent_Prepaid(Agent_Prepaid instance);
     partial void DeleteAgent_Prepaid(Agent_Prepaid instance);
+    partial void InsertVehicleType(VehicleType instance);
+    partial void UpdateVehicleType(VehicleType instance);
+    partial void DeleteVehicleType(VehicleType instance);
     partial void InsertCustomer_Prepaid(Customer_Prepaid instance);
     partial void UpdateCustomer_Prepaid(Customer_Prepaid instance);
     partial void DeleteCustomer_Prepaid(Customer_Prepaid instance);
@@ -146,11 +143,11 @@ namespace SmileLogistics.DAL
 			OnCreated();
 		}
 		
-		public System.Data.Linq.Table<Agent_PrepaidDetail> Agent_PrepaidDetails
+		public System.Data.Linq.Table<Agent_Prepaid> Agent_Prepaids
 		{
 			get
 			{
-				return this.GetTable<Agent_PrepaidDetail>();
+				return this.GetTable<Agent_Prepaid>();
 			}
 		}
 		
@@ -159,14 +156,6 @@ namespace SmileLogistics.DAL
 			get
 			{
 				return this.GetTable<VehicleType>();
-			}
-		}
-		
-		public System.Data.Linq.Table<Agent_Prepaid> Agent_Prepaids
-		{
-			get
-			{
-				return this.GetTable<Agent_Prepaid>();
 			}
 		}
 		
@@ -371,37 +360,49 @@ namespace SmileLogistics.DAL
 		}
 	}
 	
-	[global::System.Data.Linq.Mapping.TableAttribute(Name="dbo.Agent_PrepaidDetails")]
-	public partial class Agent_PrepaidDetail : INotifyPropertyChanging, INotifyPropertyChanged
+	[global::System.Data.Linq.Mapping.TableAttribute(Name="dbo.Agent_Prepaids")]
+	public partial class Agent_Prepaid : INotifyPropertyChanging, INotifyPropertyChanged
 	{
 		
 		private static PropertyChangingEventArgs emptyChangingEventArgs = new PropertyChangingEventArgs(String.Empty);
 		
 		private int _ID;
 		
-		private int _PrepaidID;
+		private int _JobID;
 		
-		private int _WorkingID;
+		private int _AgentID;
 		
-		private System.DateTime _PaidDate;
+		private System.DateTime _RequestedDate;
+		
+		private System.DateTime _ConfirmedDate;
 		
 		private string _Description;
 		
-		private double _Money;
+		private int _Status;
 		
-		private string _AttachedFile;
+		private double _TotalRequest;
+		
+		private double _TotalPaid;
 		
 		private bool _IsDeleted;
 		
-		private System.DateTime _LastestUpdated;
+		private System.DateTime _LastestUpdate;
 		
 		private int _UpdatedBy;
 		
-		private EntityRef<Agent_Prepaid> _Agent_Prepaid;
+		private string _AttachedFiles;
 		
-		private EntityRef<Job_Working> _Job_Working;
+		private int _ConfirmedBy;
+		
+		private string _JobWorkings;
+		
+		private EntityRef<Job> _Job;
 		
 		private EntityRef<Sys_User> _Sys_User;
+		
+		private EntityRef<Sys_User> _Sys_User1;
+		
+		private EntityRef<Sys_User> _Sys_User2;
 		
     #region Extensibility Method Definitions
     partial void OnLoaded();
@@ -409,31 +410,42 @@ namespace SmileLogistics.DAL
     partial void OnCreated();
     partial void OnIDChanging(int value);
     partial void OnIDChanged();
-    partial void OnPrepaidIDChanging(int value);
-    partial void OnPrepaidIDChanged();
-    partial void OnWorkingIDChanging(int value);
-    partial void OnWorkingIDChanged();
-    partial void OnPaidDateChanging(System.DateTime value);
-    partial void OnPaidDateChanged();
+    partial void OnJobIDChanging(int value);
+    partial void OnJobIDChanged();
+    partial void OnAgentIDChanging(int value);
+    partial void OnAgentIDChanged();
+    partial void OnRequestedDateChanging(System.DateTime value);
+    partial void OnRequestedDateChanged();
+    partial void OnConfirmedDateChanging(System.DateTime value);
+    partial void OnConfirmedDateChanged();
     partial void OnDescriptionChanging(string value);
     partial void OnDescriptionChanged();
-    partial void OnMoneyChanging(double value);
-    partial void OnMoneyChanged();
-    partial void OnAttachedFileChanging(string value);
-    partial void OnAttachedFileChanged();
+    partial void OnStatusChanging(int value);
+    partial void OnStatusChanged();
+    partial void OnTotalRequestChanging(double value);
+    partial void OnTotalRequestChanged();
+    partial void OnTotalPaidChanging(double value);
+    partial void OnTotalPaidChanged();
     partial void OnIsDeletedChanging(bool value);
     partial void OnIsDeletedChanged();
-    partial void OnLastestUpdatedChanging(System.DateTime value);
-    partial void OnLastestUpdatedChanged();
+    partial void OnLastestUpdateChanging(System.DateTime value);
+    partial void OnLastestUpdateChanged();
     partial void OnUpdatedByChanging(int value);
     partial void OnUpdatedByChanged();
+    partial void OnAttachedFilesChanging(string value);
+    partial void OnAttachedFilesChanged();
+    partial void OnConfirmedByChanging(int value);
+    partial void OnConfirmedByChanged();
+    partial void OnJobWorkingsChanging(string value);
+    partial void OnJobWorkingsChanged();
     #endregion
 		
-		public Agent_PrepaidDetail()
+		public Agent_Prepaid()
 		{
-			this._Agent_Prepaid = default(EntityRef<Agent_Prepaid>);
-			this._Job_Working = default(EntityRef<Job_Working>);
+			this._Job = default(EntityRef<Job>);
 			this._Sys_User = default(EntityRef<Sys_User>);
+			this._Sys_User1 = default(EntityRef<Sys_User>);
+			this._Sys_User2 = default(EntityRef<Sys_User>);
 			OnCreated();
 		}
 		
@@ -457,70 +469,90 @@ namespace SmileLogistics.DAL
 			}
 		}
 		
-		[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_PrepaidID", DbType="Int NOT NULL")]
-		public int PrepaidID
+		[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_JobID", DbType="Int NOT NULL")]
+		public int JobID
 		{
 			get
 			{
-				return this._PrepaidID;
+				return this._JobID;
 			}
 			set
 			{
-				if ((this._PrepaidID != value))
+				if ((this._JobID != value))
 				{
-					if (this._Agent_Prepaid.HasLoadedOrAssignedValue)
+					if (this._Job.HasLoadedOrAssignedValue)
 					{
 						throw new System.Data.Linq.ForeignKeyReferenceAlreadyHasValueException();
 					}
-					this.OnPrepaidIDChanging(value);
+					this.OnJobIDChanging(value);
 					this.SendPropertyChanging();
-					this._PrepaidID = value;
-					this.SendPropertyChanged("PrepaidID");
-					this.OnPrepaidIDChanged();
+					this._JobID = value;
+					this.SendPropertyChanged("JobID");
+					this.OnJobIDChanged();
 				}
 			}
 		}
 		
-		[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_WorkingID", DbType="Int NOT NULL")]
-		public int WorkingID
+		[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_AgentID", DbType="Int NOT NULL")]
+		public int AgentID
 		{
 			get
 			{
-				return this._WorkingID;
+				return this._AgentID;
 			}
 			set
 			{
-				if ((this._WorkingID != value))
+				if ((this._AgentID != value))
 				{
-					if (this._Job_Working.HasLoadedOrAssignedValue)
+					if (this._Sys_User1.HasLoadedOrAssignedValue)
 					{
 						throw new System.Data.Linq.ForeignKeyReferenceAlreadyHasValueException();
 					}
-					this.OnWorkingIDChanging(value);
+					this.OnAgentIDChanging(value);
 					this.SendPropertyChanging();
-					this._WorkingID = value;
-					this.SendPropertyChanged("WorkingID");
-					this.OnWorkingIDChanged();
+					this._AgentID = value;
+					this.SendPropertyChanged("AgentID");
+					this.OnAgentIDChanged();
 				}
 			}
 		}
 		
-		[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_PaidDate", DbType="DateTime NOT NULL")]
-		public System.DateTime PaidDate
+		[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_RequestedDate", DbType="DateTime NOT NULL")]
+		public System.DateTime RequestedDate
 		{
 			get
 			{
-				return this._PaidDate;
+				return this._RequestedDate;
 			}
 			set
 			{
-				if ((this._PaidDate != value))
+				if ((this._RequestedDate != value))
 				{
-					this.OnPaidDateChanging(value);
+					this.OnRequestedDateChanging(value);
 					this.SendPropertyChanging();
-					this._PaidDate = value;
-					this.SendPropertyChanged("PaidDate");
-					this.OnPaidDateChanged();
+					this._RequestedDate = value;
+					this.SendPropertyChanged("RequestedDate");
+					this.OnRequestedDateChanged();
+				}
+			}
+		}
+		
+		[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_ConfirmedDate", DbType="DateTime NOT NULL")]
+		public System.DateTime ConfirmedDate
+		{
+			get
+			{
+				return this._ConfirmedDate;
+			}
+			set
+			{
+				if ((this._ConfirmedDate != value))
+				{
+					this.OnConfirmedDateChanging(value);
+					this.SendPropertyChanging();
+					this._ConfirmedDate = value;
+					this.SendPropertyChanged("ConfirmedDate");
+					this.OnConfirmedDateChanged();
 				}
 			}
 		}
@@ -545,42 +577,62 @@ namespace SmileLogistics.DAL
 			}
 		}
 		
-		[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_Money", DbType="Float NOT NULL")]
-		public double Money
+		[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_Status", DbType="Int NOT NULL")]
+		public int Status
 		{
 			get
 			{
-				return this._Money;
+				return this._Status;
 			}
 			set
 			{
-				if ((this._Money != value))
+				if ((this._Status != value))
 				{
-					this.OnMoneyChanging(value);
+					this.OnStatusChanging(value);
 					this.SendPropertyChanging();
-					this._Money = value;
-					this.SendPropertyChanged("Money");
-					this.OnMoneyChanged();
+					this._Status = value;
+					this.SendPropertyChanged("Status");
+					this.OnStatusChanged();
 				}
 			}
 		}
 		
-		[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_AttachedFile", DbType="NText NOT NULL", CanBeNull=false, UpdateCheck=UpdateCheck.Never)]
-		public string AttachedFile
+		[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_TotalRequest", DbType="Float NOT NULL")]
+		public double TotalRequest
 		{
 			get
 			{
-				return this._AttachedFile;
+				return this._TotalRequest;
 			}
 			set
 			{
-				if ((this._AttachedFile != value))
+				if ((this._TotalRequest != value))
 				{
-					this.OnAttachedFileChanging(value);
+					this.OnTotalRequestChanging(value);
 					this.SendPropertyChanging();
-					this._AttachedFile = value;
-					this.SendPropertyChanged("AttachedFile");
-					this.OnAttachedFileChanged();
+					this._TotalRequest = value;
+					this.SendPropertyChanged("TotalRequest");
+					this.OnTotalRequestChanged();
+				}
+			}
+		}
+		
+		[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_TotalPaid", DbType="Float NOT NULL")]
+		public double TotalPaid
+		{
+			get
+			{
+				return this._TotalPaid;
+			}
+			set
+			{
+				if ((this._TotalPaid != value))
+				{
+					this.OnTotalPaidChanging(value);
+					this.SendPropertyChanging();
+					this._TotalPaid = value;
+					this.SendPropertyChanged("TotalPaid");
+					this.OnTotalPaidChanged();
 				}
 			}
 		}
@@ -605,22 +657,22 @@ namespace SmileLogistics.DAL
 			}
 		}
 		
-		[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_LastestUpdated", DbType="DateTime NOT NULL")]
-		public System.DateTime LastestUpdated
+		[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_LastestUpdate", DbType="DateTime NOT NULL")]
+		public System.DateTime LastestUpdate
 		{
 			get
 			{
-				return this._LastestUpdated;
+				return this._LastestUpdate;
 			}
 			set
 			{
-				if ((this._LastestUpdated != value))
+				if ((this._LastestUpdate != value))
 				{
-					this.OnLastestUpdatedChanging(value);
+					this.OnLastestUpdateChanging(value);
 					this.SendPropertyChanging();
-					this._LastestUpdated = value;
-					this.SendPropertyChanged("LastestUpdated");
-					this.OnLastestUpdatedChanged();
+					this._LastestUpdate = value;
+					this.SendPropertyChanged("LastestUpdate");
+					this.OnLastestUpdateChanged();
 				}
 			}
 		}
@@ -636,7 +688,7 @@ namespace SmileLogistics.DAL
 			{
 				if ((this._UpdatedBy != value))
 				{
-					if (this._Sys_User.HasLoadedOrAssignedValue)
+					if (this._Sys_User2.HasLoadedOrAssignedValue)
 					{
 						throw new System.Data.Linq.ForeignKeyReferenceAlreadyHasValueException();
 					}
@@ -649,75 +701,105 @@ namespace SmileLogistics.DAL
 			}
 		}
 		
-		[global::System.Data.Linq.Mapping.AssociationAttribute(Name="Agent_Prepaid_Agent_PrepaidDetail", Storage="_Agent_Prepaid", ThisKey="PrepaidID", OtherKey="ID", IsForeignKey=true)]
-		public Agent_Prepaid Agent_Prepaid
+		[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_AttachedFiles", DbType="NText NOT NULL", CanBeNull=false, UpdateCheck=UpdateCheck.Never)]
+		public string AttachedFiles
 		{
 			get
 			{
-				return this._Agent_Prepaid.Entity;
+				return this._AttachedFiles;
 			}
 			set
 			{
-				Agent_Prepaid previousValue = this._Agent_Prepaid.Entity;
-				if (((previousValue != value) 
-							|| (this._Agent_Prepaid.HasLoadedOrAssignedValue == false)))
+				if ((this._AttachedFiles != value))
 				{
+					this.OnAttachedFilesChanging(value);
 					this.SendPropertyChanging();
-					if ((previousValue != null))
-					{
-						this._Agent_Prepaid.Entity = null;
-						previousValue.Agent_PrepaidDetails.Remove(this);
-					}
-					this._Agent_Prepaid.Entity = value;
-					if ((value != null))
-					{
-						value.Agent_PrepaidDetails.Add(this);
-						this._PrepaidID = value.ID;
-					}
-					else
-					{
-						this._PrepaidID = default(int);
-					}
-					this.SendPropertyChanged("Agent_Prepaid");
+					this._AttachedFiles = value;
+					this.SendPropertyChanged("AttachedFiles");
+					this.OnAttachedFilesChanged();
 				}
 			}
 		}
 		
-		[global::System.Data.Linq.Mapping.AssociationAttribute(Name="Job_Working_Agent_PrepaidDetail", Storage="_Job_Working", ThisKey="WorkingID", OtherKey="ID", IsForeignKey=true)]
-		public Job_Working Job_Working
+		[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_ConfirmedBy", DbType="Int NOT NULL")]
+		public int ConfirmedBy
 		{
 			get
 			{
-				return this._Job_Working.Entity;
+				return this._ConfirmedBy;
 			}
 			set
 			{
-				Job_Working previousValue = this._Job_Working.Entity;
-				if (((previousValue != value) 
-							|| (this._Job_Working.HasLoadedOrAssignedValue == false)))
+				if ((this._ConfirmedBy != value))
 				{
+					if (this._Sys_User.HasLoadedOrAssignedValue)
+					{
+						throw new System.Data.Linq.ForeignKeyReferenceAlreadyHasValueException();
+					}
+					this.OnConfirmedByChanging(value);
 					this.SendPropertyChanging();
-					if ((previousValue != null))
-					{
-						this._Job_Working.Entity = null;
-						previousValue.Agent_PrepaidDetails.Remove(this);
-					}
-					this._Job_Working.Entity = value;
-					if ((value != null))
-					{
-						value.Agent_PrepaidDetails.Add(this);
-						this._WorkingID = value.ID;
-					}
-					else
-					{
-						this._WorkingID = default(int);
-					}
-					this.SendPropertyChanged("Job_Working");
+					this._ConfirmedBy = value;
+					this.SendPropertyChanged("ConfirmedBy");
+					this.OnConfirmedByChanged();
 				}
 			}
 		}
 		
-		[global::System.Data.Linq.Mapping.AssociationAttribute(Name="Sys_User_Agent_PrepaidDetail", Storage="_Sys_User", ThisKey="UpdatedBy", OtherKey="ID", IsForeignKey=true)]
+		[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_JobWorkings", DbType="NText NOT NULL", CanBeNull=false, UpdateCheck=UpdateCheck.Never)]
+		public string JobWorkings
+		{
+			get
+			{
+				return this._JobWorkings;
+			}
+			set
+			{
+				if ((this._JobWorkings != value))
+				{
+					this.OnJobWorkingsChanging(value);
+					this.SendPropertyChanging();
+					this._JobWorkings = value;
+					this.SendPropertyChanged("JobWorkings");
+					this.OnJobWorkingsChanged();
+				}
+			}
+		}
+		
+		[global::System.Data.Linq.Mapping.AssociationAttribute(Name="Job_Agent_Prepaid", Storage="_Job", ThisKey="JobID", OtherKey="ID", IsForeignKey=true)]
+		public Job Job
+		{
+			get
+			{
+				return this._Job.Entity;
+			}
+			set
+			{
+				Job previousValue = this._Job.Entity;
+				if (((previousValue != value) 
+							|| (this._Job.HasLoadedOrAssignedValue == false)))
+				{
+					this.SendPropertyChanging();
+					if ((previousValue != null))
+					{
+						this._Job.Entity = null;
+						previousValue.Agent_Prepaids.Remove(this);
+					}
+					this._Job.Entity = value;
+					if ((value != null))
+					{
+						value.Agent_Prepaids.Add(this);
+						this._JobID = value.ID;
+					}
+					else
+					{
+						this._JobID = default(int);
+					}
+					this.SendPropertyChanged("Job");
+				}
+			}
+		}
+		
+		[global::System.Data.Linq.Mapping.AssociationAttribute(Name="Sys_User_Agent_Prepaid", Storage="_Sys_User", ThisKey="ConfirmedBy", OtherKey="ID", IsForeignKey=true)]
 		public Sys_User Sys_User
 		{
 			get
@@ -734,19 +816,87 @@ namespace SmileLogistics.DAL
 					if ((previousValue != null))
 					{
 						this._Sys_User.Entity = null;
-						previousValue.Agent_PrepaidDetails.Remove(this);
+						previousValue.Agent_Prepaids.Remove(this);
 					}
 					this._Sys_User.Entity = value;
 					if ((value != null))
 					{
-						value.Agent_PrepaidDetails.Add(this);
+						value.Agent_Prepaids.Add(this);
+						this._ConfirmedBy = value.ID;
+					}
+					else
+					{
+						this._ConfirmedBy = default(int);
+					}
+					this.SendPropertyChanged("Sys_User");
+				}
+			}
+		}
+		
+		[global::System.Data.Linq.Mapping.AssociationAttribute(Name="Sys_User_Agent_Prepaid1", Storage="_Sys_User1", ThisKey="AgentID", OtherKey="ID", IsForeignKey=true)]
+		public Sys_User Sys_User1
+		{
+			get
+			{
+				return this._Sys_User1.Entity;
+			}
+			set
+			{
+				Sys_User previousValue = this._Sys_User1.Entity;
+				if (((previousValue != value) 
+							|| (this._Sys_User1.HasLoadedOrAssignedValue == false)))
+				{
+					this.SendPropertyChanging();
+					if ((previousValue != null))
+					{
+						this._Sys_User1.Entity = null;
+						previousValue.Agent_Prepaids1.Remove(this);
+					}
+					this._Sys_User1.Entity = value;
+					if ((value != null))
+					{
+						value.Agent_Prepaids1.Add(this);
+						this._AgentID = value.ID;
+					}
+					else
+					{
+						this._AgentID = default(int);
+					}
+					this.SendPropertyChanged("Sys_User1");
+				}
+			}
+		}
+		
+		[global::System.Data.Linq.Mapping.AssociationAttribute(Name="Sys_User_Agent_Prepaid2", Storage="_Sys_User2", ThisKey="UpdatedBy", OtherKey="ID", IsForeignKey=true)]
+		public Sys_User Sys_User2
+		{
+			get
+			{
+				return this._Sys_User2.Entity;
+			}
+			set
+			{
+				Sys_User previousValue = this._Sys_User2.Entity;
+				if (((previousValue != value) 
+							|| (this._Sys_User2.HasLoadedOrAssignedValue == false)))
+				{
+					this.SendPropertyChanging();
+					if ((previousValue != null))
+					{
+						this._Sys_User2.Entity = null;
+						previousValue.Agent_Prepaids2.Remove(this);
+					}
+					this._Sys_User2.Entity = value;
+					if ((value != null))
+					{
+						value.Agent_Prepaids2.Add(this);
 						this._UpdatedBy = value.ID;
 					}
 					else
 					{
 						this._UpdatedBy = default(int);
 					}
-					this.SendPropertyChanged("Sys_User");
+					this.SendPropertyChanged("Sys_User2");
 				}
 			}
 		}
@@ -1137,483 +1287,6 @@ namespace SmileLogistics.DAL
 		{
 			this.SendPropertyChanging();
 			entity.VehicleType = null;
-		}
-	}
-	
-	[global::System.Data.Linq.Mapping.TableAttribute(Name="dbo.Agent_Prepaids")]
-	public partial class Agent_Prepaid : INotifyPropertyChanging, INotifyPropertyChanged
-	{
-		
-		private static PropertyChangingEventArgs emptyChangingEventArgs = new PropertyChangingEventArgs(String.Empty);
-		
-		private int _ID;
-		
-		private int _JobID;
-		
-		private int _AgentID;
-		
-		private System.DateTime _RequestedDate;
-		
-		private System.DateTime _ConfirmedDate;
-		
-		private string _Description;
-		
-		private int _Status;
-		
-		private double _TotalRequest;
-		
-		private double _TotalPaid;
-		
-		private bool _IsDeleted;
-		
-		private System.DateTime _LastestUpdate;
-		
-		private int _UpdatedBy;
-		
-		private EntitySet<Agent_PrepaidDetail> _Agent_PrepaidDetails;
-		
-		private EntityRef<Job> _Job;
-		
-		private EntityRef<Sys_User> _Sys_User;
-		
-		private EntityRef<Sys_User> _Sys_User1;
-		
-    #region Extensibility Method Definitions
-    partial void OnLoaded();
-    partial void OnValidate(System.Data.Linq.ChangeAction action);
-    partial void OnCreated();
-    partial void OnIDChanging(int value);
-    partial void OnIDChanged();
-    partial void OnJobIDChanging(int value);
-    partial void OnJobIDChanged();
-    partial void OnAgentIDChanging(int value);
-    partial void OnAgentIDChanged();
-    partial void OnRequestedDateChanging(System.DateTime value);
-    partial void OnRequestedDateChanged();
-    partial void OnConfirmedDateChanging(System.DateTime value);
-    partial void OnConfirmedDateChanged();
-    partial void OnDescriptionChanging(string value);
-    partial void OnDescriptionChanged();
-    partial void OnStatusChanging(int value);
-    partial void OnStatusChanged();
-    partial void OnTotalRequestChanging(double value);
-    partial void OnTotalRequestChanged();
-    partial void OnTotalPaidChanging(double value);
-    partial void OnTotalPaidChanged();
-    partial void OnIsDeletedChanging(bool value);
-    partial void OnIsDeletedChanged();
-    partial void OnLastestUpdateChanging(System.DateTime value);
-    partial void OnLastestUpdateChanged();
-    partial void OnUpdatedByChanging(int value);
-    partial void OnUpdatedByChanged();
-    #endregion
-		
-		public Agent_Prepaid()
-		{
-			this._Agent_PrepaidDetails = new EntitySet<Agent_PrepaidDetail>(new Action<Agent_PrepaidDetail>(this.attach_Agent_PrepaidDetails), new Action<Agent_PrepaidDetail>(this.detach_Agent_PrepaidDetails));
-			this._Job = default(EntityRef<Job>);
-			this._Sys_User = default(EntityRef<Sys_User>);
-			this._Sys_User1 = default(EntityRef<Sys_User>);
-			OnCreated();
-		}
-		
-		[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_ID", AutoSync=AutoSync.OnInsert, DbType="Int NOT NULL IDENTITY", IsPrimaryKey=true, IsDbGenerated=true)]
-		public int ID
-		{
-			get
-			{
-				return this._ID;
-			}
-			set
-			{
-				if ((this._ID != value))
-				{
-					this.OnIDChanging(value);
-					this.SendPropertyChanging();
-					this._ID = value;
-					this.SendPropertyChanged("ID");
-					this.OnIDChanged();
-				}
-			}
-		}
-		
-		[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_JobID", DbType="Int NOT NULL")]
-		public int JobID
-		{
-			get
-			{
-				return this._JobID;
-			}
-			set
-			{
-				if ((this._JobID != value))
-				{
-					if (this._Job.HasLoadedOrAssignedValue)
-					{
-						throw new System.Data.Linq.ForeignKeyReferenceAlreadyHasValueException();
-					}
-					this.OnJobIDChanging(value);
-					this.SendPropertyChanging();
-					this._JobID = value;
-					this.SendPropertyChanged("JobID");
-					this.OnJobIDChanged();
-				}
-			}
-		}
-		
-		[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_AgentID", DbType="Int NOT NULL")]
-		public int AgentID
-		{
-			get
-			{
-				return this._AgentID;
-			}
-			set
-			{
-				if ((this._AgentID != value))
-				{
-					if (this._Sys_User.HasLoadedOrAssignedValue)
-					{
-						throw new System.Data.Linq.ForeignKeyReferenceAlreadyHasValueException();
-					}
-					this.OnAgentIDChanging(value);
-					this.SendPropertyChanging();
-					this._AgentID = value;
-					this.SendPropertyChanged("AgentID");
-					this.OnAgentIDChanged();
-				}
-			}
-		}
-		
-		[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_RequestedDate", DbType="DateTime NOT NULL")]
-		public System.DateTime RequestedDate
-		{
-			get
-			{
-				return this._RequestedDate;
-			}
-			set
-			{
-				if ((this._RequestedDate != value))
-				{
-					this.OnRequestedDateChanging(value);
-					this.SendPropertyChanging();
-					this._RequestedDate = value;
-					this.SendPropertyChanged("RequestedDate");
-					this.OnRequestedDateChanged();
-				}
-			}
-		}
-		
-		[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_ConfirmedDate", DbType="DateTime NOT NULL")]
-		public System.DateTime ConfirmedDate
-		{
-			get
-			{
-				return this._ConfirmedDate;
-			}
-			set
-			{
-				if ((this._ConfirmedDate != value))
-				{
-					this.OnConfirmedDateChanging(value);
-					this.SendPropertyChanging();
-					this._ConfirmedDate = value;
-					this.SendPropertyChanged("ConfirmedDate");
-					this.OnConfirmedDateChanged();
-				}
-			}
-		}
-		
-		[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_Description", DbType="NText NOT NULL", CanBeNull=false, UpdateCheck=UpdateCheck.Never)]
-		public string Description
-		{
-			get
-			{
-				return this._Description;
-			}
-			set
-			{
-				if ((this._Description != value))
-				{
-					this.OnDescriptionChanging(value);
-					this.SendPropertyChanging();
-					this._Description = value;
-					this.SendPropertyChanged("Description");
-					this.OnDescriptionChanged();
-				}
-			}
-		}
-		
-		[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_Status", DbType="Int NOT NULL")]
-		public int Status
-		{
-			get
-			{
-				return this._Status;
-			}
-			set
-			{
-				if ((this._Status != value))
-				{
-					this.OnStatusChanging(value);
-					this.SendPropertyChanging();
-					this._Status = value;
-					this.SendPropertyChanged("Status");
-					this.OnStatusChanged();
-				}
-			}
-		}
-		
-		[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_TotalRequest", DbType="Float NOT NULL")]
-		public double TotalRequest
-		{
-			get
-			{
-				return this._TotalRequest;
-			}
-			set
-			{
-				if ((this._TotalRequest != value))
-				{
-					this.OnTotalRequestChanging(value);
-					this.SendPropertyChanging();
-					this._TotalRequest = value;
-					this.SendPropertyChanged("TotalRequest");
-					this.OnTotalRequestChanged();
-				}
-			}
-		}
-		
-		[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_TotalPaid", DbType="Float NOT NULL")]
-		public double TotalPaid
-		{
-			get
-			{
-				return this._TotalPaid;
-			}
-			set
-			{
-				if ((this._TotalPaid != value))
-				{
-					this.OnTotalPaidChanging(value);
-					this.SendPropertyChanging();
-					this._TotalPaid = value;
-					this.SendPropertyChanged("TotalPaid");
-					this.OnTotalPaidChanged();
-				}
-			}
-		}
-		
-		[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_IsDeleted", DbType="Bit NOT NULL")]
-		public bool IsDeleted
-		{
-			get
-			{
-				return this._IsDeleted;
-			}
-			set
-			{
-				if ((this._IsDeleted != value))
-				{
-					this.OnIsDeletedChanging(value);
-					this.SendPropertyChanging();
-					this._IsDeleted = value;
-					this.SendPropertyChanged("IsDeleted");
-					this.OnIsDeletedChanged();
-				}
-			}
-		}
-		
-		[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_LastestUpdate", DbType="DateTime NOT NULL")]
-		public System.DateTime LastestUpdate
-		{
-			get
-			{
-				return this._LastestUpdate;
-			}
-			set
-			{
-				if ((this._LastestUpdate != value))
-				{
-					this.OnLastestUpdateChanging(value);
-					this.SendPropertyChanging();
-					this._LastestUpdate = value;
-					this.SendPropertyChanged("LastestUpdate");
-					this.OnLastestUpdateChanged();
-				}
-			}
-		}
-		
-		[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_UpdatedBy", DbType="Int NOT NULL")]
-		public int UpdatedBy
-		{
-			get
-			{
-				return this._UpdatedBy;
-			}
-			set
-			{
-				if ((this._UpdatedBy != value))
-				{
-					if (this._Sys_User1.HasLoadedOrAssignedValue)
-					{
-						throw new System.Data.Linq.ForeignKeyReferenceAlreadyHasValueException();
-					}
-					this.OnUpdatedByChanging(value);
-					this.SendPropertyChanging();
-					this._UpdatedBy = value;
-					this.SendPropertyChanged("UpdatedBy");
-					this.OnUpdatedByChanged();
-				}
-			}
-		}
-		
-		[global::System.Data.Linq.Mapping.AssociationAttribute(Name="Agent_Prepaid_Agent_PrepaidDetail", Storage="_Agent_PrepaidDetails", ThisKey="ID", OtherKey="PrepaidID")]
-		public EntitySet<Agent_PrepaidDetail> Agent_PrepaidDetails
-		{
-			get
-			{
-				return this._Agent_PrepaidDetails;
-			}
-			set
-			{
-				this._Agent_PrepaidDetails.Assign(value);
-			}
-		}
-		
-		[global::System.Data.Linq.Mapping.AssociationAttribute(Name="Job_Agent_Prepaid", Storage="_Job", ThisKey="JobID", OtherKey="ID", IsForeignKey=true)]
-		public Job Job
-		{
-			get
-			{
-				return this._Job.Entity;
-			}
-			set
-			{
-				Job previousValue = this._Job.Entity;
-				if (((previousValue != value) 
-							|| (this._Job.HasLoadedOrAssignedValue == false)))
-				{
-					this.SendPropertyChanging();
-					if ((previousValue != null))
-					{
-						this._Job.Entity = null;
-						previousValue.Agent_Prepaids.Remove(this);
-					}
-					this._Job.Entity = value;
-					if ((value != null))
-					{
-						value.Agent_Prepaids.Add(this);
-						this._JobID = value.ID;
-					}
-					else
-					{
-						this._JobID = default(int);
-					}
-					this.SendPropertyChanged("Job");
-				}
-			}
-		}
-		
-		[global::System.Data.Linq.Mapping.AssociationAttribute(Name="Sys_User_Agent_Prepaid", Storage="_Sys_User", ThisKey="AgentID", OtherKey="ID", IsForeignKey=true)]
-		public Sys_User Sys_User
-		{
-			get
-			{
-				return this._Sys_User.Entity;
-			}
-			set
-			{
-				Sys_User previousValue = this._Sys_User.Entity;
-				if (((previousValue != value) 
-							|| (this._Sys_User.HasLoadedOrAssignedValue == false)))
-				{
-					this.SendPropertyChanging();
-					if ((previousValue != null))
-					{
-						this._Sys_User.Entity = null;
-						previousValue.Agent_Prepaids.Remove(this);
-					}
-					this._Sys_User.Entity = value;
-					if ((value != null))
-					{
-						value.Agent_Prepaids.Add(this);
-						this._AgentID = value.ID;
-					}
-					else
-					{
-						this._AgentID = default(int);
-					}
-					this.SendPropertyChanged("Sys_User");
-				}
-			}
-		}
-		
-		[global::System.Data.Linq.Mapping.AssociationAttribute(Name="Sys_User_Agent_Prepaid1", Storage="_Sys_User1", ThisKey="UpdatedBy", OtherKey="ID", IsForeignKey=true)]
-		public Sys_User Sys_User1
-		{
-			get
-			{
-				return this._Sys_User1.Entity;
-			}
-			set
-			{
-				Sys_User previousValue = this._Sys_User1.Entity;
-				if (((previousValue != value) 
-							|| (this._Sys_User1.HasLoadedOrAssignedValue == false)))
-				{
-					this.SendPropertyChanging();
-					if ((previousValue != null))
-					{
-						this._Sys_User1.Entity = null;
-						previousValue.Agent_Prepaids1.Remove(this);
-					}
-					this._Sys_User1.Entity = value;
-					if ((value != null))
-					{
-						value.Agent_Prepaids1.Add(this);
-						this._UpdatedBy = value.ID;
-					}
-					else
-					{
-						this._UpdatedBy = default(int);
-					}
-					this.SendPropertyChanged("Sys_User1");
-				}
-			}
-		}
-		
-		public event PropertyChangingEventHandler PropertyChanging;
-		
-		public event PropertyChangedEventHandler PropertyChanged;
-		
-		protected virtual void SendPropertyChanging()
-		{
-			if ((this.PropertyChanging != null))
-			{
-				this.PropertyChanging(this, emptyChangingEventArgs);
-			}
-		}
-		
-		protected virtual void SendPropertyChanged(String propertyName)
-		{
-			if ((this.PropertyChanged != null))
-			{
-				this.PropertyChanged(this, new PropertyChangedEventArgs(propertyName));
-			}
-		}
-		
-		private void attach_Agent_PrepaidDetails(Agent_PrepaidDetail entity)
-		{
-			this.SendPropertyChanging();
-			entity.Agent_Prepaid = this;
-		}
-		
-		private void detach_Agent_PrepaidDetails(Agent_PrepaidDetail entity)
-		{
-			this.SendPropertyChanging();
-			entity.Agent_Prepaid = null;
 		}
 	}
 	
@@ -6241,8 +5914,6 @@ namespace SmileLogistics.DAL
 		
 		private bool _IsDeleted;
 		
-		private EntitySet<Agent_PrepaidDetail> _Agent_PrepaidDetails;
-		
 		private EntityRef<Sys_User> _Sys_User;
 		
     #region Extensibility Method Definitions
@@ -6265,7 +5936,6 @@ namespace SmileLogistics.DAL
 		
 		public Job_Working()
 		{
-			this._Agent_PrepaidDetails = new EntitySet<Agent_PrepaidDetail>(new Action<Agent_PrepaidDetail>(this.attach_Agent_PrepaidDetails), new Action<Agent_PrepaidDetail>(this.detach_Agent_PrepaidDetails));
 			this._Sys_User = default(EntityRef<Sys_User>);
 			OnCreated();
 		}
@@ -6394,19 +6064,6 @@ namespace SmileLogistics.DAL
 			}
 		}
 		
-		[global::System.Data.Linq.Mapping.AssociationAttribute(Name="Job_Working_Agent_PrepaidDetail", Storage="_Agent_PrepaidDetails", ThisKey="ID", OtherKey="WorkingID")]
-		public EntitySet<Agent_PrepaidDetail> Agent_PrepaidDetails
-		{
-			get
-			{
-				return this._Agent_PrepaidDetails;
-			}
-			set
-			{
-				this._Agent_PrepaidDetails.Assign(value);
-			}
-		}
-		
 		[global::System.Data.Linq.Mapping.AssociationAttribute(Name="Sys_User_Job_Working", Storage="_Sys_User", ThisKey="UpdatedBy", OtherKey="ID", IsForeignKey=true)]
 		public Sys_User Sys_User
 		{
@@ -6459,18 +6116,6 @@ namespace SmileLogistics.DAL
 			{
 				this.PropertyChanged(this, new PropertyChangedEventArgs(propertyName));
 			}
-		}
-		
-		private void attach_Agent_PrepaidDetails(Agent_PrepaidDetail entity)
-		{
-			this.SendPropertyChanging();
-			entity.Job_Working = this;
-		}
-		
-		private void detach_Agent_PrepaidDetails(Agent_PrepaidDetail entity)
-		{
-			this.SendPropertyChanging();
-			entity.Job_Working = null;
 		}
 	}
 	
@@ -8675,13 +8320,13 @@ namespace SmileLogistics.DAL
 		
 		private bool _IsDeleted;
 		
-		private EntitySet<Agent_PrepaidDetail> _Agent_PrepaidDetails;
-		
-		private EntitySet<VehicleType> _VehicleTypes;
-		
 		private EntitySet<Agent_Prepaid> _Agent_Prepaids;
 		
 		private EntitySet<Agent_Prepaid> _Agent_Prepaids1;
+		
+		private EntitySet<Agent_Prepaid> _Agent_Prepaids2;
+		
+		private EntitySet<VehicleType> _VehicleTypes;
 		
 		private EntitySet<Customer_Prepaid> _Customer_Prepaids;
 		
@@ -8761,10 +8406,10 @@ namespace SmileLogistics.DAL
 		
 		public Sys_User()
 		{
-			this._Agent_PrepaidDetails = new EntitySet<Agent_PrepaidDetail>(new Action<Agent_PrepaidDetail>(this.attach_Agent_PrepaidDetails), new Action<Agent_PrepaidDetail>(this.detach_Agent_PrepaidDetails));
-			this._VehicleTypes = new EntitySet<VehicleType>(new Action<VehicleType>(this.attach_VehicleTypes), new Action<VehicleType>(this.detach_VehicleTypes));
 			this._Agent_Prepaids = new EntitySet<Agent_Prepaid>(new Action<Agent_Prepaid>(this.attach_Agent_Prepaids), new Action<Agent_Prepaid>(this.detach_Agent_Prepaids));
 			this._Agent_Prepaids1 = new EntitySet<Agent_Prepaid>(new Action<Agent_Prepaid>(this.attach_Agent_Prepaids1), new Action<Agent_Prepaid>(this.detach_Agent_Prepaids1));
+			this._Agent_Prepaids2 = new EntitySet<Agent_Prepaid>(new Action<Agent_Prepaid>(this.attach_Agent_Prepaids2), new Action<Agent_Prepaid>(this.detach_Agent_Prepaids2));
+			this._VehicleTypes = new EntitySet<VehicleType>(new Action<VehicleType>(this.attach_VehicleTypes), new Action<VehicleType>(this.detach_VehicleTypes));
 			this._Customer_Prepaids = new EntitySet<Customer_Prepaid>(new Action<Customer_Prepaid>(this.attach_Customer_Prepaids), new Action<Customer_Prepaid>(this.detach_Customer_Prepaids));
 			this._CustomerQuotation_Customs = new EntitySet<CustomerQuotation_Custom>(new Action<CustomerQuotation_Custom>(this.attach_CustomerQuotation_Customs), new Action<CustomerQuotation_Custom>(this.detach_CustomerQuotation_Customs));
 			this._CustomerQuotation_CustomsDetails = new EntitySet<CustomerQuotation_CustomsDetail>(new Action<CustomerQuotation_CustomsDetail>(this.attach_CustomerQuotation_CustomsDetails), new Action<CustomerQuotation_CustomsDetail>(this.detach_CustomerQuotation_CustomsDetails));
@@ -9054,16 +8699,42 @@ namespace SmileLogistics.DAL
 			}
 		}
 		
-		[global::System.Data.Linq.Mapping.AssociationAttribute(Name="Sys_User_Agent_PrepaidDetail", Storage="_Agent_PrepaidDetails", ThisKey="ID", OtherKey="UpdatedBy")]
-		public EntitySet<Agent_PrepaidDetail> Agent_PrepaidDetails
+		[global::System.Data.Linq.Mapping.AssociationAttribute(Name="Sys_User_Agent_Prepaid", Storage="_Agent_Prepaids", ThisKey="ID", OtherKey="ConfirmedBy")]
+		public EntitySet<Agent_Prepaid> Agent_Prepaids
 		{
 			get
 			{
-				return this._Agent_PrepaidDetails;
+				return this._Agent_Prepaids;
 			}
 			set
 			{
-				this._Agent_PrepaidDetails.Assign(value);
+				this._Agent_Prepaids.Assign(value);
+			}
+		}
+		
+		[global::System.Data.Linq.Mapping.AssociationAttribute(Name="Sys_User_Agent_Prepaid1", Storage="_Agent_Prepaids1", ThisKey="ID", OtherKey="AgentID")]
+		public EntitySet<Agent_Prepaid> Agent_Prepaids1
+		{
+			get
+			{
+				return this._Agent_Prepaids1;
+			}
+			set
+			{
+				this._Agent_Prepaids1.Assign(value);
+			}
+		}
+		
+		[global::System.Data.Linq.Mapping.AssociationAttribute(Name="Sys_User_Agent_Prepaid2", Storage="_Agent_Prepaids2", ThisKey="ID", OtherKey="UpdatedBy")]
+		public EntitySet<Agent_Prepaid> Agent_Prepaids2
+		{
+			get
+			{
+				return this._Agent_Prepaids2;
+			}
+			set
+			{
+				this._Agent_Prepaids2.Assign(value);
 			}
 		}
 		
@@ -9077,32 +8748,6 @@ namespace SmileLogistics.DAL
 			set
 			{
 				this._VehicleTypes.Assign(value);
-			}
-		}
-		
-		[global::System.Data.Linq.Mapping.AssociationAttribute(Name="Sys_User_Agent_Prepaid", Storage="_Agent_Prepaids", ThisKey="ID", OtherKey="AgentID")]
-		public EntitySet<Agent_Prepaid> Agent_Prepaids
-		{
-			get
-			{
-				return this._Agent_Prepaids;
-			}
-			set
-			{
-				this._Agent_Prepaids.Assign(value);
-			}
-		}
-		
-		[global::System.Data.Linq.Mapping.AssociationAttribute(Name="Sys_User_Agent_Prepaid1", Storage="_Agent_Prepaids1", ThisKey="ID", OtherKey="UpdatedBy")]
-		public EntitySet<Agent_Prepaid> Agent_Prepaids1
-		{
-			get
-			{
-				return this._Agent_Prepaids1;
-			}
-			set
-			{
-				this._Agent_Prepaids1.Assign(value);
 			}
 		}
 		
@@ -9433,30 +9078,6 @@ namespace SmileLogistics.DAL
 			}
 		}
 		
-		private void attach_Agent_PrepaidDetails(Agent_PrepaidDetail entity)
-		{
-			this.SendPropertyChanging();
-			entity.Sys_User = this;
-		}
-		
-		private void detach_Agent_PrepaidDetails(Agent_PrepaidDetail entity)
-		{
-			this.SendPropertyChanging();
-			entity.Sys_User = null;
-		}
-		
-		private void attach_VehicleTypes(VehicleType entity)
-		{
-			this.SendPropertyChanging();
-			entity.Sys_User = this;
-		}
-		
-		private void detach_VehicleTypes(VehicleType entity)
-		{
-			this.SendPropertyChanging();
-			entity.Sys_User = null;
-		}
-		
 		private void attach_Agent_Prepaids(Agent_Prepaid entity)
 		{
 			this.SendPropertyChanging();
@@ -9479,6 +9100,30 @@ namespace SmileLogistics.DAL
 		{
 			this.SendPropertyChanging();
 			entity.Sys_User1 = null;
+		}
+		
+		private void attach_Agent_Prepaids2(Agent_Prepaid entity)
+		{
+			this.SendPropertyChanging();
+			entity.Sys_User2 = this;
+		}
+		
+		private void detach_Agent_Prepaids2(Agent_Prepaid entity)
+		{
+			this.SendPropertyChanging();
+			entity.Sys_User2 = null;
+		}
+		
+		private void attach_VehicleTypes(VehicleType entity)
+		{
+			this.SendPropertyChanging();
+			entity.Sys_User = this;
+		}
+		
+		private void detach_VehicleTypes(VehicleType entity)
+		{
+			this.SendPropertyChanging();
+			entity.Sys_User = null;
 		}
 		
 		private void attach_Customer_Prepaids(Customer_Prepaid entity)

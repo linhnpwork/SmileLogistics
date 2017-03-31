@@ -1,7 +1,7 @@
 USE [Smile_Logistics]
 GO
 
-/****** Object:  Table [dbo].[Job_Workings]    Script Date: 31-03-17 8:53:14 PM ******/
+/****** Object:  Table [dbo].[Job_Workings]    Script Date: 31-Mar-17 23:05:03 ******/
 SET ANSI_NULLS ON
 GO
 

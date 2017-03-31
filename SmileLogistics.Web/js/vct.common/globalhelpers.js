@@ -68,6 +68,36 @@
             return x1 + x2;
         },
 
+        Convert_FromMoney: function (nStr) {
+            nStr += '';
+
+            while (nStr.indexOf(',') >= 0)
+                nStr = nStr.replace(',', '');
+
+            return nStr;
+        },
+
+        On_InputMoney_KeyPress: function (ctrl) {
+            if (ctrl === undefined) return;
+            var position = ctrl.selectionEnd;
+
+            var origin = $(ctrl).val();
+            var origins = origin.split('.');
+            var after = origins.length > 1 ? ('.' + origins[1]) : '';
+
+            var str = this.Convert_FromMoney(origins[0]);
+            var money = Number(str);
+
+            if (!isNaN(money)) {
+                str = this.Format_Money(money);
+
+                $(ctrl).val(str + after);
+
+                if (str.length == origin.length)
+                    ctrl.selectionEnd = position;
+            }
+        },
+
         ShowOverlay: function (isShow, text) {
             if (!isShow) {
                 $('.vct-overlay').hide();

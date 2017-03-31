@@ -153,7 +153,7 @@ namespace SmileLogistics.Web.ajax.modules.functions
                     return;
                 }
 
-                if(job.Customer.Prepaids<money)
+                if (job.Customer.Prepaids < money)
                 {
                     DoResponse(JsonConvert.SerializeObject(new GlobalValues.ResponseData()
                     {
@@ -266,7 +266,7 @@ namespace SmileLogistics.Web.ajax.modules.functions
                     return;
                 }
 
-                if(job.Customer.Prepaids< money-prepaid.Money)
+                if (job.Customer.Prepaids < money - prepaid.Money)
                 {
                     DoResponse(JsonConvert.SerializeObject(new GlobalValues.ResponseData()
                     {
@@ -619,6 +619,9 @@ namespace SmileLogistics.Web.ajax.modules.functions
                     TotalPaid = 0,
                     TotalRequest = totalrequest,
                     UpdatedBy = CurrentSys_User.ID,
+                    AttachedFiles = string.Empty,
+                    JobWorkings = string.Empty,
+                    ConfirmedBy = CurrentSys_User.ID,
                 };
 
                 int res = dalTools.Agent_Prepaid_Create(ref obj);
@@ -719,6 +722,8 @@ namespace SmileLogistics.Web.ajax.modules.functions
                     TotalPaid = totalpaid,
                     TotalRequest = totalrequest,
                     UpdatedBy = CurrentSys_User.ID,
+                    AttachedFiles = data.attacheds.ToString(),
+                    JobWorkings = data.jobworkings.ToString(),
                 };
 
                 int res = dalTools.Agent_Prepaid_Update(obj);

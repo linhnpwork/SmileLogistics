@@ -82,7 +82,7 @@
                     <div class="form-group">
                         <label class="col-md-3 control-label">Trọng tải tối đa (tấn)</label>
                         <div class="col-md-9">
-                            <input type="text" id="info-fullload" class="form-control" placeholder="Trọng tải tối đa">
+                            <input type="text" id="info-fullload" class="form-control" placeholder="Trọng tải tối đa" onkeyup="globalhelpers.On_InputMoney_KeyPress(this);">
                         </div>
                     </div>
                     <div class="form-group">

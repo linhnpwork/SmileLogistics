@@ -79,7 +79,7 @@
                     <div class="form-group">
                         <label class="col-md-3 control-label">Giá</label>
                         <div class="col-md-9">
-                            <input type="text" id="info-price" class="form-control" placeholder="Giá">
+                            <input type="text" id="info-price" class="form-control" placeholder="Giá" onkeyup="globalhelpers.On_InputMoney_KeyPress(this);">
                             <span class="help-block">(Dùng dấm chấm '.' để xác định số thập phân!)</span>
                         </div>
                     </div>
@@ -93,7 +93,7 @@
                     <div id="div-info-price-roundedtrip" class="form-group">
                         <label class="col-md-3 control-label">Giá chiều về</label>
                         <div class="col-md-9">
-                            <input type="text" id="info-price-roundedtrip" class="form-control" placeholder="Giá chiều về">
+                            <input type="text" id="info-price-roundedtrip" class="form-control" placeholder="Giá chiều về" onkeyup="globalhelpers.On_InputMoney_KeyPress(this);">
                             <span class="help-block">(Dùng dấm chấm '.' để xác định số thập phân!)</span>
                         </div>
                     </div>

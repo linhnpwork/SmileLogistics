@@ -66,7 +66,7 @@
 
     <!-- The globalhelpers stylesheet and javascript -->
     <link rel="stylesheet" href="/css/globalhelpers.css?ver=1.0.1" />
-    <script src="/js/vct.common/globalhelpers.js?ver=1.0.2"></script>
+    <script src="/js/vct.common/globalhelpers.js?ver=1.0.3"></script>
 
     <asp:ContentPlaceHolder ID="head" runat="server">
     </asp:ContentPlaceHolder>

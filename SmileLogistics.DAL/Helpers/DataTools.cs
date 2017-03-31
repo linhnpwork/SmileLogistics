@@ -4531,7 +4531,7 @@ namespace SmileLogistics.DAL.Helpers
                     sPlaceStart = TransportPlace_Get((int)obj.PlaceStart).Name,
                     sVehicleTypeLoad = loadtype.TransportCompany_VehicleType.VehicleType.Name + "-" + loadtype.VehicleLoad.Name,
                     TransCompID = obj.CustomerQuotation_Route.Quotation_Route.TransportCompany_Route.TransCompID,
-                    VehicleTypeID = obj.CustomerQuotation_Route.Quotation_Route.TransportCompany_VehicleType_Load.VehicleLoad.VehicleTypeID,
+                    VehicleTypeID = obj.CustomerQuotation_Route.Quotation_Route.TransportCompany_VehicleType_Load.TransComp_VehicleTypeID,
                     VehicleLoadID = obj.CustomerQuotation_Route.Quotation_Route.TransportCompany_VehicleType_Load.ID,//.VehicleLoad.ID,
                     QuotationCompID = obj.CustomerQuotation_Route.QuotationID,
                     QuotationCustomerID = obj.RouteID,
@@ -4721,6 +4721,7 @@ namespace SmileLogistics.DAL.Helpers
                 obj.LastestUpdate = DateTime.Now;
                 obj.UpdatedBy = job.UpdatedBy;
                 obj.ConfirmedDate = DateTime.Now;
+                obj.ConfirmedBy = job.UpdatedBy;
                 DB.SubmitChanges();
 
                 return true;
@@ -4744,6 +4745,8 @@ namespace SmileLogistics.DAL.Helpers
                 obj.TotalPaid = data.TotalPaid;
                 obj.LastestUpdate = DateTime.Now;
                 obj.UpdatedBy = data.UpdatedBy;
+                obj.JobWorkings = data.JobWorkings;
+                obj.AttachedFiles = data.AttachedFiles;
 
                 DB.SubmitChanges();
 
@@ -4856,15 +4859,6 @@ namespace SmileLogistics.DAL.Helpers
             {
                 if (obj == null) return null;
 
-                List<eAgent_PrepaidDetail> agentPrepaidDetails = new List<eAgent_PrepaidDetail>();
-                if (obj.Agent_PrepaidDetails.Count(o => !o.IsDeleted) > 0)
-                {
-                    foreach (Agent_PrepaidDetail agentpreaidDetail in obj.Agent_PrepaidDetails.Where(o => !o.IsDeleted).OrderBy(o => o.Job_Working.Name))
-                    {
-                        agentPrepaidDetails.Add(Agent_PrepaidDetail_Entity(agentpreaidDetail));
-                    }
-                }
-
                 return new eAgent_Prepaid()
                 {
                     AgentID = obj.AgentID,
@@ -4884,35 +4878,9 @@ namespace SmileLogistics.DAL.Helpers
                     TotalRequest = obj.TotalRequest,
                     UpdatedBy = Sys_User_Entity(obj.Sys_User),
                     sStatus = GlobalValues.Job_AgentPrepaid_Status.FirstOrDefault(o => o.ID == obj.Status).Name,
-                    Details = agentPrepaidDetails.Count == 0 ? null : agentPrepaidDetails
-                };
-            }
-            catch
-            {
-                return null;
-            }
-        }
-
-        public eAgent_PrepaidDetail Agent_PrepaidDetail_Entity(Agent_PrepaidDetail obj)
-        {
-            try
-            {
-                if (obj == null) return null;
-
-                return new eAgent_PrepaidDetail()
-                {
-                    Description = obj.Description,
-                    ID = obj.ID,
-                    IsDeleted = obj.IsDeleted,
-                    LastestUpdate = obj.LastestUpdated,
-                    sLastestUpdate = obj.LastestUpdated.ToString(GlobalValues.DateFormat_VN),
-                    UpdatedBy = Sys_User_Entity(obj.Sys_User),
-                    AttachedFile = obj.AttachedFile,
-                    PaidDate = obj.PaidDate,
-                    PrepaidID = obj.PrepaidID,
-                    sPaidDate = obj.PaidDate.ToString(GlobalValues.DateFormat_VN),
-                    WorkingID = obj.WorkingID = obj.WorkingID,
-                    WorkingName = obj.Job_Working.Name,
+                    AttachedFiles = obj.AttachedFiles,
+                    ConfirmerName = obj.Sys_User2.Firstname + ", " + obj.Sys_User2.Lastname,
+                    JobWorkings = obj.JobWorkings,
                 };
             }
             catch

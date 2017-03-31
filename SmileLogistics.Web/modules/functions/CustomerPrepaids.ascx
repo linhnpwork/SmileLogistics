@@ -69,7 +69,7 @@
                     <div class="form-group">
                         <label class="col-md-3 control-label">Số tiền</label>
                         <div class="col-md-9">
-                            <input type="text" id="info-money" class="form-control" placeholder="Số tiền tạm ứng">
+                            <input type="text" id="info-money" class="form-control" placeholder="Số tiền tạm ứng" onkeyup="globalhelpers.On_InputMoney_KeyPress(this);">
                         </div>
                     </div>
                     <div class="form-group">

@@ -1,20 +1,26 @@
 ﻿<?xml version="1.0" encoding="utf-8"?><Database Name="Smile_Logistics" Class="DBDataContext" xmlns="http://schemas.microsoft.com/linqtosql/dbml/2007">
   <Connection Mode="AppSettings" ConnectionString="Data Source=.;Initial Catalog=Smile_Logistics;Persist Security Info=True;User ID=sa" SettingsObjectName="SmileLogistics.DAL.Properties.Settings" SettingsPropertyName="Smile_LogisticsConnectionString" Provider="System.Data.SqlClient" />
-  <Table Name="dbo.Agent_PrepaidDetails" Member="Agent_PrepaidDetails">
-    <Type Name="Agent_PrepaidDetail">
+  <Table Name="dbo.Agent_Prepaids" Member="Agent_Prepaids">
+    <Type Name="Agent_Prepaid">
       <Column Name="ID" Type="System.Int32" DbType="Int NOT NULL IDENTITY" IsPrimaryKey="true" IsDbGenerated="true" CanBeNull="false" />
-      <Column Name="PrepaidID" Type="System.Int32" DbType="Int NOT NULL" CanBeNull="false" />
-      <Column Name="WorkingID" Type="System.Int32" DbType="Int NOT NULL" CanBeNull="false" />
-      <Column Name="PaidDate" Type="System.DateTime" DbType="DateTime NOT NULL" CanBeNull="false" />
+      <Column Name="JobID" Type="System.Int32" DbType="Int NOT NULL" CanBeNull="false" />
+      <Column Name="AgentID" Type="System.Int32" DbType="Int NOT NULL" CanBeNull="false" />
+      <Column Name="RequestedDate" Type="System.DateTime" DbType="DateTime NOT NULL" CanBeNull="false" />
+      <Column Name="ConfirmedDate" Type="System.DateTime" DbType="DateTime NOT NULL" CanBeNull="false" />
       <Column Name="Description" Type="System.String" DbType="NText NOT NULL" CanBeNull="false" UpdateCheck="Never" />
-      <Column Name="Money" Type="System.Double" DbType="Float NOT NULL" CanBeNull="false" />
-      <Column Name="AttachedFile" Type="System.String" DbType="NText NOT NULL" CanBeNull="false" UpdateCheck="Never" />
+      <Column Name="Status" Type="System.Int32" DbType="Int NOT NULL" CanBeNull="false" />
+      <Column Name="TotalRequest" Type="System.Double" DbType="Float NOT NULL" CanBeNull="false" />
+      <Column Name="TotalPaid" Type="System.Double" DbType="Float NOT NULL" CanBeNull="false" />
       <Column Name="IsDeleted" Type="System.Boolean" DbType="Bit NOT NULL" CanBeNull="false" />
-      <Column Name="LastestUpdated" Type="System.DateTime" DbType="DateTime NOT NULL" CanBeNull="false" />
+      <Column Name="LastestUpdate" Type="System.DateTime" DbType="DateTime NOT NULL" CanBeNull="false" />
       <Column Name="UpdatedBy" Type="System.Int32" DbType="Int NOT NULL" CanBeNull="false" />
-      <Association Name="Agent_Prepaid_Agent_PrepaidDetail" Member="Agent_Prepaid" ThisKey="PrepaidID" OtherKey="ID" Type="Agent_Prepaid" IsForeignKey="true" />
-      <Association Name="Job_Working_Agent_PrepaidDetail" Member="Job_Working" ThisKey="WorkingID" OtherKey="ID" Type="Job_Working" IsForeignKey="true" />
-      <Association Name="Sys_User_Agent_PrepaidDetail" Member="Sys_User" ThisKey="UpdatedBy" OtherKey="ID" Type="Sys_User" IsForeignKey="true" />
+      <Column Name="AttachedFiles" Type="System.String" DbType="NText NOT NULL" CanBeNull="false" UpdateCheck="Never" />
+      <Column Name="ConfirmedBy" Type="System.Int32" DbType="Int NOT NULL" CanBeNull="false" />
+      <Column Name="JobWorkings" Type="System.String" DbType="NText NOT NULL" CanBeNull="false" UpdateCheck="Never" />
+      <Association Name="Job_Agent_Prepaid" Member="Job" ThisKey="JobID" OtherKey="ID" Type="Job" IsForeignKey="true" />
+      <Association Name="Sys_User_Agent_Prepaid" Member="Sys_User" ThisKey="ConfirmedBy" OtherKey="ID" Type="Sys_User" IsForeignKey="true" />
+      <Association Name="Sys_User_Agent_Prepaid1" Member="Sys_User1" ThisKey="AgentID" OtherKey="ID" Type="Sys_User" IsForeignKey="true" />
+      <Association Name="Sys_User_Agent_Prepaid2" Member="Sys_User2" ThisKey="UpdatedBy" OtherKey="ID" Type="Sys_User" IsForeignKey="true" />
     </Type>
   </Table>
   <Table Name="dbo.VehicleTypes" Member="VehicleTypes">
@@ -31,26 +37,6 @@
       <Association Name="VehicleType_VehicleLoad" Member="VehicleLoads" ThisKey="ID" OtherKey="VehicleTypeID" Type="VehicleLoad" />
       <Association Name="GoodsType_VehicleType" Member="GoodsType" ThisKey="GoodsTypeID" OtherKey="ID" Type="GoodsType" IsForeignKey="true" />
       <Association Name="Sys_User_VehicleType" Member="Sys_User" ThisKey="UpdatedBy" OtherKey="ID" Type="Sys_User" IsForeignKey="true" />
-    </Type>
-  </Table>
-  <Table Name="dbo.Agent_Prepaids" Member="Agent_Prepaids">
-    <Type Name="Agent_Prepaid">
-      <Column Name="ID" Type="System.Int32" DbType="Int NOT NULL IDENTITY" IsPrimaryKey="true" IsDbGenerated="true" CanBeNull="false" />
-      <Column Name="JobID" Type="System.Int32" DbType="Int NOT NULL" CanBeNull="false" />
-      <Column Name="AgentID" Type="System.Int32" DbType="Int NOT NULL" CanBeNull="false" />
-      <Column Name="RequestedDate" Type="System.DateTime" DbType="DateTime NOT NULL" CanBeNull="false" />
-      <Column Name="ConfirmedDate" Type="System.DateTime" DbType="DateTime NOT NULL" CanBeNull="false" />
-      <Column Name="Description" Type="System.String" DbType="NText NOT NULL" CanBeNull="false" UpdateCheck="Never" />
-      <Column Name="Status" Type="System.Int32" DbType="Int NOT NULL" CanBeNull="false" />
-      <Column Name="TotalRequest" Type="System.Double" DbType="Float NOT NULL" CanBeNull="false" />
-      <Column Name="TotalPaid" Type="System.Double" DbType="Float NOT NULL" CanBeNull="false" />
-      <Column Name="IsDeleted" Type="System.Boolean" DbType="Bit NOT NULL" CanBeNull="false" />
-      <Column Name="LastestUpdate" Type="System.DateTime" DbType="DateTime NOT NULL" CanBeNull="false" />
-      <Column Name="UpdatedBy" Type="System.Int32" DbType="Int NOT NULL" CanBeNull="false" />
-      <Association Name="Agent_Prepaid_Agent_PrepaidDetail" Member="Agent_PrepaidDetails" ThisKey="ID" OtherKey="PrepaidID" Type="Agent_PrepaidDetail" />
-      <Association Name="Job_Agent_Prepaid" Member="Job" ThisKey="JobID" OtherKey="ID" Type="Job" IsForeignKey="true" />
-      <Association Name="Sys_User_Agent_Prepaid" Member="Sys_User" ThisKey="AgentID" OtherKey="ID" Type="Sys_User" IsForeignKey="true" />
-      <Association Name="Sys_User_Agent_Prepaid1" Member="Sys_User1" ThisKey="UpdatedBy" OtherKey="ID" Type="Sys_User" IsForeignKey="true" />
     </Type>
   </Table>
   <Table Name="dbo.Customer_Prepaids" Member="Customer_Prepaids">
@@ -262,7 +248,6 @@
       <Column Name="LastestUpdated" Type="System.DateTime" DbType="DateTime NOT NULL" CanBeNull="false" />
       <Column Name="UpdatedBy" Type="System.Int32" DbType="Int NOT NULL" CanBeNull="false" />
       <Column Name="IsDeleted" Type="System.Boolean" DbType="Bit NOT NULL" CanBeNull="false" />
-      <Association Name="Job_Working_Agent_PrepaidDetail" Member="Agent_PrepaidDetails" ThisKey="ID" OtherKey="WorkingID" Type="Agent_PrepaidDetail" />
       <Association Name="Sys_User_Job_Working" Member="Sys_User" ThisKey="UpdatedBy" OtherKey="ID" Type="Sys_User" IsForeignKey="true" />
     </Type>
   </Table>
@@ -377,10 +362,10 @@
       <Column Name="Status" Type="System.Int32" DbType="Int NOT NULL" CanBeNull="false" />
       <Column Name="RoleID" Type="System.Int32" DbType="Int NOT NULL" CanBeNull="false" />
       <Column Name="IsDeleted" Type="System.Boolean" DbType="Bit NOT NULL" CanBeNull="false" />
-      <Association Name="Sys_User_Agent_PrepaidDetail" Member="Agent_PrepaidDetails" ThisKey="ID" OtherKey="UpdatedBy" Type="Agent_PrepaidDetail" />
+      <Association Name="Sys_User_Agent_Prepaid" Member="Agent_Prepaids" ThisKey="ID" OtherKey="ConfirmedBy" Type="Agent_Prepaid" />
+      <Association Name="Sys_User_Agent_Prepaid1" Member="Agent_Prepaids1" ThisKey="ID" OtherKey="AgentID" Type="Agent_Prepaid" />
+      <Association Name="Sys_User_Agent_Prepaid2" Member="Agent_Prepaids2" ThisKey="ID" OtherKey="UpdatedBy" Type="Agent_Prepaid" />
       <Association Name="Sys_User_VehicleType" Member="VehicleTypes" ThisKey="ID" OtherKey="UpdatedBy" Type="VehicleType" />
-      <Association Name="Sys_User_Agent_Prepaid" Member="Agent_Prepaids" ThisKey="ID" OtherKey="AgentID" Type="Agent_Prepaid" />
-      <Association Name="Sys_User_Agent_Prepaid1" Member="Agent_Prepaids1" ThisKey="ID" OtherKey="UpdatedBy" Type="Agent_Prepaid" />
       <Association Name="Sys_User_Customer_Prepaid" Member="Customer_Prepaids" ThisKey="ID" OtherKey="UpdatedBy" Type="Customer_Prepaid" />
       <Association Name="Sys_User_CustomerQuotation_Custom" Member="CustomerQuotation_Customs" ThisKey="ID" OtherKey="UpdatedBy" Type="CustomerQuotation_Custom" />
       <Association Name="Sys_User_CustomerQuotation_CustomsDetail" Member="CustomerQuotation_CustomsDetails" ThisKey="ID" OtherKey="UpdatedBy" Type="CustomerQuotation_CustomsDetail" />
