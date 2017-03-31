@@ -261,6 +261,7 @@
       <Column Name="Description" Type="System.String" DbType="NText NOT NULL" CanBeNull="false" UpdateCheck="Never" />
       <Column Name="LastestUpdated" Type="System.DateTime" DbType="DateTime NOT NULL" CanBeNull="false" />
       <Column Name="UpdatedBy" Type="System.Int32" DbType="Int NOT NULL" CanBeNull="false" />
+      <Column Name="IsDeleted" Type="System.Boolean" DbType="Bit NOT NULL" CanBeNull="false" />
       <Association Name="Job_Working_Agent_PrepaidDetail" Member="Agent_PrepaidDetails" ThisKey="ID" OtherKey="WorkingID" Type="Agent_PrepaidDetail" />
       <Association Name="Sys_User_Job_Working" Member="Sys_User" ThisKey="UpdatedBy" OtherKey="ID" Type="Sys_User" IsForeignKey="true" />
     </Type>

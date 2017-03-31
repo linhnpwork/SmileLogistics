@@ -61,6 +61,7 @@
   <ItemGroup>
     <Content Include="ajax\modules\functions\customers.aspx" />
     <Content Include="ajax\modules\functions\customerprepaids.aspx" />
+    <Content Include="ajax\modules\functions\jobworkings.aspx" />
     <Content Include="ajax\modules\functions\jobs.aspx" />
     <Content Include="ajax\modules\functions\quotationcustoms.aspx" />
     <Content Include="ajax\modules\functions\quotationroutes.aspx" />
@@ -221,6 +222,7 @@
     <Content Include="less\themes\spring.less" />
     <Content Include="less\variables.less" />
     <Content Include="modules\functions\Customers.ascx" />
+    <Content Include="modules\functions\JobWorkings.ascx" />
     <Content Include="modules\functions\JobDetail.ascx" />
     <Content Include="modules\functions\Jobs.ascx" />
     <Content Include="modules\functions\CustomsProcess_FeeTypes.ascx" />
@@ -814,6 +816,13 @@
     <Compile Include="ajax\modules\functions\customerprepaids.aspx.designer.cs">
       <DependentUpon>customerprepaids.aspx</DependentUpon>
     </Compile>
+    <Compile Include="ajax\modules\functions\jobworkings.aspx.cs">
+      <DependentUpon>jobworkings.aspx</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="ajax\modules\functions\jobworkings.aspx.designer.cs">
+      <DependentUpon>jobworkings.aspx</DependentUpon>
+    </Compile>
     <Compile Include="ajax\modules\functions\jobs.aspx.cs">
       <DependentUpon>jobs.aspx</DependentUpon>
       <SubType>ASPXCodeBehind</SubType>
@@ -949,6 +958,13 @@
     </Compile>
     <Compile Include="modules\functions\Customers.ascx.designer.cs">
       <DependentUpon>Customers.ascx</DependentUpon>
+    </Compile>
+    <Compile Include="modules\functions\JobWorkings.ascx.cs">
+      <DependentUpon>JobWorkings.ascx</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="modules\functions\JobWorkings.ascx.designer.cs">
+      <DependentUpon>JobWorkings.ascx</DependentUpon>
     </Compile>
     <Compile Include="modules\functions\JobDetail.ascx.cs">
       <DependentUpon>JobDetail.ascx</DependentUpon>

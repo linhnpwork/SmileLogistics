@@ -595,19 +595,8 @@
             </div>
             <div class="modal-body">
                 <div class="form-horizontal form-bordered">
-
                     <div class="form-group">
                         <div class="col-xs-12">
-                            <%--<div id="clickable-wizard-agentprepaids" class="form-horizontal form-bordered ui-formwizard">
-                                <div id="tab-agentprepaids-request" class="step ui-formwizard-content">--%>
-                            <%--<div class="form-group">
-                                        <div class="col-xs-12">
-                                            <ul class="nav nav-pills nav-justified clickable-steps">
-                                                <li class="active"><a href="javascript:void(0)" data-gotostep="tab-agentprepaids-request"><strong>1. Thông tin yêu cầu</strong></a></li>
-                                                <li><a href="javascript:void(0)" data-gotostep="tab-agentprepaids-result"><strong>2. Thông tin thực hiện</strong></a></li>
-                                            </ul>
-                                        </div>
-                                    </div>--%>
                             <div class="form-group">
                                 <label class="col-md-3 control-label">Nhân viên</label>
                                 <div id="divAgentPrepaidEmployees" runat="server" class="col-md-9">
@@ -626,22 +615,35 @@
                                     <input type="text" id="info-agentprepaid-description" class="form-control" placeholder="Ghi chú" style="width: 100%;">
                                 </div>
                             </div>
-                            <%--</div>
-                                <div id="tab-agentprepaids-result" class="step ui-formwizard-content">--%>
-                            <%--<div class="form-group">
-                                        <div class="col-xs-12">
-                                            <ul class="nav nav-pills nav-justified clickable-steps">
-                                                <li><a href="javascript:void(0)" data-gotostep="tab-agentprepaids-request"><strong>1. Thông tin yêu cầu</strong></a></li>
-                                                <li class="active"><a href="javascript:void(0)" data-gotostep="tab-agentprepaids-result"><strong>2. Thông tin thực hiện</strong></a></li>
-                                            </ul>
-                                        </div>
-                                    </div>--%>
-                            <div id="div-agentprepaid-result" <%--style="display: none;"--%>>
+                            <div id="div-agentprepaid-result">
                                 <div class="form-group">
                                     <label class="col-md-3 control-label">Chi thực tế</label>
                                     <div class="col-md-9">
                                         <input type="text" id="info-agentprepaid-totalpaid" class="form-control" placeholder="Số tiền đã chi thực tế" style="width: auto;">
                                         <span class="help-block">(Dùng dấm chấm '.' để xác định số thập phân!)</span>
+                                    </div>
+                                </div>
+                                <div class="form-group">
+                                    <label class="col-md-3 control-label">Mục chi</label>
+                                    <div id="divAgentPrepaidsJobWorkings" runat="server" class="col-md-9">
+                                        <%--<div class="checkbox">
+                                            <label for="example-checkbox1">
+                                                <input type="checkbox" id="example-checkbox1" name="example-checkbox1" value="option1">
+                                                Option 1
+                                            </label>
+                                        </div>
+                                        <div class="checkbox">
+                                            <label for="example-checkbox2">
+                                                <input type="checkbox" id="example-checkbox2" name="example-checkbox2" value="option2">
+                                                Option 2
+                                            </label>
+                                        </div>
+                                        <div class="checkbox">
+                                            <label for="example-checkbox3">
+                                                <input type="checkbox" id="example-checkbox3" name="example-checkbox3" value="option3">
+                                                Option 3
+                                            </label>
+                                        </div>--%>
                                     </div>
                                 </div>
                                 <div class="form-group">
@@ -665,8 +667,6 @@
                                     </div>
                                 </div>
                             </div>
-                            <%-- </div>--%>
-                            <%--</div>--%>
                         </div>
                     </div>
                     <div id="divModalAlert-AgentPrepaids" class="form-group" style="display: none;">

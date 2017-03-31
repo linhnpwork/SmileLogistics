@@ -297,8 +297,9 @@ namespace SmileLogistics.DAL.Helpers
                     _Job_AgentPrepaid_Status = new List<Commons.eStatus>()
                     {
                         new Commons.eStatus() { ID = 0, Name = "Yêu cầu từ nhân viên"},
-                        new Commons.eStatus() { ID = 1, Name = "Kết toán đã duyệt chi"},
-                        new Commons.eStatus() { ID = 2, Name = "Đã hoàn tất xử lý"},
+                        new Commons.eStatus() { ID = 1, Name = "Đã duyệt chi"},
+                        new Commons.eStatus() { ID = 2, Name = "Đã hoàn ứng"},
+                        new Commons.eStatus() { ID = 3, Name = "Đã hoàn tất"},                        
                     };
                 }
 

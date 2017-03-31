@@ -4856,6 +4856,15 @@ namespace SmileLogistics.DAL.Helpers
             {
                 if (obj == null) return null;
 
+                List<eAgent_PrepaidDetail> agentPrepaidDetails = new List<eAgent_PrepaidDetail>();
+                if (obj.Agent_PrepaidDetails.Count(o => !o.IsDeleted) > 0)
+                {
+                    foreach (Agent_PrepaidDetail agentpreaidDetail in obj.Agent_PrepaidDetails.Where(o => !o.IsDeleted).OrderBy(o => o.Job_Working.Name))
+                    {
+                        agentPrepaidDetails.Add(Agent_PrepaidDetail_Entity(agentpreaidDetail));
+                    }
+                }
+
                 return new eAgent_Prepaid()
                 {
                     AgentID = obj.AgentID,
@@ -4866,13 +4875,16 @@ namespace SmileLogistics.DAL.Helpers
                     JobID = obj.JobID,
                     LastestUpdate = obj.LastestUpdate,
                     RequestedDate = obj.RequestedDate,
+                    ConfirmedDate = obj.ConfirmedDate,
                     sLastestUpdate = obj.LastestUpdate.ToString(GlobalValues.DateFormat_VN),
                     sRequestedDate = obj.RequestedDate.ToString(GlobalValues.DateFormat_VN),
+                    sConfirmedDate = obj.ConfirmedDate.ToString(GlobalValues.DateFormat_VN),
                     Status = obj.Status,
                     TotalPaid = obj.TotalPaid,
                     TotalRequest = obj.TotalRequest,
                     UpdatedBy = Sys_User_Entity(obj.Sys_User),
                     sStatus = GlobalValues.Job_AgentPrepaid_Status.FirstOrDefault(o => o.ID == obj.Status).Name,
+                    Details = agentPrepaidDetails.Count == 0 ? null : agentPrepaidDetails
                 };
             }
             catch
@@ -4880,7 +4892,35 @@ namespace SmileLogistics.DAL.Helpers
                 return null;
             }
         }
-        
+
+        public eAgent_PrepaidDetail Agent_PrepaidDetail_Entity(Agent_PrepaidDetail obj)
+        {
+            try
+            {
+                if (obj == null) return null;
+
+                return new eAgent_PrepaidDetail()
+                {
+                    Description = obj.Description,
+                    ID = obj.ID,
+                    IsDeleted = obj.IsDeleted,
+                    LastestUpdate = obj.LastestUpdated,
+                    sLastestUpdate = obj.LastestUpdated.ToString(GlobalValues.DateFormat_VN),
+                    UpdatedBy = Sys_User_Entity(obj.Sys_User),
+                    AttachedFile = obj.AttachedFile,
+                    PaidDate = obj.PaidDate,
+                    PrepaidID = obj.PrepaidID,
+                    sPaidDate = obj.PaidDate.ToString(GlobalValues.DateFormat_VN),
+                    WorkingID = obj.WorkingID = obj.WorkingID,
+                    WorkingName = obj.Job_Working.Name,
+                };
+            }
+            catch
+            {
+                return null;
+            }
+        }
+
         #endregion
 
         #region CustomerPrepaids
@@ -5311,6 +5351,242 @@ namespace SmileLogistics.DAL.Helpers
                     sPrepaidDate = obj.PrepaidDate.ToString(GlobalValues.DateFormat_VN),
                     UpdatedBy = Sys_User_Entity(obj.Sys_User),
                     Money = obj.Money,
+                };
+            }
+            catch
+            {
+                return null;
+            }
+        }
+
+        #endregion
+
+        #region Job_Working
+
+        public bool Job_Working_Delete(Job_Working Job_Working)
+        {
+            try
+            {
+                Job_Working obj = DB.Job_Workings.FirstOrDefault(o => o.ID == Job_Working.ID);
+                if (obj == null) return false;
+
+                obj.IsDeleted = true;
+                obj.LastestUpdated = DateTime.Now;
+                obj.UpdatedBy = Job_Working.UpdatedBy;
+                DB.SubmitChanges();
+
+                return true;
+            }
+            catch
+            {
+                return false;
+            }
+        }
+
+        public int Job_Working_Update(Job_Working obj)
+        {
+            try
+            {
+                Job_Working updateObj = DB.Job_Workings.FirstOrDefault(o => o.ID == obj.ID);
+                if (updateObj == null) return 1;
+
+                Job_Working checkObj = DB.Job_Workings.FirstOrDefault(o => !o.IsDeleted && o.Name.ToLower() == obj.Name.ToLower());
+                if (checkObj != null && checkObj.ID != updateObj.ID) return 2;
+
+                updateObj.Name = obj.Name;
+                updateObj.Description = obj.Description;
+                updateObj.LastestUpdated = DateTime.Now;
+                updateObj.Name = obj.Name;
+                updateObj.UpdatedBy = obj.UpdatedBy;
+
+                DB.SubmitChanges();
+
+                return 0;
+            }
+            catch (Exception ex)
+            {
+                return int.MinValue;
+            }
+        }
+
+        public int Job_Working_Create(Job_Working obj)
+        {
+            try
+            {
+                Job_Working checkObj = DB.Job_Workings.FirstOrDefault(o => !o.IsDeleted && o.Name.ToLower() == obj.Name.ToLower());
+                if (checkObj != null) return 1;
+
+                DB.Job_Workings.InsertOnSubmit(obj);
+                DB.SubmitChanges();
+
+                return 0;
+            }
+            catch
+            {
+                return int.MinValue;
+            }
+        }
+
+        public int Job_Working_CheckName(string name)
+        {
+            try
+            {
+                Job_Working obj = DB.Job_Workings.FirstOrDefault(o => !o.IsDeleted && o.Name.ToLower() == name.ToLower());
+                if (obj == null) return 0;
+
+                return obj.ID;
+            }
+            catch
+            {
+                return int.MinValue;
+            }
+        }
+
+        public List<Job_Working> Job_Working_Gets(int pageIndex, int pageSize, out int totalPages)
+        {
+            totalPages = 0;
+            try
+            {
+                var all = DB.Job_Workings.Where(o => !o.IsDeleted);
+                if (all.Count() == 0) return null;
+
+                int startIndex = pageIndex * pageSize;
+                List<Job_Working> res = all.OrderBy(o => o.Name).Skip(startIndex).Take(pageSize).ToList();
+
+                if (res.Count == 0) return null;
+
+                int div = all.Count() / pageSize;
+                int mod = all.Count() % pageSize;
+                totalPages = div + (mod > 0 ? 1 : 0);
+
+                return res;
+            }
+            catch
+            {
+                return null;
+            }
+        }
+
+        public List<eJob_Working> Job_Working_GetEs(int pageIndex, int pageSize, out int totalPages)
+        {
+            totalPages = 0;
+            try
+            {
+                var all = Job_Working_Gets(pageIndex, pageSize, out totalPages);
+                if (all == null) return null;
+
+                List<eJob_Working> result = new List<eJob_Working>();
+                foreach (Job_Working obj in all)
+                    result.Add(Job_Working_Entity(obj));
+
+                return result;
+            }
+            catch
+            {
+                return null;
+            }
+        }
+
+        public List<Job_Working> Job_Working_Gets()
+        {
+            try
+            {
+                var all = DB.Job_Workings.Where(o => !o.IsDeleted);
+                if (all.Count() == 0) return null;
+
+                return all.OrderBy(o => o.Name).ToList();
+            }
+            catch
+            {
+                return null;
+            }
+        }
+
+        public List<eJob_Working> Job_Working_GetEs()
+        {
+            try
+            {
+                var all = Job_Working_Gets();
+                if (all == null) return null;
+
+                List<eJob_Working> result = new List<eJob_Working>();
+                foreach (Job_Working obj in all)
+                    result.Add(Job_Working_Entity(obj));
+
+                return result;
+            }
+            catch
+            {
+                return null;
+            }
+        }
+
+        public Job_Working Job_Working_Get(int id)
+        {
+            try
+            {
+                return DB.Job_Workings.FirstOrDefault(o =>
+                    o.ID == id);
+            }
+            catch
+            {
+                return null;
+            }
+        }
+
+        public eJob_Working Job_Working_GetE(int id)
+        {
+            try
+            {
+                return Job_Working_Entity(Job_Working_Get(id));
+            }
+            catch
+            {
+                return null;
+            }
+        }
+
+        public Job_Working Job_Working_Get(string name)
+        {
+            try
+            {
+                return DB.Job_Workings.FirstOrDefault(o =>
+                    !o.IsDeleted &&
+                    o.Name.ToLower().Trim() == name.ToLower().Trim());
+            }
+            catch
+            {
+                return null;
+            }
+        }
+
+        public eJob_Working Job_Working_GetE(string name)
+        {
+            try
+            {
+                return Job_Working_Entity(Job_Working_Get(name));
+            }
+            catch
+            {
+                return null;
+            }
+        }
+
+        public eJob_Working Job_Working_Entity(Job_Working obj)
+        {
+            try
+            {
+                if (obj == null) return null;
+
+                return new eJob_Working()
+                {
+                    Name = obj.Name,
+                    Description = obj.Description,
+                    ID = obj.ID,
+                    IsDeleted = obj.IsDeleted,
+                    LastestUpdate = obj.LastestUpdated,
+                    sLastestUpdate = obj.LastestUpdated.ToString(GlobalValues.DateFormat_VN),
+                    UpdatedBy = Sys_User_GetE(obj.UpdatedBy)
                 };
             }
             catch

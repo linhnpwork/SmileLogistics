@@ -42,8 +42,36 @@ namespace SmileLogistics.Web.modules.functions
 
                     LoadEmployees(dalTools);
 
+                    LoadJobWorkings(dalTools);
+
                     LoadJobDetail(dalTools);
                 }
+            }
+        }
+
+        private void LoadJobWorkings(DALTools dalTools)
+        {
+            List<eJob_Working> all = dalTools.Job_Working_GetEs();
+            if (all != null)
+            {
+                string html = string.Empty;
+
+                foreach (eJob_Working obj in all)
+                {
+                    html +=
+                        "<div class=\"checkbox\">" +
+                            "<label for=\"cbxAgentPrepaid_JobWorking_" + obj.ID.ToString() + "\">" +
+                                "<input type=\"checkbox\" id=\"cbxAgentPrepaid_JobWorking_" + obj.ID.ToString() + "\" name=\"cbxAgentPrepaid_JobWorking_" + obj.ID.ToString() + "\" value=\"" + obj.ID.ToString() + "\">" +
+                                obj.Name +
+                            "</label>" +
+                        "</div>";
+                }
+
+                divAgentPrepaidsJobWorkings.InnerHtml = html;
+            }
+            else
+            {
+                divAgentPrepaidsJobWorkings.InnerHtml = "<label class='control-label label-quicklink'><a href='/muc-chi-lam-hang'>Chưa có dữ liệu Mục chi làm hàng! Nhấp chọn chuyển sang trang Quản lý!</a></label>";
             }
         }
 

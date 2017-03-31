@@ -6239,6 +6239,8 @@ namespace SmileLogistics.DAL
 		
 		private int _UpdatedBy;
 		
+		private bool _IsDeleted;
+		
 		private EntitySet<Agent_PrepaidDetail> _Agent_PrepaidDetails;
 		
 		private EntityRef<Sys_User> _Sys_User;
@@ -6257,6 +6259,8 @@ namespace SmileLogistics.DAL
     partial void OnLastestUpdatedChanged();
     partial void OnUpdatedByChanging(int value);
     partial void OnUpdatedByChanged();
+    partial void OnIsDeletedChanging(bool value);
+    partial void OnIsDeletedChanged();
     #endregion
 		
 		public Job_Working()
@@ -6366,6 +6370,26 @@ namespace SmileLogistics.DAL
 					this._UpdatedBy = value;
 					this.SendPropertyChanged("UpdatedBy");
 					this.OnUpdatedByChanged();
+				}
+			}
+		}
+		
+		[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_IsDeleted", DbType="Bit NOT NULL")]
+		public bool IsDeleted
+		{
+			get
+			{
+				return this._IsDeleted;
+			}
+			set
+			{
+				if ((this._IsDeleted != value))
+				{
+					this.OnIsDeletedChanging(value);
+					this.SendPropertyChanging();
+					this._IsDeleted = value;
+					this.SendPropertyChanged("IsDeleted");
+					this.OnIsDeletedChanged();
 				}
 			}
 		}
