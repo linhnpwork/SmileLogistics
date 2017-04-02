@@ -167,7 +167,7 @@
                 }
 
                 $('#modal-info #info-customers').val(customerprepaids.currentobj.CustomerID);
-                $('#modal-info #info-money').val(customerprepaids.currentobj.Money);
+                $('#modal-info #info-money').val(globalhelpers.Format_Money(customerprepaids.currentobj.Money));
                 $('#modal-info #info-description').val(customerprepaids.currentobj.Description);
 
                 $('#modal-info .modal-header .modal-title').html('Cập nhật Nhận tạm ứng');

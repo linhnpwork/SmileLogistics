@@ -1177,7 +1177,7 @@
                     return;
                 }
 
-                $('#info-jobprepaid-money').val(jobs.currentobj_jobprepaid.Money);
+                $('#info-jobprepaid-money').val(globalhelpers.Format_Money(jobs.currentobj_jobprepaid.Money));
                 $('#info-jobprepaid-description').val(jobs.currentobj_jobprepaid.Description);
                 $('#divInfo-jobprepaid-prepaids').html(globalhelpers.Format_Money(this.currentobj.Customer.Prepaids.toFixed(2)));
 
@@ -1328,9 +1328,9 @@
                 }
 
                 $('#info-agentprepaid-employee').val(jobs.currentobj_agentprepaid.AgentID);
-                $('#info-agentprepaid-money').val(jobs.currentobj_agentprepaid.TotalRequest);
+                $('#info-agentprepaid-money').val(globalhelpers.Format_Money(jobs.currentobj_agentprepaid.TotalRequest));
                 $('#info-agentprepaid-description').val(jobs.currentobj_agentprepaid.Description);
-                $('#info-agentprepaid-totalpaid').val(jobs.currentobj_agentprepaid.TotalPaid);
+                $('#info-agentprepaid-totalpaid').val(globalhelpers.Format_Money(jobs.currentobj_agentprepaid.TotalPaid));
 
                 this.agentprepaid_attacheds = jobs.currentobj_agentprepaid.AttachedFiles == "" ? null : jobs.currentobj_agentprepaid.AttachedFiles.split(';');
                 if (this.agentprepaid_attacheds != null) {
@@ -1453,11 +1453,11 @@
                                 "<td class=\"text-center\">" + obj.AgentName + "</td>" +
                                 "<td class=\"text-center\">" + obj.sRequestedDate + "</td>" +
                                 "<td class=\"text-center\">" + obj.Description + "</td>" +
-                                "<td class=\"text-center\">" + globalhelpers.Format_Money(obj.TotalRequest.toFixed(2)) + "</td>" +
+                                "<td class=\"text-center\">" + globalhelpers.Format_Money(obj.TotalRequest) + "</td>" +
                                 "<td class=\"text-center\">" + (obj.Status == 0 ? "---" : obj.ConfirmerName) + "</td>" +
                                 "<td class=\"text-center\">" + (obj.Status == 0 ? "---" : obj.sConfirmedDate) + "</td>" +
-                                "<td class=\"text-center\">" + globalhelpers.Format_Money(obj.TotalPaid.toFixed(2)) + "</td>" +
-                                "<td class=\"text-center\">" + globalhelpers.Format_Money((obj.TotalRequest - obj.TotalPaid).toFixed(2)) + "</td>" +
+                                "<td class=\"text-center\">" + globalhelpers.Format_Money(obj.TotalPaid) + "</td>" +
+                                "<td class=\"text-center\">" + globalhelpers.Format_Money((obj.TotalRequest - obj.TotalPaid)) + "</td>" +
                                 "<td class=\"text-center\">" + obj.sStatus + "</td>" +
                                 "<td class=\"text-center\">" +
                                         "<a onclick=\"jobs.startedit_agentprepaid('" + obj.ID + "');\" href=\"javascript:void(0)\" data-toggle=\"tooltip\" title=\"Sửa\" class=\"btn btn-xs btn-default\"><i class=\"fa fa-pencil\"></i></a>" +
@@ -1576,7 +1576,7 @@
                 $('#info-inoutfee-invoiceno').val(jobs.currentobj_inoutfee.InvoiceNO);
 
                 $('#info-inoutfee-invoicedate').val(jobs.currentobj_inoutfee.sInvoiceDate);
-                $('#info-inoutfee-money').val(jobs.currentobj_inoutfee.Money);
+                $('#info-inoutfee-money').val(globalhelpers.Format_Money(jobs.currentobj_inoutfee.Money));
                 $('#info-inoutfee-isusd').prop('checked', jobs.currentobj_inoutfee.IsUSD);
                 var file = jobs.currentobj_inoutfee.AttachedFiles.replace('~', '');
                 $('#info-inoutfee-currentattached').html('<a target="_blank" href="' + file + '">' + file + '</a>');
@@ -2002,7 +2002,7 @@
                 $('#info-quotation-customs-expire-end').val(this.currentobj.QuotationCustoms.sExpireEnd);
 
                 $('#info-quotation-customs-isusd').prop('checked', this.currentobj.QuotationCustoms.IsUSD);
-                $('#info-quotation-customs-usdrate').val(this.currentobj.QuotationCustoms.USDRate);
+                $('#info-quotation-customs-usdrate').val(globalhelpers.Format_Money(this.currentobj.QuotationCustoms.USDRate));
 
                 $('#info-quotation-customs-description').val(this.currentobj.QuotationCustoms.Description);
 
@@ -2164,13 +2164,13 @@
                 $('#info-quotationroute-value-isusd').prop('checked', jobs.currentobj_quotation_route.IsUSD);
                 $('#info-quotationroute-value-expire-start').val(jobs.currentobj_quotation_route.sExpireStart);
                 $('#info-quotationroute-value-expire-end').val(jobs.currentobj_quotation_route.sExpireEnd);
-                $('#info-quotationroute-info-extrafee').val(jobs.currentobj_quotation_route.ExtraFee);
+                $('#info-quotationroute-info-extrafee').val(globalhelpers.Format_Money(jobs.currentobj_quotation_route.ExtraFee));
                 $('#info-quotationroute-info-description').val(jobs.currentobj_quotation_route.Description);
                 $('#info-quotationroute-info-vehicleno').val(jobs.currentobj_quotation_route.VehicleNO);
                 $('#info-quotationroute-info-driverphone').val(jobs.currentobj_quotation_route.DriverPhoneNumber);
                 $('#info-quotationroute-info-loads').val(jobs.currentobj_quotation_route.Loads);
-                $('#info-quotationroute-info-comppromotion').val(jobs.currentobj_quotation_route.PromotionByTransComp);
-                $('#info-quotationroute-info-usdrate').val(jobs.currentobj_quotation_route.USDRate);
+                $('#info-quotationroute-info-comppromotion').val(globalhelpers.Format_Money(jobs.currentobj_quotation_route.PromotionByTransComp));
+                $('#info-quotationroute-info-usdrate').val(globalhelpers.Format_Money(jobs.currentobj_quotation_route.USDRate));
 
                 $('#modal-info-quotation-route .modal-header .modal-title').html('Cập nhật Báo giá Vận chuyển');
                 $('#btn-do-save-quotation-route').html('Lưu');
@@ -2319,13 +2319,13 @@
                 var quotationCustomer = jobs.getobj(quotationCustomerID, jobs.allQuotation_Customer);
 
                 if (jobs.mode_quotationroute == 'create') {
-                    $('#info-quotationroute-value-price').val(quotationCustomer != null ? quotationCustomer.Price : priceFromComp);
+                    $('#info-quotationroute-value-price').val(globalhelpers.Format_Money(quotationCustomer != null ? quotationCustomer.Price : priceFromComp));
                     $('#info-quotationroute-value-isusd').prop('checked', quotationCustomer != null ? quotationCustomer.IsUSD : quotationComp.IsUSD);
                     $('#info-quotationroute-value-expire-start').val(quotationCustomer != null ? quotationCustomer.sExpireStart : quotationComp.sExpireStart);
                     $('#info-quotationroute-value-expire-end').val(quotationCustomer != null ? quotationCustomer.sExpireEnd : quotationComp.sExpireEnd);
                 }
                 else {
-                    $('#info-quotationroute-value-price').val(jobs.currentobj_quotation_route.Price);
+                    $('#info-quotationroute-value-price').val(globalhelpers.Format_Money(jobs.currentobj_quotation_route.Price));
                 }
             },
 
@@ -2542,7 +2542,7 @@
                 $('#info-billladingno').val(jobs.currentobj.BillLadingNO);
                 $('#info-tkhq').val(jobs.currentobj.TKHQNO);
                 $('#info-customers').val(jobs.currentobj.CustomerID);
-                $('#info-usdrate').val(jobs.currentobj.USDRate);
+                $('#info-usdrate').val(globalhelpers.Format_Money(jobs.currentobj.USDRate));
 
                 //Status
                 $('#info-isconsigned').prop('checked', jobs.currentobj.IsConsigned);

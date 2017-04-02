@@ -214,9 +214,9 @@
                 $('#modal-info #info-transcomp').val(quotationroutes.currentobj.Route.TransCompID);
                 $('#modal-info #info-transcomp-routes').val(quotationroutes.currentobj.RouteID);
                 $('#modal-info #info-load').val(quotationroutes.currentobj.VehicleLoadID);
-                $('#modal-info #info-price').val(quotationroutes.currentobj.Price);
+                $('#modal-info #info-price').val(globalhelpers.Format_Money(quotationroutes.currentobj.Price));
                 $('#modal-info #info-issameprice').prop('checked', quotationroutes.currentobj.IsSamePrice);
-                $('#modal-info #info-price-roundedtrip').val(quotationroutes.currentobj.Price_RoundedTrip);
+                $('#modal-info #info-price-roundedtrip').val(globalhelpers.Format_Money(quotationroutes.currentobj.Price_RoundedTrip));
                 $('#modal-info #info-expire-start').val(quotationroutes.currentobj.sExpireStart);
                 $('#modal-info #info-expire-end').val(quotationroutes.currentobj.sExpireEnd);
                 $('#modal-info #info-isusd').prop('checked', quotationroutes.currentobj.IsUSD);

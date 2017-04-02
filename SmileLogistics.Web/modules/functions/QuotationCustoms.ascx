@@ -189,7 +189,7 @@
                             "<tr>" +
                                 "<td class=\"text-left\">" + type.Name + "</td>" +
                                 "<td class=\"text-left\">" +
-                                        "<input type=\"text\" id=\"info-price-" + type.ID + "\" class=\"form-control\" placeholder=\"Phí\" value=\"" + (detail == null ? "0" : detail.Price) + "\" onkeyup=\"globalhelpers.On_InputMoney_KeyPress(this);\">" +
+                                        "<input type=\"text\" id=\"info-price-" + type.ID + "\" class=\"form-control\" placeholder=\"Phí\" value=\"" + globalhelpers.Format_Money(detail == null ? "0" : detail.Price) + "\" onkeyup=\"globalhelpers.On_InputMoney_KeyPress(this);\">" +
                                     "</td>" +
                             "</tr>";
                     }

@@ -181,7 +181,7 @@
                 $('#modal-info #info-name').val(vehicleloads.currentobj.Name);
                 $('#modal-info #info-code').val(vehicleloads.currentobj.Code);
                 $('#modal-info #info-description').val(vehicleloads.currentobj.Description);
-                $('#modal-info #info-fullload').val(vehicleloads.currentobj.FullLoad);
+                $('#modal-info #info-fullload').val(globalhelpers.Format_Money(vehicleloads.currentobj.FullLoad));
                 $('#modal-info #info-vehicletypes').val(vehicleloads.currentobj.VehicleType.ID);
 
                 $('#modal-info .modal-header .modal-title').html('Cập nhật Tải trọng xe');
