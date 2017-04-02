@@ -63,6 +63,9 @@ namespace SmileLogistics.DAL
     partial void InsertGoodsType(GoodsType instance);
     partial void UpdateGoodsType(GoodsType instance);
     partial void DeleteGoodsType(GoodsType instance);
+    partial void InsertJob_Good(Job_Good instance);
+    partial void UpdateJob_Good(Job_Good instance);
+    partial void DeleteJob_Good(Job_Good instance);
     partial void InsertJob_InOutFee(Job_InOutFee instance);
     partial void UpdateJob_InOutFee(Job_InOutFee instance);
     partial void DeleteJob_InOutFee(Job_InOutFee instance);
@@ -228,6 +231,14 @@ namespace SmileLogistics.DAL
 			get
 			{
 				return this.GetTable<GoodsType>();
+			}
+		}
+		
+		public System.Data.Linq.Table<Job_Good> Job_Goods
+		{
+			get
+			{
+				return this.GetTable<Job_Good>();
 			}
 		}
 		
@@ -4477,6 +4488,253 @@ namespace SmileLogistics.DAL
 		}
 	}
 	
+	[global::System.Data.Linq.Mapping.TableAttribute(Name="dbo.Job_Goods")]
+	public partial class Job_Good : INotifyPropertyChanging, INotifyPropertyChanged
+	{
+		
+		private static PropertyChangingEventArgs emptyChangingEventArgs = new PropertyChangingEventArgs(String.Empty);
+		
+		private int _ID;
+		
+		private string _Code;
+		
+		private string _Name;
+		
+		private int _JobID;
+		
+		private System.DateTime _LastestUpdated;
+		
+		private int _UpdatedBy;
+		
+		private bool _IsDeleted;
+		
+		private EntityRef<Job> _Job;
+		
+    #region Extensibility Method Definitions
+    partial void OnLoaded();
+    partial void OnValidate(System.Data.Linq.ChangeAction action);
+    partial void OnCreated();
+    partial void OnIDChanging(int value);
+    partial void OnIDChanged();
+    partial void OnCodeChanging(string value);
+    partial void OnCodeChanged();
+    partial void OnNameChanging(string value);
+    partial void OnNameChanged();
+    partial void OnJobIDChanging(int value);
+    partial void OnJobIDChanged();
+    partial void OnLastestUpdatedChanging(System.DateTime value);
+    partial void OnLastestUpdatedChanged();
+    partial void OnUpdatedByChanging(int value);
+    partial void OnUpdatedByChanged();
+    partial void OnIsDeletedChanging(bool value);
+    partial void OnIsDeletedChanged();
+    #endregion
+		
+		public Job_Good()
+		{
+			this._Job = default(EntityRef<Job>);
+			OnCreated();
+		}
+		
+		[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_ID", AutoSync=AutoSync.OnInsert, DbType="Int NOT NULL IDENTITY", IsPrimaryKey=true, IsDbGenerated=true)]
+		public int ID
+		{
+			get
+			{
+				return this._ID;
+			}
+			set
+			{
+				if ((this._ID != value))
+				{
+					this.OnIDChanging(value);
+					this.SendPropertyChanging();
+					this._ID = value;
+					this.SendPropertyChanged("ID");
+					this.OnIDChanged();
+				}
+			}
+		}
+		
+		[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_Code", DbType="NVarChar(50) NOT NULL", CanBeNull=false)]
+		public string Code
+		{
+			get
+			{
+				return this._Code;
+			}
+			set
+			{
+				if ((this._Code != value))
+				{
+					this.OnCodeChanging(value);
+					this.SendPropertyChanging();
+					this._Code = value;
+					this.SendPropertyChanged("Code");
+					this.OnCodeChanged();
+				}
+			}
+		}
+		
+		[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_Name", DbType="NVarChar(500) NOT NULL", CanBeNull=false)]
+		public string Name
+		{
+			get
+			{
+				return this._Name;
+			}
+			set
+			{
+				if ((this._Name != value))
+				{
+					this.OnNameChanging(value);
+					this.SendPropertyChanging();
+					this._Name = value;
+					this.SendPropertyChanged("Name");
+					this.OnNameChanged();
+				}
+			}
+		}
+		
+		[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_JobID", DbType="Int NOT NULL")]
+		public int JobID
+		{
+			get
+			{
+				return this._JobID;
+			}
+			set
+			{
+				if ((this._JobID != value))
+				{
+					if (this._Job.HasLoadedOrAssignedValue)
+					{
+						throw new System.Data.Linq.ForeignKeyReferenceAlreadyHasValueException();
+					}
+					this.OnJobIDChanging(value);
+					this.SendPropertyChanging();
+					this._JobID = value;
+					this.SendPropertyChanged("JobID");
+					this.OnJobIDChanged();
+				}
+			}
+		}
+		
+		[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_LastestUpdated", DbType="DateTime NOT NULL")]
+		public System.DateTime LastestUpdated
+		{
+			get
+			{
+				return this._LastestUpdated;
+			}
+			set
+			{
+				if ((this._LastestUpdated != value))
+				{
+					this.OnLastestUpdatedChanging(value);
+					this.SendPropertyChanging();
+					this._LastestUpdated = value;
+					this.SendPropertyChanged("LastestUpdated");
+					this.OnLastestUpdatedChanged();
+				}
+			}
+		}
+		
+		[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_UpdatedBy", DbType="Int NOT NULL")]
+		public int UpdatedBy
+		{
+			get
+			{
+				return this._UpdatedBy;
+			}
+			set
+			{
+				if ((this._UpdatedBy != value))
+				{
+					this.OnUpdatedByChanging(value);
+					this.SendPropertyChanging();
+					this._UpdatedBy = value;
+					this.SendPropertyChanged("UpdatedBy");
+					this.OnUpdatedByChanged();
+				}
+			}
+		}
+		
+		[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_IsDeleted", DbType="Bit NOT NULL")]
+		public bool IsDeleted
+		{
+			get
+			{
+				return this._IsDeleted;
+			}
+			set
+			{
+				if ((this._IsDeleted != value))
+				{
+					this.OnIsDeletedChanging(value);
+					this.SendPropertyChanging();
+					this._IsDeleted = value;
+					this.SendPropertyChanged("IsDeleted");
+					this.OnIsDeletedChanged();
+				}
+			}
+		}
+		
+		[global::System.Data.Linq.Mapping.AssociationAttribute(Name="Job_Job_Good", Storage="_Job", ThisKey="JobID", OtherKey="ID", IsForeignKey=true)]
+		public Job Job
+		{
+			get
+			{
+				return this._Job.Entity;
+			}
+			set
+			{
+				Job previousValue = this._Job.Entity;
+				if (((previousValue != value) 
+							|| (this._Job.HasLoadedOrAssignedValue == false)))
+				{
+					this.SendPropertyChanging();
+					if ((previousValue != null))
+					{
+						this._Job.Entity = null;
+						previousValue.Job_Goods.Remove(this);
+					}
+					this._Job.Entity = value;
+					if ((value != null))
+					{
+						value.Job_Goods.Add(this);
+						this._JobID = value.ID;
+					}
+					else
+					{
+						this._JobID = default(int);
+					}
+					this.SendPropertyChanged("Job");
+				}
+			}
+		}
+		
+		public event PropertyChangingEventHandler PropertyChanging;
+		
+		public event PropertyChangedEventHandler PropertyChanged;
+		
+		protected virtual void SendPropertyChanging()
+		{
+			if ((this.PropertyChanging != null))
+			{
+				this.PropertyChanging(this, emptyChangingEventArgs);
+			}
+		}
+		
+		protected virtual void SendPropertyChanged(String propertyName)
+		{
+			if ((this.PropertyChanged != null))
+			{
+				this.PropertyChanged(this, new PropertyChangedEventArgs(propertyName));
+			}
+		}
+	}
+	
 	[global::System.Data.Linq.Mapping.TableAttribute(Name="dbo.Job_InOutFees")]
 	public partial class Job_InOutFee : INotifyPropertyChanging, INotifyPropertyChanged
 	{
@@ -6185,6 +6443,8 @@ namespace SmileLogistics.DAL
 		
 		private EntitySet<CustomerQuotation_Custom> _CustomerQuotation_Customs;
 		
+		private EntitySet<Job_Good> _Job_Goods;
+		
 		private EntitySet<Job_InOutFee> _Job_InOutFees;
 		
 		private EntitySet<Job_Prepaid> _Job_Prepaids;
@@ -6261,6 +6521,7 @@ namespace SmileLogistics.DAL
 		{
 			this._Agent_Prepaids = new EntitySet<Agent_Prepaid>(new Action<Agent_Prepaid>(this.attach_Agent_Prepaids), new Action<Agent_Prepaid>(this.detach_Agent_Prepaids));
 			this._CustomerQuotation_Customs = new EntitySet<CustomerQuotation_Custom>(new Action<CustomerQuotation_Custom>(this.attach_CustomerQuotation_Customs), new Action<CustomerQuotation_Custom>(this.detach_CustomerQuotation_Customs));
+			this._Job_Goods = new EntitySet<Job_Good>(new Action<Job_Good>(this.attach_Job_Goods), new Action<Job_Good>(this.detach_Job_Goods));
 			this._Job_InOutFees = new EntitySet<Job_InOutFee>(new Action<Job_InOutFee>(this.attach_Job_InOutFees), new Action<Job_InOutFee>(this.detach_Job_InOutFees));
 			this._Job_Prepaids = new EntitySet<Job_Prepaid>(new Action<Job_Prepaid>(this.attach_Job_Prepaids), new Action<Job_Prepaid>(this.detach_Job_Prepaids));
 			this._Job_QuotationRoutes = new EntitySet<Job_QuotationRoute>(new Action<Job_QuotationRoute>(this.attach_Job_QuotationRoutes), new Action<Job_QuotationRoute>(this.detach_Job_QuotationRoutes));
@@ -6863,6 +7124,19 @@ namespace SmileLogistics.DAL
 			}
 		}
 		
+		[global::System.Data.Linq.Mapping.AssociationAttribute(Name="Job_Job_Good", Storage="_Job_Goods", ThisKey="ID", OtherKey="JobID")]
+		public EntitySet<Job_Good> Job_Goods
+		{
+			get
+			{
+				return this._Job_Goods;
+			}
+			set
+			{
+				this._Job_Goods.Assign(value);
+			}
+		}
+		
 		[global::System.Data.Linq.Mapping.AssociationAttribute(Name="Job_Job_InOutFee", Storage="_Job_InOutFees", ThisKey="ID", OtherKey="JobID")]
 		public EntitySet<Job_InOutFee> Job_InOutFees
 		{
@@ -7009,6 +7283,18 @@ namespace SmileLogistics.DAL
 		}
 		
 		private void detach_CustomerQuotation_Customs(CustomerQuotation_Custom entity)
+		{
+			this.SendPropertyChanging();
+			entity.Job = null;
+		}
+		
+		private void attach_Job_Goods(Job_Good entity)
+		{
+			this.SendPropertyChanging();
+			entity.Job = this;
+		}
+		
+		private void detach_Job_Goods(Job_Good entity)
 		{
 			this.SendPropertyChanging();
 			entity.Job = null;

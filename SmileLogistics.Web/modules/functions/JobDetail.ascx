@@ -167,6 +167,18 @@
                     </div>
                 </div>
             </div>
+            <div class="block full block-related-edit">
+                <div class="block-title">
+                    <h2><strong>Danh mục Hàng</strong></h2>
+                    <div class="block-options pull-right">
+                        <a onclick="jobs.startadd_jobgood();" class="btn btn-sm btn-success" data-toggle="tooltip" title="Thêm mới"><i class="gi gi-plus"></i></a>
+                    </div>
+                </div>
+                <div class="form-horizontal">
+                    <div id="divJobGoods" class="table-responsive">
+                    </div>
+                </div>
+            </div>
         </div>
         <div class="col-md-7">
             <div class="block full block-related-edit">
@@ -749,6 +761,60 @@
         </div>
     </div>
 </div>
+<div id="modal-info-jobgood" class="modal fade" tabindex="-1" role="dialog" aria-hidden="true" style="display: none;">
+    <div class="modal-dialog modal-lg">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal" aria-hidden="true">×</button>
+                <h3 class="modal-title">Thêm mới Danh mục hàng hóa</h3>
+            </div>
+            <div class="modal-body">
+                <div class="form-horizontal form-bordered">
+                    <div class="form-group">
+                        <label class="col-md-3 control-label">Mã hàng</label>
+                        <div class="col-md-9">
+                            <input type="text" id="info-jobgood-code" class="form-control" placeholder="Mã hàng" style="width: 100%;">
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label class="col-md-3 control-label">Tên</label>
+                        <div class="col-md-9">
+                            <input type="text" aria-multiline="true" id="info-jobgood-name" class="form-control" placeholder="Tên hàng" style="width: 100%;">
+                        </div>
+                    </div>
+                    <div id="divModalAlert-JobGood" class="form-group" style="display: none;">
+                        <div class="col-md-3">
+                        </div>
+                        <div id="divModalAlert-content-JobGood" class="col-md-9">
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <a id="btn-modal-add-close-info-jobgood" class="btn btn-sm btn-default" data-dismiss="modal">Hủy</a>
+                <a id="btn-do-save-info-jobgood" onclick="jobs.doadd_jobgood();" class="btn btn-sm btn-primary">Lưu</a>
+            </div>
+        </div>
+    </div>
+</div>
+<div id="modal-delete-jobgood" class="modal fade" tabindex="-1" role="dialog" aria-hidden="true" style="display: none;">
+    <div class="modal-dialog modal-xs">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal" aria-hidden="true">×</button>
+                <h3 class="modal-title">Xóa Danh mục Hàng hóa</h3>
+            </div>
+            <div class="modal-body">
+                Bạn chắc chắn muốn xóa Danh mục Hàng hóa này?<br />
+                <%--<i class="text-danger">(Điều này đồng nghĩa việc xóa kèm theo lịch sử hoạt động!!!)</i>--%>
+            </div>
+            <div class="modal-footer">
+                <a id="btn-modal-delete-close-jobgood" class="btn btn-sm btn-default" data-dismiss="modal">Hủy</a>
+                <a id="btn-do-delete-jobgood" onclick="jobs.startdelete_jobgood();" class="btn btn-sm btn-danger">Xóa</a>
+            </div>
+        </div>
+    </div>
+</div>
 <script type="text/javascript">
     var jobs =
         {
@@ -841,8 +907,167 @@
                 this.generate_quotationcustoms_controls_bysmiles();
                 this.generate_quotationcustoms_values();
                 this.loadlist_inoutfees();
+                this.loadlist_jobgoods();
                 this.loadlist_agentprepaid();
                 this.loadlist_jobprepaid();
+            },
+
+            //-----------------------------------------------------------------------------------------------
+
+            mode_jobgood: 'create',
+            currentobj_jobgood: null,
+            loadlist_jobgoods: function () {
+                var html =
+                    "<table id=\"tblList_JobGoods\" class=\"table table-vcenter table-striped table-condensed table-hover table-bordered\">" +
+                        "<thead>" +
+                            "<tr>" +
+                                "<th class=\"text-center\">STT</th>" +
+                                "<th class=\"text-center\">Mã hàng</th>" +
+                                "<th class=\"text-center\">Tên hàng hóa</th>" +
+                                "<th class=\"text-center\">#</th>" +
+                            "</tr>" +
+                        "</thead>" +
+                        "<tbody>";
+
+                if (jobs.currentobj.List_JobGoods == null) {
+                    html +=
+                        "<tr>" +
+                            "<td class=\"text-center\" colspan=\"4\">" +
+                                "Không có dữ liệu!" +
+                            "</td>" +
+                        "</tr>";
+                }
+                else {
+                    for (var i = 0; i < jobs.currentobj.List_JobGoods.length; i++) {
+                        var obj = jobs.currentobj.List_JobGoods[i];
+
+                        html +=
+                            "<tr>" +
+                                "<td class=\"text-center\">" +
+                                    (i + 1) +
+                                "</td>" +
+                                "<td class=\"text-center\">" + obj.Code + "</td>" +
+                                "<td class=\"text-center\">" + obj.Name + "</td>" +
+                                "<td class=\"text-center\">" +
+                                        "<a onclick=\"jobs.startedit_jobgood('" + obj.ID + "');\" href=\"javascript:void(0)\" data-toggle=\"tooltip\" title=\"Sửa\" class=\"btn btn-xs btn-default\"><i class=\"fa fa-pencil\"></i></a>" +
+                                        "<a onclick=\"jobs.startdelete_jobgood('" + obj.ID + "');\" href=\"javascript:void(0)\" data-toggle=\"tooltip\" title=\"Xóa\" class=\"btn btn-xs btn-danger\"><i class=\"fa fa-times\"></i></a>" +
+                                "</td>" +
+                            "</tr>";
+                    }
+                }
+
+                html += "</tbody></table>";
+
+                $('#divJobGoods').html(html);
+
+                $('[data-toggle="tooltip"]').tooltip();
+                //                    });
+            },
+
+            startadd_jobgood: function () {
+                this.mode_jobgood = 'create';
+                $('#modal-info-jobgood .modal-header .modal-title').html('Thêm mới Danh mục Hàng hóa');
+                $('#btn-do-save-jobgood').html('Thêm');
+                $('#modal-info-jobgood').modal('show');
+                $('#btn-do-confirm-jobgood').hide();
+            },
+
+            doadd_jobgood: function () {
+                var postdata = jobs.validateForm_jobgood();
+                if (postdata == null)
+                    return;
+
+                NProgress.start();
+                $('#btn-do-save-jobgood').addClass('disabled');
+                $('#btn-do-save-jobgood').html('Đang xử lý...');
+
+                var xhr = new XMLHttpRequest();
+                xhr.open('POST', jobs.ajaxPath + '?ts=' + new Date().getTime().toString());
+                xhr.onload = function () {
+                    NProgress.done();
+
+                    var result = JSON.parse(xhr.responseText);
+                    $('#btn-do-save-jobgood').removeClass('disabled');
+                    $('#btn-do-save-jobgood').html(jobs.mode_jobgood == 'create' ? 'Thêm' : 'Lưu');
+                    alert(result.Message);
+
+                    if (result.ErrorCode == 0) {
+                        jobs.reloadpage();
+                    }
+                };
+
+                var form = new FormData();
+                form.append('mod', this.mode_jobgood + '_jobgood');
+                form.append('data', JSON.stringify(postdata));
+
+                xhr.send(form);
+            },
+
+            validateForm_jobgood: function () {
+                var message = '';
+                var data = new Object();
+
+                data.jobid = jobs.currentobj.ID;
+
+                data.name = $('#info-jobgood-name').val();
+                if (data.name == '')
+                    message += '- Tên không hợp lệ!<br/>';
+
+                data.code = $('#info-jobgood-code').val();
+                if (data.code == '')
+                    message += '- Mã không hợp lệ!<br/>';
+
+                data.id = jobs.mode_jobgood == "create" ? 0 : jobs.currentobj_jobgood.ID;
+
+                return data;
+            },
+
+            startedit_jobgood: function (id) {
+                jobs.mode_jobgood = 'edit';
+                jobs.currentobj_jobgood = jobs.getobj(id, this.currentobj.List_JobGoods);
+                if (jobs.currentobj_jobgood == null) {
+                    alert('Không tìm thấy Danh mục Hàng hóa!');
+                    return;
+                }
+
+                $('#info-jobgood-code').val(jobs.currentobj_jobgood.Code);
+                $('#info-jobgood-name').val(jobs.currentobj_jobgood.Name);
+                                
+                $('#modal-info-jobgood .modal-header .modal-title').html('Cập nhật Danh mục Hàng hóa');
+                $('#btn-do-save-jobgood').html('Lưu');
+                $('#modal-info-jobgood').modal('show');
+            },
+
+            startdelete_jobgood: function (id) {
+                jobs.currentobj_jobgood = jobs.getobj(id, jobs.currentobj.List_JobGoods);
+                if (jobs.currentobj_jobgood == null) {
+                    alert('Không tìm thấy Danh mục Hàng hóa!');
+                    return;
+                }
+
+                $('#modal-delete-jobgood').modal('show');
+            },
+
+            dodelete_jobgood: function () {
+                NProgress.start();
+                $('#btn-do-delete-jobgood').addClass('disabled');
+                $('#btn-modal-delete-close-jobgood').addClass('disabled');
+                $('#btn-do-delete-jobgood').html('Đang xử lý...');
+
+                $.post(jobs.ajaxPath + '?ts=' + new Date().getTime().toString(),
+                    { 'mod': 'delete_jobgood', 'id': jobs.currentobj_jobgood.ID },
+                                function (data) {
+                                    NProgress.done();
+
+                                    var result = JSON.parse(data);
+                                    $('#btn-do-delete-jobgood').removeClass('disabled');
+                                    $('#btn-modal-delete-close-jobgood').removeClass('disabled');
+                                    $('#btn-do-delete-jobgood').html('Xóa');
+                                    alert(result.Message);
+
+                                    if (result.ErrorCode == 0)
+                                        jobs.reloadpage();
+                                });
             },
 
             //-----------------------------------------------------------------------------------------------
@@ -900,9 +1125,10 @@
 
                 data.description = $('#info-jobprepaid-description').val();
 
-                data.money = Number($('#info-jobprepaid-money').val());
+                data.money = Number(globalhelpers.Convert_FromMoney($('#info-jobprepaid-money').val()));
                 if (isNaN(data.money))
                     message += '- Số tiền chi không hợp lệ!<br/>';
+
                 var addMoney = this.currentobj_jobprepaid == null ? data.money : (data.money - this.currentobj_jobprepaid.Money);
                 if (this.currentobj.Customer.Prepaids < addMoney)
                     message += '- Số tiền tạm ứng của Khách hàng không đủ!<br/>';
@@ -1101,7 +1327,7 @@
                     return;
                 }
 
-                $('#info-agentprepaid-employee').val(jobs.currentobj_agentprepaid.EmployID);
+                $('#info-agentprepaid-employee').val(jobs.currentobj_agentprepaid.AgentID);
                 $('#info-agentprepaid-money').val(jobs.currentobj_agentprepaid.TotalRequest);
                 $('#info-agentprepaid-description').val(jobs.currentobj_agentprepaid.Description);
                 $('#info-agentprepaid-totalpaid').val(jobs.currentobj_agentprepaid.TotalPaid);
@@ -1287,17 +1513,17 @@
 
                 data.jobid = jobs.currentobj.ID;
 
-                data.employid = Number($('#info-prepaid-employee').val());
+                data.employid = Number($('#info-agentprepaid-employee').val());
                 if (isNaN(data.employid))
                     message += '- Nhân viên không hợp lệ!<br/>';
 
                 data.description = $('#info-agentprepaid-description').val();
 
-                data.totalrequest = Number($('#info-agentprepaid-money').val());
+                data.totalrequest = Number(globalhelpers.Convert_FromMoney($('#info-agentprepaid-money').val()));
                 if (isNaN(data.totalrequest))
                     message += '- Số tiền duyệt chi không hợp lệ!<br/>';
 
-                data.totalpaid = Number($('#info-agentprepaid-totalpaid').val());
+                data.totalpaid = Number(globalhelpers.Convert_FromMoney($('#info-agentprepaid-totalpaid').val()));
                 if (jobs.mode_agentprepaid != "create" && isNaN(data.totalpaid))
                     message += '- Số tiền chi thực tế không hợp lệ!<br/>';
 
@@ -1517,7 +1743,7 @@
                 if (data.date == "")
                     message += '- Thời gian xuất Hóa đơn không hợp lệ!<br/>';
 
-                data.money = Number($('#info-inoutfee-money').val());
+                data.money = Number(globalhelpers.Convert_FromMoney($('#info-inoutfee-money').val()));
                 if (isNaN(data.money))
                     message += '- Số tiền không hợp lệ!<br/>';
 
@@ -1687,7 +1913,7 @@
                 if (data.expirestart == "" || data.expireend == "")
                     message += '- Thời gian hiệu lực không hợp lệ!<br/>';
 
-                data.usdrate = Number($('#info-quotation-customs-usdrate').val());
+                data.usdrate = Number(globalhelpers.Convert_FromMoney($('#info-quotation-customs-usdrate').val()));
                 if (data.isusd && (isNaN(data.usdrate) || data.usdrate <= 0))
                     message += '- Tỉ giá USD không hợp lệ!<br/>';
 
@@ -1784,39 +2010,6 @@
                 if (customsQuotation == null) return;
 
                 this.quotationcustoms_details_temp = this.currentobj.QuotationCustoms.FeeDetails;
-
-                //if (this.currentobj.QuotationCustoms.FeeDetails == null || this.currentobj.QuotationCustoms.FeeDetails.length == 0) return;
-
-                //var html = "";
-
-                //for (var i = 0; i < this.currentobj.QuotationCustoms.FeeDetails.length; i++) {
-                //    var feeType = this.currentobj.QuotationCustoms.FeeDetails[i];
-
-                //    html +=
-                //        "<tr id=\"tr-quotationcustoms-byload-" + feeType.FeeTypeID + "\"  class=\"tr-quotationcustoms-byfeetype-" + feeType.FeeTypeID + " tr-load-quotation\" dat-ti=\"" + feeType.FeeTypeID + "\">" +
-                //            "<td id=\"td-quotationcustoms-byload-name-" + feeType.FeeTypeID + "\" class=\"text-left\" style=\"padding-left: 20px;\">" +
-                //                feeType.FeeTypeName +
-                //            "</td>" +
-                //            "<td id=\"td-quotationcustoms-byload-quantity-" + feeType.FeeTypeID + "\" class=\"text-center\">" +
-                //                "<input onchange=\"jobs.generate_quotationcustoms_feedetails_total();\" type=\"text\" id=\"info-quotationcustoms-byload-quantity-" + feeType.FeeTypeID + "\" value=\"" + feeType.Quantity + "\" class=\"form-control\" style=\"width: 100%;\">" +
-                //            "</td>" +
-                //            "<td id=\"td-quotationcustoms-byload-price-" + feeType.FeeTypeID + "\" dat-price=\"" + feeType.Price + "\" class=\"text-center\">" +
-                //                globalhelpers.Format_Money(feeType.Price.toFixed(2)) +
-                //            "</td>" +
-                //            "<td id=\"td-quotationcustoms-byload-total-" + feeType.FeeTypeID + "\" class=\"text-center\">" +
-                //                "0" +
-                //            "</td>" +
-                //            "<td class=\"text-center\">" +
-                //                "<a onclick=\"jobs.customsquotation_byload_upfirst(this);\" href=\"javascript:void(0)\" data-toggle=\"tooltip\" title=\"Lên đầu\" class=\"btn btn-xs btn-success\"><i class=\"hi hi-arrow-up\"></i></a>" +
-                //                "<a onclick=\"jobs.startEdit_quotation_customs_detail(this);\" href=\"javascript:void(0)\" data-toggle=\"tooltip\" title=\"Xóa\" class=\"btn btn-xs btn-danger\"><i class=\"fa fa-times\"></i></a>" +
-                //                "<a href=\"javascript:void(0)\" data-toggle=\"tooltip\" title=\"" + feeType.Description + "\" class=\"btn btn-xs btn-default\"><i class=\"hi hi-question-sign\"></i></a>" +
-                //            "</td>" +
-                //        "</tr>";
-                //}
-
-                //$('#tbodyList_Quotation_Customs_FeeDetails').html(html);
-
-                //this.generate_quotationcustoms_feedetails_total();
 
                 this.generate_quotationcustoms_values_fees();
 
@@ -2070,7 +2263,7 @@
                     message += '- Cần chọn báo giá gốc từ Hãng vận chuyển!<br/>';
                 data.quotationcustomer = Number($('#info-quotation-route-quotation-by-customer').val());
 
-                data.price = Number($('#info-quotationroute-value-price').val());
+                data.price = Number(globalhelpers.Convert_FromMoney($('#info-quotationroute-value-price').val()));
                 if (isNaN(data.price))
                     message += '- Giá không hợp lệ!<br/>';
 
@@ -2083,7 +2276,7 @@
                 data.expirestart = $('#info-quotationroute-value-expire-start').val();
                 data.expireend = $('#info-quotationroute-value-expire-end').val();
 
-                data.extrafee = Number($('#info-quotationroute-info-extrafee').val());
+                data.extrafee = Number(globalhelpers.Convert_FromMoney($('#info-quotationroute-info-extrafee').val()));
                 if (isNaN(data.extrafee))
                     message += '- Phí phụ thu không hợp lệ!<br/>';
 
@@ -2096,11 +2289,11 @@
                 if (isNaN(data.loads))
                     message += '- Trọng lượng hàng không hợp lệ!<br/>';
 
-                data.comppromotion = Number($('#info-quotationroute-info-comppromotion').val());
+                data.comppromotion = Number(globalhelpers.Convert_FromMoney($('#info-quotationroute-info-comppromotion').val()));
                 if (isNaN(data.comppromotion))
                     message += '- Giảm giá từ Hãng không hợp lệ!<br/>';
 
-                data.usdrate = Number($('#info-quotationroute-info-usdrate').val());
+                data.usdrate = Number(globalhelpers.Convert_FromMoney($('#info-quotationroute-info-usdrate').val()));
                 if (data.isusd && (isNaN(data.usdrate) || data.usdrate <= 0))
                     message += '- Tỉ giá USD không hợp lệ!<br/>';
 
@@ -2489,7 +2682,7 @@
 
                 data.customer = Number($('#info-customers').val());
 
-                data.usdrate = Number($('#info-usdrate').val());
+                data.usdrate = Number(globalhelpers.Convert_FromMoney($('#info-usdrate').val()));
                 if (isNaN(data.usdrate))
                     message += '- Tỉ giá USD không hợp lệ!<br/>';
 

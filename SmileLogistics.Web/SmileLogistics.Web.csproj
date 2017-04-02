@@ -61,6 +61,7 @@
   <ItemGroup>
     <Content Include="ajax\modules\functions\customers.aspx" />
     <Content Include="ajax\modules\functions\customerprepaids.aspx" />
+    <Content Include="ajax\modules\functions\jobgoods.aspx" />
     <Content Include="ajax\modules\functions\jobworkings.aspx" />
     <Content Include="ajax\modules\functions\jobs.aspx" />
     <Content Include="ajax\modules\functions\quotationcustoms.aspx" />
@@ -222,6 +223,7 @@
     <Content Include="less\themes\spring.less" />
     <Content Include="less\variables.less" />
     <Content Include="modules\functions\Customers.ascx" />
+    <Content Include="modules\functions\JobGoods.ascx" />
     <Content Include="modules\functions\JobWorkings.ascx" />
     <Content Include="modules\functions\JobDetail.ascx" />
     <Content Include="modules\functions\Jobs.ascx" />
@@ -792,7 +794,9 @@
     <Content Include="uploads\avatars\636095334553935082.jpg" />
     <Content Include="uploads\avatars\636095503983778383.jpg" />
     <Content Include="uploads\avatars\636095505666177024.jpg" />
-    <Content Include="Web.config" />
+    <Content Include="Web.config">
+      <SubType>Designer</SubType>
+    </Content>
   </ItemGroup>
   <ItemGroup>
     <Compile Include="ajax\AjaxAuthentication.aspx.cs">
@@ -815,6 +819,13 @@
     </Compile>
     <Compile Include="ajax\modules\functions\customerprepaids.aspx.designer.cs">
       <DependentUpon>customerprepaids.aspx</DependentUpon>
+    </Compile>
+    <Compile Include="ajax\modules\functions\jobgoods.aspx.cs">
+      <DependentUpon>jobgoods.aspx</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="ajax\modules\functions\jobgoods.aspx.designer.cs">
+      <DependentUpon>jobgoods.aspx</DependentUpon>
     </Compile>
     <Compile Include="ajax\modules\functions\jobworkings.aspx.cs">
       <DependentUpon>jobworkings.aspx</DependentUpon>
@@ -958,6 +969,13 @@
     </Compile>
     <Compile Include="modules\functions\Customers.ascx.designer.cs">
       <DependentUpon>Customers.ascx</DependentUpon>
+    </Compile>
+    <Compile Include="modules\functions\JobGoods.ascx.cs">
+      <DependentUpon>JobGoods.ascx</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="modules\functions\JobGoods.ascx.designer.cs">
+      <DependentUpon>JobGoods.ascx</DependentUpon>
     </Compile>
     <Compile Include="modules\functions\JobWorkings.ascx.cs">
       <DependentUpon>JobWorkings.ascx</DependentUpon>

@@ -278,13 +278,13 @@
                 if (isNaN(data.load))
                     message += '- Chưa chọn Tải trọng!<br/>';
 
-                data.price = Number($('#modal-info #info-price').val());
+                data.price = Number(globalhelpers.Convert_FromMoney($('#modal-info #info-price').val()));
                 if (isNaN(data.price))
                     message += '- Chưa nhập Giá vận chuyển!<br/>';
 
                 data.issameprice = $('#modal-info #info-issameprice').prop('checked');
 
-                data.priceroundedtrip = Number($('#modal-info #info-price-roundedtrip').val());
+                data.priceroundedtrip = Number(globalhelpers.Convert_FromMoney($('#modal-info #info-price-roundedtrip').val()));
                 if (!data.issameprice && isNaN(data.priceroundedtrip))
                     message += '- Chưa nhập Giá chiều về!<br/>';
                 else if (data.issameprice) data.priceroundedtrip = data.price;

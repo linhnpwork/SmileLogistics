@@ -219,7 +219,7 @@
                 if (isNaN(data.customer))
                     message += '- Khách hàng không hợp lệ!';
 
-                data.money = Number($('#modal-info #info-money').val());
+                data.money = Number(globalhelpers.Convert_FromMoney($('#modal-info #info-money').val()));
                 if (isNaN(data.money))
                     message += '- Số tiền không hợp lệ!<br/>';
 

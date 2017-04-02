@@ -240,7 +240,7 @@
                 if (data.description == '')
                     message += '- Ghi chú không hợp lệ!<br/>';
 
-                data.fullload = $('#modal-info #info-fullload').val();
+                data.fullload = globalhelpers.Convert_FromMoney($('#modal-info #info-fullload').val());
                 if (data.fullload == '')
                     message += '- Trọng tải tối đa không hợp lệ!<br/>';
                 if (isNaN(Number(data.fullload)))

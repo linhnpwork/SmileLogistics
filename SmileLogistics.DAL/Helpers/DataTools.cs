@@ -3829,6 +3829,11 @@ namespace SmileLogistics.DAL.Helpers
                 foreach (Job_Prepaid jobprepaid in jobprepaids)
                     jobPrepaids.Add(Job_Prepaid_Entity(jobprepaid));
 
+                var jobgoods = obj.Job_Goods.Where(o => !o.IsDeleted);
+                List<eJob_Good> jobGoods = new List<eJob_Good>();
+                foreach (Job_Good jobgood in jobgoods)
+                    jobGoods.Add(Job_Good_Entity(jobgood));
+
                 return new eJob()
                 {
                     AttachedFiles = obj.AttachedFiles,
@@ -3872,6 +3877,7 @@ namespace SmileLogistics.DAL.Helpers
                     InOutFees = inoutFees.Count == 0 ? null : inoutFees,
                     List_AgentPrepaids = agentPrepaids.Count == 0 ? null : agentPrepaids,
                     List_JobPrepaids = jobPrepaids.Count == 0 ? null : jobPrepaids,
+                    List_JobGoods = jobGoods.Count == 0 ? null : jobGoods,
                 };
             }
             catch
@@ -5555,6 +5561,231 @@ namespace SmileLogistics.DAL.Helpers
                     LastestUpdate = obj.LastestUpdated,
                     sLastestUpdate = obj.LastestUpdated.ToString(GlobalValues.DateFormat_VN),
                     UpdatedBy = Sys_User_GetE(obj.UpdatedBy)
+                };
+            }
+            catch
+            {
+                return null;
+            }
+        }
+
+        #endregion
+
+        #region Job_Goods
+
+        public bool Job_Good_Delete(Job_Good goodstype)
+        {
+            try
+            {
+                Job_Good obj = DB.Job_Goods.FirstOrDefault(o => o.ID == goodstype.ID);
+                if (obj == null) return false;
+
+                obj.IsDeleted = true;
+                obj.LastestUpdated = DateTime.Now;
+                obj.UpdatedBy = goodstype.UpdatedBy;
+                DB.SubmitChanges();
+
+                return true;
+            }
+            catch
+            {
+                return false;
+            }
+        }
+
+        public int Job_Good_Update(Job_Good obj)
+        {
+            try
+            {
+                Job_Good updateObj = DB.Job_Goods.FirstOrDefault(o => o.ID == obj.ID);
+                if (updateObj == null) return 3;
+
+                updateObj.Code = obj.Code;
+                updateObj.LastestUpdated = DateTime.Now;
+                updateObj.Name = obj.Name;
+                updateObj.UpdatedBy = obj.UpdatedBy;
+
+                DB.SubmitChanges();
+
+                return 0;
+            }
+            catch (Exception ex)
+            {
+                return int.MinValue;
+            }
+        }
+
+        public int Job_Good_Create(Job_Good obj)
+        {
+            try
+            {
+                DB.Job_Goods.InsertOnSubmit(obj);
+                DB.SubmitChanges();
+
+                return 0;
+            }
+            catch
+            {
+                return int.MinValue;
+            }
+        }
+
+        public List<Job_Good> Job_Good_Gets(int pageIndex, int pageSize, out int totalPages, eJob_GoodFilter filter = null)
+        {
+            totalPages = 0;
+            try
+            {
+                var all = DB.Job_Goods.Where(o => !o.IsDeleted);
+                if (all.Count() == 0) return null;
+
+                if (filter != null)
+                {
+                    if (!string.IsNullOrEmpty(filter.Code))
+                        all = all.Where(o => o.Code == filter.Code);
+
+                    if (!string.IsNullOrEmpty(filter.Name))
+                        all = all.Where(o => o.Name.ToLower().IndexOf(filter.Name.ToLower()) > 0);
+                }
+
+                int startIndex = pageIndex * pageSize;
+                List<Job_Good> res = all.OrderBy(o => o.Name).ThenBy(o => o.Code).Skip(startIndex).Take(pageSize).ToList();
+
+                if (res.Count == 0) return null;
+
+                int div = all.Count() / pageSize;
+                int mod = all.Count() % pageSize;
+                totalPages = div + (mod > 0 ? 1 : 0);
+
+                return res;
+            }
+            catch
+            {
+                return null;
+            }
+        }
+
+        public List<eJob_Good> Job_Good_GetEs(int pageIndex, int pageSize, out int totalPages, eJob_GoodFilter filter = null)
+        {
+            totalPages = 0;
+            try
+            {
+                var all = Job_Good_Gets(pageIndex, pageSize, out totalPages, filter);
+                if (all == null) return null;
+
+                List<eJob_Good> result = new List<eJob_Good>();
+                foreach (Job_Good obj in all)
+                    result.Add(Job_Good_Entity(obj));
+
+                return result;
+            }
+            catch
+            {
+                return null;
+            }
+        }
+
+        public List<Job_Good> Job_Good_Gets()
+        {
+            try
+            {
+                var all = DB.Job_Goods.Where(o => !o.IsDeleted);
+                if (all.Count() == 0) return null;
+
+                return all.OrderBy(o => o.Name).ThenBy(o => o.Code).ToList();
+            }
+            catch
+            {
+                return null;
+            }
+        }
+
+        public List<eJob_Good> Job_Good_GetEs()
+        {
+            try
+            {
+                var all = Job_Good_Gets();
+                if (all == null) return null;
+
+                List<eJob_Good> result = new List<eJob_Good>();
+                foreach (Job_Good obj in all)
+                    result.Add(Job_Good_Entity(obj));
+
+                return result;
+            }
+            catch
+            {
+                return null;
+            }
+        }
+
+        public Job_Good Job_Good_Get(int id)
+        {
+            try
+            {
+                return DB.Job_Goods.FirstOrDefault(o =>
+                    o.ID == id);
+            }
+            catch
+            {
+                return null;
+            }
+        }
+
+        public eJob_Good Job_Good_GetE(int id)
+        {
+            try
+            {
+                return Job_Good_Entity(Job_Good_Get(id));
+            }
+            catch
+            {
+                return null;
+            }
+        }
+
+        public Job_Good Job_Good_Get(string code)
+        {
+            try
+            {
+                return DB.Job_Goods.FirstOrDefault(o =>
+                    !o.IsDeleted &&
+                    o.Code.ToLower().Trim() == code.ToLower().Trim());
+            }
+            catch
+            {
+                return null;
+            }
+        }
+
+        public eJob_Good Job_Good_GetE(string code)
+        {
+            try
+            {
+                return Job_Good_Entity(Job_Good_Get(code));
+            }
+            catch
+            {
+                return null;
+            }
+        }
+
+        public eJob_Good Job_Good_Entity(Job_Good obj)
+        {
+            try
+            {
+                if (obj == null) return null;
+
+                return new eJob_Good()
+                {
+                    Code = obj.Code,
+                    ID = obj.ID,
+                    JobID = obj.JobID,
+                    IsDeleted = obj.IsDeleted,
+                    LastestUpdate = obj.LastestUpdated,
+                    Name = obj.Name,
+                    sLastestUpdate = obj.LastestUpdated.ToString(GlobalValues.DateFormat_VN),
+                    UpdatedBy = Sys_User_GetE(obj.UpdatedBy),
+                    JobCODE = obj.Job.JobID,
                 };
             }
             catch

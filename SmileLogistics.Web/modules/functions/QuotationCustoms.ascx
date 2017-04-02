@@ -301,7 +301,7 @@
 
                 for (var i = 0; i < this.allTypes.length; i++) {
                     var type = this.allTypes[i];
-                    var price = Number($('#info-price-' + type.ID).val());
+                    var price = Number(globalhelpers.Convert_FromMoney($('#info-price-' + type.ID).val()));
                     var objType = new Object();
                     objType.FeeTypeID = type.ID;
                     objType.Price = price;

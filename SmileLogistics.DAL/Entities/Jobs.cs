@@ -49,6 +49,7 @@ namespace SmileLogistics.DAL.Entities
         public List<eJob_InOutFee> InOutFees { get; set; }
         public List<eAgent_Prepaid> List_AgentPrepaids { get; set; }
         public List<eJob_Prepaid> List_JobPrepaids { get; set; }
+        public List<eJob_Good> List_JobGoods { get; set; }
     }
 
     public class eJobFilter

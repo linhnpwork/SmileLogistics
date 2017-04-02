@@ -91,6 +91,225 @@ namespace SmileLogistics.Web.ajax.modules.functions
                 case "delete_jobprepaid":
                     Delete_JobPrepaid();
                     break;
+
+                case "create_jobgood":
+                    Create_JobGood();
+                    break;
+                case "edit_jobgood":
+                    Edit_JobGood();
+                    break;
+                case "delete_jobgood":
+                    Delete_JobGood();
+                    break;
+            }
+        }
+
+        private void Create_JobGood()
+        {
+            string postdata = Request.Form["data"];
+            if (postdata == string.Empty)
+            {
+                DoResponse(JsonConvert.SerializeObject(new GlobalValues.ResponseData()
+                {
+                    Data = null,
+                    ErrorCode = -1,
+                    Message = "Dữ liệu không hợp lệ!",
+                }));
+
+                return;
+            }
+
+            dynamic data;
+            try { data = JsonConvert.DeserializeObject(postdata); }
+            catch { data = null; }
+
+            if (data == null)
+            {
+                DoResponse(JsonConvert.SerializeObject(new GlobalValues.ResponseData()
+                {
+                    Data = null,
+                    ErrorCode = -2,
+                    Message = "Dữ liệu không hợp lệ!",
+                }));
+
+                return;
+            }
+
+            using (DALTools dalTools = new DALTools())
+            {
+                eJob job = dalTools.Job_GetE(int.Parse(data.jobid.ToString()));
+                if (job == null)
+                {
+                    DoResponse(JsonConvert.SerializeObject(new GlobalValues.ResponseData()
+                    {
+                        Data = null,
+                        ErrorCode = 1,
+                        Message = "Dữ liệu không hợp lệ!",
+                    }));
+
+                    return;
+                }
+
+                Job_Good obj = new Job_Good()
+                {
+                    Name = data.name.ToString(),
+                    Code = data.code.ToString(),
+                    IsDeleted = false,
+                    JobID = job.ID,
+                    LastestUpdated = DateTime.Now,
+                    UpdatedBy = CurrentSys_User.ID,
+                };
+
+                int res = dalTools.Job_Good_Create(obj);
+                if (res != 0)
+                    DoResponse(JsonConvert.SerializeObject(new GlobalValues.ResponseData()
+                    {
+                        Data = null,
+                        ErrorCode = res,
+                        Message = "Thêm mới thất bại, vui lòng kiểm tra lại dữ liệu!",
+                    }));
+                else
+                    DoResponse(JsonConvert.SerializeObject(new GlobalValues.ResponseData()
+                    {
+                        Data = obj.ID.ToString(),
+                        ErrorCode = 0,
+                        Message = "Thêm mới thành công! Đang chuyển...",
+                    }));
+            }
+        }
+
+        private void Edit_JobGood()
+        {
+            string postdata = Request.Form["data"];
+            if (postdata == string.Empty)
+            {
+                DoResponse(JsonConvert.SerializeObject(new GlobalValues.ResponseData()
+                {
+                    Data = null,
+                    ErrorCode = -1,
+                    Message = "Dữ liệu không hợp lệ!",
+                }));
+
+                return;
+            }
+
+            dynamic data;
+            try { data = JsonConvert.DeserializeObject(postdata); }
+            catch { data = null; }
+
+            if (data == null)
+            {
+                DoResponse(JsonConvert.SerializeObject(new GlobalValues.ResponseData()
+                {
+                    Data = null,
+                    ErrorCode = -2,
+                    Message = "Dữ liệu không hợp lệ!",
+                }));
+
+                return;
+            }
+
+            using (DALTools dalTools = new DALTools())
+            {
+                eJob job = dalTools.Job_GetE(int.Parse(data.jobid.ToString()));
+                if (job == null)
+                {
+                    DoResponse(JsonConvert.SerializeObject(new GlobalValues.ResponseData()
+                    {
+                        Data = null,
+                        ErrorCode = 1,
+                        Message = "Dữ liệu không hợp lệ!",
+                    }));
+
+                    return;
+                }
+
+                Job_Good jobgood = dalTools.Job_Good_Get(int.Parse(data.id.ToString()));
+                if (jobgood == null)
+                {
+                    DoResponse(JsonConvert.SerializeObject(new GlobalValues.ResponseData()
+                    {
+                        Data = null,
+                        ErrorCode = 1,
+                        Message = "Dữ liệu không hợp lệ!",
+                    }));
+
+                    return;
+                }
+
+                Job_Good obj = new Job_Good()
+                {
+                    ID = int.Parse(data.id.ToString()),
+                    Name = data.name.ToString(),
+                    Code = data.code.ToString(),
+                    LastestUpdated = DateTime.Now,
+                    UpdatedBy = CurrentSys_User.ID,
+                };
+
+                int res = dalTools.Job_Good_Update(obj);
+                if (res != 0)
+                    DoResponse(JsonConvert.SerializeObject(new GlobalValues.ResponseData()
+                    {
+                        Data = null,
+                        ErrorCode = res,
+                        Message = "Cập nhật thất bại, vui lòng kiểm tra lại dữ liệu!",
+                    }));
+                else
+                    DoResponse(JsonConvert.SerializeObject(new GlobalValues.ResponseData()
+                    {
+                        Data = obj.ID.ToString(),
+                        ErrorCode = 0,
+                        Message = "Cập nhật thành công! Đang chuyển...",
+                    }));
+            }
+        }
+
+        private void Delete_JobGood()
+        {
+            string sId = Request.Form["id"];
+            if (string.IsNullOrEmpty(sId))
+            {
+                DoResponse(JsonConvert.SerializeObject(new GlobalValues.ResponseData()
+                {
+                    Data = null,
+                    ErrorCode = -1,
+                    Message = "Dữ liệu không hợp lệ!",
+                }));
+
+                return;
+            }
+
+            using (DALTools dalTools = new DALTools())
+            {
+                int id = int.Parse(sId);
+                Job_Good obj = dalTools.Job_Good_Get(id);
+                if (obj == null)
+                {
+                    DoResponse(JsonConvert.SerializeObject(new GlobalValues.ResponseData()
+                    {
+                        Data = null,
+                        ErrorCode = -1,
+                        Message = "Không tìm thấy Chi tạm ứng!",
+                    }));
+
+                    return;
+                }
+
+                obj.UpdatedBy = CurrentSys_User.ID;
+                if (!dalTools.Job_Good_Delete(obj))
+                    DoResponse(JsonConvert.SerializeObject(new GlobalValues.ResponseData()
+                    {
+                        Data = null,
+                        ErrorCode = 1,
+                        Message = "Xóa thất bại, vui lòng kiểm tra lại dữ liệu!",
+                    }));
+                else
+                    DoResponse(JsonConvert.SerializeObject(new GlobalValues.ResponseData()
+                    {
+                        Data = null,
+                        ErrorCode = 0,
+                        Message = "Xóa thành công! Đang chuyển ...",
+                    }));
             }
         }
 

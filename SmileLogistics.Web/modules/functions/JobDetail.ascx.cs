@@ -80,7 +80,7 @@ namespace SmileLogistics.Web.modules.functions
             List<eSys_User> all = dalTools.Sys_User_GetEs();
             if (all != null)
             {
-                string html = "<select id=\"info-prepaid-employee\" class=\"form-control\" style=\"width: auto;\">";
+                string html = "<select id=\"info-agentprepaid-employee\" class=\"form-control\" style=\"width: auto;\">";
 
                 foreach (eSys_User obj in all)
                 {
