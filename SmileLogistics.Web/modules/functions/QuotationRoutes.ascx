@@ -23,7 +23,7 @@
         <div class="block-title">
             <h2>Danh sách <strong>Báo giá Vận chuyển</strong></h2>
             <div class="block-options pull-right">
-                <a onclick="quotationroutes.startAdd();" class="btn btn-sm btn-success" data-toggle="tooltip" title="Thêm mới"><i class="gi gi-plus"></i></a>
+                <a id="btn-controls-add" onclick="quotationroutes.startAdd();" class="btn btn-sm btn-success" data-toggle="tooltip" title="Thêm mới"><i class="gi gi-plus"></i></a>
             </div>
         </div>
         <div class="form-horizontal">
@@ -138,6 +138,7 @@
             mode: 'create',
             currentpage: 0,
             currentobj: null,
+            permissions: null,
 
             alert: function (content) {
                 $('#divModalAlert').show();
@@ -156,6 +157,15 @@
                     quotationroutes.currentpage = 0;
                 else
                     quotationroutes.currentpage = Number(page);
+
+                var sPermissions = '<%= _RolePermissions %>';
+                if (sPermissions != '')
+                    this.permissions = JSON.parse(sPermissions);
+
+                if (!globalhelpers.HasPermission("create", quotationroutes.permissions))
+                    $('#btn-controls-add').hide();
+                else
+                    $('#btn-controls-add').show();
 
                 var sAllComp = '<%= _AllComps %>';
                 this.allComps = sAllComp == '' ? null : JSON.parse(sAllComp);
@@ -384,8 +394,8 @@
                                                     "<td class=\"text-center\">" + (obj.IsUSD ? "<i class=\"gi gi-ok_2\"></i>" : "") + "</td>" +
                                                     "<td class=\"text-center\">" +
                                                         //"<div class=\"btn-group\">" + gi gi-ok_2
-                                                            "<a onclick=\"quotationroutes.startedit('" + obj.ID + "');\" href=\"javascript:void(0)\" data-toggle=\"tooltip\" title=\"Sửa\" class=\"btn btn-xs btn-default\"><i class=\"fa fa-pencil\"></i></a>" +
-                                                            "<a onclick=\"quotationroutes.startdelete('" + obj.ID + "');\" href=\"javascript:void(0)\" data-toggle=\"tooltip\" title=\"Xóa\" class=\"btn btn-xs btn-danger\"><i class=\"fa fa-times\"></i></a>" +
+                                                            (!globalhelpers.HasPermission("edit", quotationroutes.permissions) ? "" :"<a onclick=\"quotationroutes.startedit('" + obj.ID + "');\" href=\"javascript:void(0)\" data-toggle=\"tooltip\" title=\"Sửa\" class=\"btn btn-xs btn-default\"><i class=\"fa fa-pencil\"></i></a>") +
+                                                            (!globalhelpers.HasPermission("edit", quotationroutes.permissions) ? "" :"<a onclick=\"quotationroutes.startdelete('" + obj.ID + "');\" href=\"javascript:void(0)\" data-toggle=\"tooltip\" title=\"Xóa\" class=\"btn btn-xs btn-danger\"><i class=\"fa fa-times\"></i></a>") +
                                                         //"</div>" +
                                                     "</td>" +
                                                 "</tr>";

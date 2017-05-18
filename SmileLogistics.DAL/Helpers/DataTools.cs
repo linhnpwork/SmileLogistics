@@ -3563,6 +3563,39 @@ namespace SmileLogistics.DAL.Helpers
             }
         }
 
+        public bool Job_Update_FlowStatus(int jobid, int status, int updatedBy)
+        {
+            try
+            {
+                Job updateObj = DB.Jobs.FirstOrDefault(o => o.ID == jobid);
+                if (updateObj == null) return false;
+
+                updateObj.LastestUpdated = DateTime.Now;
+                updateObj.UpdatedBy = updatedBy;
+                updateObj.Status = status;
+
+                DB.SubmitChanges();
+
+                if (status == 2)
+                {
+                    if (updateObj.Job_QuotationRoutes.Count > 0)
+                    {
+                        foreach (Job_QuotationRoute quotationRoute in updateObj.Job_QuotationRoutes.Where(o => !o.IsDeleted))
+                        {
+                            quotationRoute.Status = 10;
+                            DB.SubmitChanges();
+                        }
+                    }
+                }
+
+                return true;
+            }
+            catch (Exception ex)
+            {
+                return false;
+            }
+        }
+
         public int Job_Update(Job obj)
         {
             try
@@ -3886,6 +3919,113 @@ namespace SmileLogistics.DAL.Helpers
             }
         }
 
+        public int Job_Flow_RequestConfirm(int jobid, bool isuniform, double usdrate, int updatedBy)
+        {
+            try
+            {
+                Job job = Job_Get(jobid);
+                if (job == null) return -1;
+
+                if (job.Status != 0 && job.Status != 3 && job.Status != 4)
+                    return 1;
+
+                if (isuniform && usdrate <= 0) return 2;
+
+                if (isuniform)
+                {
+                    if (!Job_UniformUSDRate(jobid, usdrate)) return 3;
+                }
+
+                Job_CalculateProfit(jobid);
+
+                if (!Job_Update_FlowStatus(jobid, 2, updatedBy)) return 4;
+
+                return 0;
+            }
+            catch
+            {
+                return int.MinValue;
+            }
+        }
+
+        public int Job_Flow_SendBack(int jobid, int updatedBy)
+        {
+            try
+            {
+                Job job = Job_Get(jobid);
+                if (job == null) return -1;
+
+                if (job.Status != 2)
+                    return 1;
+
+                if (!Job_Update_FlowStatus(jobid, 3, updatedBy)) return 4;
+
+                return 0;
+            }
+            catch
+            {
+                return int.MinValue;
+            }
+        }
+
+        public int Job_Flow_FinishJob(int jobid, int updatedBy)
+        {
+            try
+            {
+                Job job = Job_Get(jobid);
+                if (job == null) return -1;
+
+                if (job.Status != 2)
+                    return 1;
+
+                if (!Job_Update_FlowStatus(jobid, 10, updatedBy)) return 4;
+
+                return 0;
+            }
+            catch
+            {
+                return int.MinValue;
+            }
+        }
+
+        public bool Job_UniformUSDRate(int jobid, double usdrate)
+        {
+            try
+            {
+                Job job = DB.Jobs.FirstOrDefault(o => o.ID == jobid);
+                if (job == null) return false;
+
+                //Rate temp
+                job.USDRate = usdrate;
+                DB.SubmitChanges();
+
+                //Báo giá TTHQ
+                CustomerQuotation_Custom quotationCustoms = job.CustomerQuotation_Customs.FirstOrDefault(o => !o.IsDeleted);
+                if (quotationCustoms != null)
+                {
+                    quotationCustoms.USDRate = usdrate;
+                    DB.SubmitChanges();
+                }
+
+                //Báo giá Vận chuyển
+                if (job.Job_QuotationRoutes.Count > 0)
+                {
+                    foreach (Job_QuotationRoute quotationRoute in job.Job_QuotationRoutes.Where(o => !o.IsDeleted))
+                    {
+                        if (quotationRoute.USDRate != 1)
+                            quotationRoute.USDRate = usdrate;
+                        DB.SubmitChanges();
+                    }
+                }
+
+                return true;
+            }
+            catch
+            {
+                return false;
+            }
+        }
+
         public void Job_CalculateProfit(int jobid)
         {
             try
@@ -3894,6 +4034,10 @@ namespace SmileLogistics.DAL.Helpers
                 if (job == null) return;
 
                 Job_CalculateProfit_QuotationRoutes(job);
+                CustomerQuotation_Customs_CalculateFee(job.ID);
+                Job_CalculateProfit_CustomerPrepaids(job.ID);
+                Job_CalculateProfit_AgentPrepaids(job.ID);
+                Job_CalculateProfit_InOutFees(job.ID);
             }
             catch
             {
@@ -3925,8 +4069,10 @@ namespace SmileLogistics.DAL.Helpers
                                 route.CustomerQuotation_Route.Quotation_Route.Price :
                                 route.CustomerQuotation_Route.Quotation_Route.Price_RoundedTrip;
                         }
-                        route.Total_In = route.ExtraFee + route.CustomerQuotation_Route.Price * route.Quantity;
-                        route.Total_Out = compPrice * route.Quantity - route.PromotionByTransComp;
+                        compPrice = compPrice * (route.CustomerQuotation_Route.Quotation_Route.IsUSD ? job.USDRate : 1);
+
+                        route.Total_In = (route.ExtraFee + route.CustomerQuotation_Route.Price * route.Quantity) * route.USDRate;
+                        route.Total_Out = compPrice * route.Quantity - route.PromotionByTransComp * route.USDRate;
 
                         DB.SubmitChanges();
 
@@ -3940,6 +4086,64 @@ namespace SmileLogistics.DAL.Helpers
                 }
             }
             catch
+            {
+                return;
+            }
+        }
+
+        private void Job_CalculateProfit_CustomerPrepaids(int jobid)
+        {
+            try
+            {
+                Job job = DB.Jobs.FirstOrDefault(o => !o.IsDeleted && o.ID == jobid);
+                if (job == null) return;
+
+                if (job.Job_Prepaids.Where(o => !o.IsDeleted).Count() > 0)
+                {
+                    job.CustomerPrepaids = job.Job_Prepaids.Where(o => !o.IsDeleted).Sum(o => o.Money);
+                    DB.SubmitChanges();
+                }
+            }
+            catch (Exception ex)
+            {
+                return;
+            }
+        }
+
+        private void Job_CalculateProfit_AgentPrepaids(int jobid)
+        {
+            try
+            {
+                Job job = DB.Jobs.FirstOrDefault(o => !o.IsDeleted && o.ID == jobid);
+                if (job == null) return;
+
+                if (job.Agent_Prepaids.Where(o => !o.IsDeleted).Count() > 0)
+                {
+                    job.AgentPrepaids = job.Agent_Prepaids.Where(o => !o.IsDeleted).Sum(o => o.TotalPaid);
+                    DB.SubmitChanges();
+                }
+            }
+            catch (Exception ex)
+            {
+                return;
+            }
+        }
+
+        private void Job_CalculateProfit_InOutFees(int jobid)
+        {
+            try
+            {
+                Job job = DB.Jobs.FirstOrDefault(o => !o.IsDeleted && o.ID == jobid);
+                if (job == null) return;
+
+                var temp = job.Job_InOutFees.Where(o => !o.IsDeleted);
+                if (temp.Count() > 0)
+                {
+                    job.Total_Out = temp.Sum(o => o.Money * (o.IsUSD ? job.USDRate : 1));
+                    DB.SubmitChanges();
+                }
+            }
+            catch (Exception ex)
             {
                 return;
             }
@@ -4225,10 +4429,13 @@ namespace SmileLogistics.DAL.Helpers
                 if (job == null) return;
 
                 if (job.CustomerQuotation_Customs == null) return;
-                if (job.CustomerQuotation_Customs.FirstOrDefault().CustomerQuotation_CustomsDetails == null) return;
+                CustomerQuotation_Custom quotationCustom = job.CustomerQuotation_Customs.FirstOrDefault(o => !o.IsDeleted);
+                if (quotationCustom.CustomerQuotation_CustomsDetails == null) return;
 
                 bool isFirst = true;
-                foreach (CustomerQuotation_CustomsDetail detail in job.CustomerQuotation_Customs.FirstOrDefault().CustomerQuotation_CustomsDetails.OrderByDescending(o => o.CustomsProcess_QuotationDetail.Price))
+                double customsTotal = 0;
+
+                foreach (CustomerQuotation_CustomsDetail detail in quotationCustom.CustomerQuotation_CustomsDetails.Where(o => !o.IsDeleted).OrderByDescending(o => o.CustomsProcess_QuotationDetail.Price))
                 {
                     double total = 0;
                     if (isFirst)
@@ -4240,9 +4447,13 @@ namespace SmileLogistics.DAL.Helpers
                         total = detail.Quantity * detail.CustomsProcess_QuotationDetail.Price * (100 - job.CustomerQuotation_Customs.FirstOrDefault().DecreasePercentForSecondCont) / 100;
 
                     detail.Total = total;
+                    customsTotal += total;
 
                     DB.SubmitChanges();
                 }
+
+                job.Total_Customs_Out = customsTotal * (quotationCustom.IsUSD ? quotationCustom.USDRate : 1);
+                DB.SubmitChanges();
             }
             catch
             {
@@ -5789,6 +6000,32 @@ namespace SmileLogistics.DAL.Helpers
                 };
             }
             catch
+            {
+                return null;
+            }
+        }
+
+        #endregion
+
+        #region Dashboard
+
+        public Dashboard_MiniTopStats Dashboard_MiniTopStats()
+        {
+            try
+            {
+                Dashboard_MiniTopStats result = new Dashboard_MiniTopStats();
+
+                var tempJobs = DB.Jobs.Where(o => !o.IsDeleted);
+
+                result.Total_Customers = DB.Customers.Count(o => !o.IsDeleted);
+
+                result.Total_FinishJobs = tempJobs.Count(o => o.Status == 10);
+                result.Total_Jobs = tempJobs.Count();
+                result.Total_OpeningJobs = tempJobs.Count(o => o.Status != 4 && o.Status != 10);
+
+                return result;
+            }
+            catch(Exception ex)
             {
                 return null;
             }

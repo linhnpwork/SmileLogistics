@@ -14,11 +14,15 @@ namespace SmileLogistics.Web.modules.functions
 {
     public partial class QuotationCustoms : BaseControl
     {
+        public string _RolePermissions = string.Empty;
         public string _FeeTypes = string.Empty;
         protected void Page_Load(object sender, EventArgs e)
         {
             if (!IsPostBack)
             {
+                CheckPermissionAccess();
+                _RolePermissions = GetPermissionsAsJSON();
+
                 LoadFeeTypes();
             }
         }

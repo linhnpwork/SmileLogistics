@@ -201,7 +201,7 @@ namespace SmileLogistics.Web.ajax.modules.systems
                                 "<th class=\"text-center\"><input " + (allRowChecked ? "checked" : "") + " onclick=\"sysrolepermission.oncheckall(this);\" type=\"checkbox\" class=\"cbxAll\"></th>" +
                                 "<th class=\"text-center\"><i class=\"gi gi-picture\"></i></th>" +
                                 "<th class=\"text-center\">Tên</th>" +
-                                "<th class=\"text-center\">Phân quyền</th>" +
+                                "<th class=\"text-center\" style=\"width: 70%;\">Phân quyền</th>" +
                             "</tr>" +
                         "</thead>" +
                         "<tbody>" +

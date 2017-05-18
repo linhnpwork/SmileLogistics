@@ -237,6 +237,7 @@
     <Content Include="modules\functions\CustomerPrepaids.ascx" />
     <Content Include="modules\functions\VehicleTypes.ascx" />
     <Content Include="modules\functions\GoodsTypes.ascx" />
+    <Content Include="pages\403.html" />
     <Content Include="ProUI.Master" />
     <None Include="Web.Debug.config">
       <DependentUpon>Web.config</DependentUpon>

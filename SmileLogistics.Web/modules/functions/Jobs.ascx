@@ -35,7 +35,7 @@
         <div class="block-title">
             <h2>Danh sách <strong>JOB</strong></h2>
             <div class="block-options pull-right">
-                <a onclick="jobs.godetail();" class="btn btn-sm btn-success" data-toggle="tooltip" title="Thêm mới"><i class="gi gi-plus"></i></a>
+                <a id="btn-controls-add" onclick="jobs.godetail();" class="btn btn-sm btn-success" data-toggle="tooltip" title="Thêm mới"><i class="gi gi-plus"></i></a>
             </div>
         </div>
         <div class="form-horizontal">
@@ -140,6 +140,7 @@
             currentpage: 0,
             currentobj: null,
             detaillink: '/job-detail',
+            permissions: null,
 
             alert: function (content) {
                 $('#divModalAlert').show();
@@ -158,6 +159,15 @@
                     jobs.currentpage = 0;
                 else
                     jobs.currentpage = Number(page);
+
+                var sPermissions = '<%= _RolePermissions %>';
+                if (sPermissions != '')
+                    this.permissions = JSON.parse(sPermissions);
+
+                if (!globalhelpers.HasPermission("create", jobs.permissions))
+                    $('#btn-controls-add').hide();
+                else
+                    $('#btn-controls-add').show();
 
                 jobs.loadlist();
             },
@@ -285,8 +295,8 @@
                                                     "<td class=\"text-center\"><span class=\"" + (statusClassName == "" ? "" : ("text-" + statusClassName)) + "\">" + obj.sStatus + "</span></td>" +
                                                     "<td class=\"text-center\">" +
                                                         //"<div class=\"btn-group\">" +
-                                                            "<a onclick=\"jobs.godetail('" + obj.ID + "');\" href=\"javascript:void(0)\" data-toggle=\"tooltip\" title=\"Sửa\" class=\"btn btn-xs btn-default\"><i class=\"fa fa-pencil\"></i></a>" +
-                                                            "<a onclick=\"jobs.startdelete('" + obj.ID + "');\" href=\"javascript:void(0)\" data-toggle=\"tooltip\" title=\"Xóa\" class=\"btn btn-xs btn-danger\"><i class=\"fa fa-times\"></i></a>" +
+                                                            (!globalhelpers.HasPermission("edit", jobs.permissions) ? "" :"<a onclick=\"jobs.godetail('" + obj.ID + "');\" href=\"javascript:void(0)\" data-toggle=\"tooltip\" title=\"Sửa\" class=\"btn btn-xs btn-default\"><i class=\"fa fa-pencil\"></i></a>") +
+                                                            (!globalhelpers.HasPermission("edit", jobs.permissions) ? "" :"<a onclick=\"jobs.startdelete('" + obj.ID + "');\" href=\"javascript:void(0)\" data-toggle=\"tooltip\" title=\"Xóa\" class=\"btn btn-xs btn-danger\"><i class=\"fa fa-times\"></i></a>") +
                                                         //"</div>" +
                                                     "</td>" +
                                                 "</tr>";

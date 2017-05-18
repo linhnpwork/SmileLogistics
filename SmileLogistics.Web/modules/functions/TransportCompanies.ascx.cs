@@ -14,11 +14,15 @@ namespace SmileLogistics.Web.modules.functions
 {
     public partial class TransportCompanies : BaseControl
     {
+        public string _RolePermissions = string.Empty;
         public string _VehicleTypes = string.Empty;
         protected void Page_Load(object sender, EventArgs e)
         {
             if (!IsPostBack)
             {
+                CheckPermissionAccess();
+                _RolePermissions = GetPermissionsAsJSON();
+
                 LoadStatus();
                 LoadVehicleTypes();
             }

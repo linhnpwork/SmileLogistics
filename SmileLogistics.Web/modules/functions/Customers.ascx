@@ -23,7 +23,7 @@
         <div class="block-title">
             <h2>Danh sách <strong>Khách hàng</strong></h2>
             <div class="block-options pull-right">
-                <a onclick="customers.startAdd();" class="btn btn-sm btn-success" data-toggle="tooltip" title="Thêm mới"><i class="gi gi-plus"></i></a>
+                <a id="btn-controls-add" onclick="customers.startAdd();" class="btn btn-sm btn-success" data-toggle="tooltip" title="Thêm mới"><i class="gi gi-plus"></i></a>
             </div>
         </div>
         <div class="form-horizontal">
@@ -108,6 +108,7 @@
             mode: 'create',
             currentpage: 0,
             currentobj: null,
+            permissions: null,
 
             alert: function (content) {
                 $('#divModalAlert').show();
@@ -126,6 +127,15 @@
                     customers.currentpage = 0;
                 else
                     customers.currentpage = Number(page);
+
+                var sPermissions = '<%= _RolePermissions %>';
+                if (sPermissions != '')
+                    this.permissions = JSON.parse(sPermissions);
+
+                if (!globalhelpers.HasPermission("create", customers.permissions))
+                    $('#btn-controls-add').hide();
+                else
+                    $('#btn-controls-add').show();
 
                 customers.loadlist();
             },
@@ -311,8 +321,8 @@
                                                     "<td class=\"text-center\">" + globalhelpers.Format_Money(obj.Prepaids.toFixed(2)) + "</td>" +
                                                     "<td class=\"text-center\">" +
                                                         //"<div class=\"btn-group\">" +
-                                                            "<a onclick=\"customers.startedit('" + obj.ID + "');\" href=\"javascript:void(0)\" data-toggle=\"tooltip\" title=\"Sửa\" class=\"btn btn-xs btn-default\"><i class=\"fa fa-pencil\"></i></a>" +
-                                                            "<a onclick=\"customers.startdelete('" + obj.ID + "');\" href=\"javascript:void(0)\" data-toggle=\"tooltip\" title=\"Xóa\" class=\"btn btn-xs btn-danger\"><i class=\"fa fa-times\"></i></a>" +
+                                                            (!globalhelpers.HasPermission("edit", customers.permissions) ? "" :"<a onclick=\"customers.startedit('" + obj.ID + "');\" href=\"javascript:void(0)\" data-toggle=\"tooltip\" title=\"Sửa\" class=\"btn btn-xs btn-default\"><i class=\"fa fa-pencil\"></i></a>") +
+                                                            (!globalhelpers.HasPermission("edit", customers.permissions) ? "" :"<a onclick=\"customers.startdelete('" + obj.ID + "');\" href=\"javascript:void(0)\" data-toggle=\"tooltip\" title=\"Xóa\" class=\"btn btn-xs btn-danger\"><i class=\"fa fa-times\"></i></a>") +
                                                         //"</div>" +
                                                     "</td>" +
                                                 "</tr>";

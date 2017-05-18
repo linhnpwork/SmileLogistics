@@ -18,6 +18,27 @@
             return statusColor.Class;
         },
 
+        HasPermission: function (name, permissions) {
+            if (permissions === undefined || permissions == null || permissions.length == 0) return false;
+            if (this.GetIndexInList(-1, permissions, "ID") > -1) return true;
+
+            if (this.GetIndexInListLower(name, permissions, "Name") > -1) return true;
+
+            return false;
+        },
+
+        GetIndexInListLower: function (value, list, field) {
+            if (field == undefined) field = "ID";
+            if (list == undefined || list == null || list.length == 0) return -1;
+            if (value == undefined || value == null) return -1;
+
+            for (var i = 0; i < list.length; i++) {
+                if (list[i][field].toLowerCase() == value.toLowerCase()) return i;
+            }
+
+            return -1;
+        },
+
         GetIndexInList: function (value, list, field) {
             if (field == undefined) field = "ID";
             if (list == undefined || list == null || list.length == 0) return -1;

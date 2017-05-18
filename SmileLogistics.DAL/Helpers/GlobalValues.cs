@@ -339,10 +339,10 @@ namespace SmileLogistics.DAL.Helpers
                     _JobStatus = new List<Commons.eStatus>()
                     {
                         new Commons.eStatus() { ID = 0, Name = "Đang xử lý"},
-                        new Commons.eStatus() { ID = 1, Name = "Chờ Kế toán duyệt"},
+                        //new Commons.eStatus() { ID = 1, Name = "Chờ Kế toán duyệt"},
                         new Commons.eStatus() { ID = 2, Name = "Chờ Giám đốc duyệt"},
-                        new Commons.eStatus() { ID = 3, Name = "Chuyển Kế toán bổ sung"},
-                        new Commons.eStatus() { ID = 4, Name = "Chuyển nhân viên bổ sung"},
+                        new Commons.eStatus() { ID = 3, Name = "Chuyển trả bổ sung"},
+                        new Commons.eStatus() { ID = 4, Name = "Hủy"},
                         new Commons.eStatus() { ID = 10, Name = "Hoàn tất"},
                     };
                 }

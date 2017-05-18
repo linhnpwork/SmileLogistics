@@ -14,6 +14,8 @@ namespace SmileLogistics.Web.modules.functions
 {
     public partial class JobDetail : BaseControl
     {
+        public string _RolePermissions = string.Empty;
+
         private string jobID = string.Empty;
         private eJob job = null;
         public string _JobDetail = string.Empty;
@@ -27,6 +29,9 @@ namespace SmileLogistics.Web.modules.functions
         {
             if (!IsPostBack)
             {
+                CheckPermissionAccess();
+                _RolePermissions = GetPermissionsAsJSON();
+
                 using (DALTools dalTools = new DALTools())
                 {
                     jobID = Request.QueryString["job"];

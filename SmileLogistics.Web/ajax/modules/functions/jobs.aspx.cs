@@ -101,6 +101,251 @@ namespace SmileLogistics.Web.ajax.modules.functions
                 case "delete_jobgood":
                     Delete_JobGood();
                     break;
+                case "flow_requestconfirm":
+                    Flow_RequestConfirm();
+                    break;
+                case "flow_sendback":
+                    Flow_Sendback();
+                    break;
+                case "flow_finishjob":
+                    Flow_FinishJob();
+                    break;
+            }
+        }
+
+        private void Flow_FinishJob()
+        {
+            string postdata = Request.Form["data"];
+            if (postdata == string.Empty)
+            {
+                DoResponse(JsonConvert.SerializeObject(new GlobalValues.ResponseData()
+                {
+                    Data = null,
+                    ErrorCode = -1,
+                    Message = "Dữ liệu không hợp lệ!",
+                }));
+
+                return;
+            }
+
+            dynamic data;
+            try { data = JsonConvert.DeserializeObject(postdata); }
+            catch { data = null; }
+
+            if (data == null)
+            {
+                DoResponse(JsonConvert.SerializeObject(new GlobalValues.ResponseData()
+                {
+                    Data = null,
+                    ErrorCode = -2,
+                    Message = "Dữ liệu không hợp lệ!",
+                }));
+
+                return;
+            }
+
+            using (DALTools dalTools = new DALTools())
+            {
+                eJob job = dalTools.Job_GetE(int.Parse(data.jobid.ToString()));
+                if (job == null)
+                {
+                    DoResponse(JsonConvert.SerializeObject(new GlobalValues.ResponseData()
+                    {
+                        Data = null,
+                        ErrorCode = -3,
+                        Message = "Dữ liệu không hợp lệ!",
+                    }));
+
+                    return;
+                }
+
+                if (job.Status != 2)
+                {
+                    DoResponse(JsonConvert.SerializeObject(new GlobalValues.ResponseData()
+                    {
+                        Data = null,
+                        ErrorCode = -4,
+                        Message = "JOB đang ở trạng thái không thể thực hiện được tác vụ này!",
+                    }));
+
+                    return;
+                }
+
+                int result = dalTools.Job_Flow_FinishJob(job.ID, CurrentSys_User.ID);
+
+                string message = string.Empty;
+                switch (result)
+                {
+                    case 0: message = "Chuyển thành công!"; break;
+                    case 1: message = "Trạng thái của JOB không thể thực hiện thao tác này!"; break;
+                    case 4: message = "Lỗi trong quá trình chuyển trạng thái!"; break;
+                    default: message = "Có lỗi hệ thống!"; break;
+                }
+
+                DoResponse(JsonConvert.SerializeObject(new GlobalValues.ResponseData()
+                {
+                    Data = null,
+                    ErrorCode = result,
+                    Message = message,
+                }));
+            }
+        }
+
+        private void Flow_Sendback()
+        {
+            string postdata = Request.Form["data"];
+            if (postdata == string.Empty)
+            {
+                DoResponse(JsonConvert.SerializeObject(new GlobalValues.ResponseData()
+                {
+                    Data = null,
+                    ErrorCode = -1,
+                    Message = "Dữ liệu không hợp lệ!",
+                }));
+
+                return;
+            }
+
+            dynamic data;
+            try { data = JsonConvert.DeserializeObject(postdata); }
+            catch { data = null; }
+
+            if (data == null)
+            {
+                DoResponse(JsonConvert.SerializeObject(new GlobalValues.ResponseData()
+                {
+                    Data = null,
+                    ErrorCode = -2,
+                    Message = "Dữ liệu không hợp lệ!",
+                }));
+
+                return;
+            }
+
+            using (DALTools dalTools = new DALTools())
+            {
+                eJob job = dalTools.Job_GetE(int.Parse(data.jobid.ToString()));
+                if (job == null)
+                {
+                    DoResponse(JsonConvert.SerializeObject(new GlobalValues.ResponseData()
+                    {
+                        Data = null,
+                        ErrorCode = -3,
+                        Message = "Dữ liệu không hợp lệ!",
+                    }));
+
+                    return;
+                }
+
+                if (job.Status != 2)
+                {
+                    DoResponse(JsonConvert.SerializeObject(new GlobalValues.ResponseData()
+                    {
+                        Data = null,
+                        ErrorCode = -4,
+                        Message = "JOB đang ở trạng thái không thể thực hiện được tác vụ này!",
+                    }));
+
+                    return;
+                }
+
+                int result = dalTools.Job_Flow_SendBack(job.ID, CurrentSys_User.ID);
+
+                string message = string.Empty;
+                switch (result)
+                {
+                    case 0: message = "Chuyển thành công!"; break;
+                    case 1: message = "Trạng thái của JOB không thể thực hiện thao tác này!"; break;
+                    case 4: message = "Lỗi trong quá trình chuyển trạng thái!"; break;
+                    default: message = "Có lỗi hệ thống!"; break;
+                }
+
+                DoResponse(JsonConvert.SerializeObject(new GlobalValues.ResponseData()
+                {
+                    Data = null,
+                    ErrorCode = result,
+                    Message = message,
+                }));
+            }
+        }
+
+        private void Flow_RequestConfirm()
+        {
+            string postdata = Request.Form["data"];
+            if (postdata == string.Empty)
+            {
+                DoResponse(JsonConvert.SerializeObject(new GlobalValues.ResponseData()
+                {
+                    Data = null,
+                    ErrorCode = -1,
+                    Message = "Dữ liệu không hợp lệ!",
+                }));
+
+                return;
+            }
+
+            dynamic data;
+            try { data = JsonConvert.DeserializeObject(postdata); }
+            catch { data = null; }
+
+            if (data == null)
+            {
+                DoResponse(JsonConvert.SerializeObject(new GlobalValues.ResponseData()
+                {
+                    Data = null,
+                    ErrorCode = -2,
+                    Message = "Dữ liệu không hợp lệ!",
+                }));
+
+                return;
+            }
+
+            using (DALTools dalTools = new DALTools())
+            {
+                eJob job = dalTools.Job_GetE(int.Parse(data.jobid.ToString()));
+                if (job == null)
+                {
+                    DoResponse(JsonConvert.SerializeObject(new GlobalValues.ResponseData()
+                    {
+                        Data = null,
+                        ErrorCode = -3,
+                        Message = "Dữ liệu không hợp lệ!",
+                    }));
+
+                    return;
+                }
+
+                if (job.Status != 0 && job.Status != 3 && job.Status != 4)
+                {
+                    DoResponse(JsonConvert.SerializeObject(new GlobalValues.ResponseData()
+                    {
+                        Data = null,
+                        ErrorCode = -4,
+                        Message = "JOB đang ở trạng thái không thể thực hiện được tác vụ này!",
+                    }));
+
+                    return;
+                }
+
+                int result = dalTools.Job_Flow_RequestConfirm(job.ID, bool.Parse(data.isuniform.ToString()), double.Parse(data.usdrate.ToString()), CurrentSys_User.ID);
+
+                string message = string.Empty;
+                switch (result)
+                {
+                    case 0: message = "Chuyển thành công!"; break;
+                    case 1: message = "Trạng thái của JOB không thể thực hiện thao tác này!"; break;
+                    case 2: message = "Tỉ giá USD không hợp lệ!"; break;
+                    case 3: message = "Lỗi trong quá trình đồng nhất tỉ giá!"; break;
+                    case 4: message = "Lỗi trong quá trình chuyển trạng thái!"; break;
+                    default: message = "Có lỗi hệ thống!"; break;
+                }
+
+                DoResponse(JsonConvert.SerializeObject(new GlobalValues.ResponseData()
+                {
+                    Data = null,
+                    ErrorCode = result,
+                    Message = message,
+                }));
             }
         }
 
@@ -1653,7 +1898,7 @@ namespace SmileLogistics.Web.ajax.modules.functions
                     Quantity = quantity,
                     RouteID = quotation_customer.ID,
                     UpdatedBy = CurrentSys_User.ID,
-                    USDRate = usdrate,
+                    USDRate = !isusd ? 1 : usdrate,
                     VehicleNO = data.vehicleno.ToString(),
                 };
 
@@ -1969,7 +2214,7 @@ namespace SmileLogistics.Web.ajax.modules.functions
                     Total_In = 0,
                     Total_Out = 0,
                     UpdatedBy = CurrentSys_User.ID,
-                    USDRate = usdrate,
+                    USDRate = !isusd ? 1 : usdrate,
                     VehicleNO = data.vehicleno.ToString(),
                 };
 

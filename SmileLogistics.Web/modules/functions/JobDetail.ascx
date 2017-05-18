@@ -31,6 +31,14 @@
             </h1>
         </div>
     </div>
+    <ul class="breadcrumb breadcrumb-top" style="text-align: right;">
+        <%--<li><button class="btn btn-xs btn-info"><i class="fa fa-twitter"></i> Tweet</button></li>
+        <li><button class="btn btn-xs btn-info"><i class="fa fa-twitter"></i> Tweet</button></li>--%>
+        <a id="btn-job-status-requestconfirm" onclick="jobs.doflow_start_requestConfirm();" class="btn btn-xs btn-success"><i class="gi gi-disk_export"></i>&nbsp;Chuyển Giám đốc duyệt</a>
+        <a id="btn-job-status-requestaccountant" onclick="jobs.doflow_start_sendback();" class="btn btn-xs btn-info"><i class="gi gi-pushpin"></i>&nbsp;Chuyển trả bổ sung</a>
+        <%--<a id="btn-job-status-requestemployee" class="btn btn-xs btn-info"><i class="gi gi-pin_flag"></i>&nbsp;Chuyển Nhân viên bổ sung</a>--%>
+        <a id="btn-job-status-finish" onclick="jobs.doflow_start_finishjob();" class="btn btn-xs btn-warning"><i class="gi gi-pen"></i>&nbsp;Duyệt hoàn tất</a>
+    </ul>
     <div class="row">
         <div class="col-md-5">
             <div class="block full">
@@ -148,7 +156,7 @@
                                 <thead>
                                     <tr id="tr-customerprepaids-controls" class="row-header-filter">
                                         <th colspan="3" class="text-left" style="font-weight: bold !important;">Lịch sử chi từ Tạm ứng của Khách hàng</th>
-                                        <th class="text-right"><a onclick="jobs.startAdd_jobprepaid();" class="btn btn-sm btn-warning" data-toggle="tooltip" title="Thêm mới"><i class="gi gi-plus"></i></a></th>
+                                        <th class="text-right"><a id="btn-do-add-customerpayment" onclick="jobs.startAdd_jobprepaid();" class="btn btn-sm btn-warning" data-toggle="tooltip" title="Thêm mới"><i class="gi gi-plus"></i></a></th>
                                     </tr>
                                     <tr>
                                         <th class="text-center">Ngày chi</th>
@@ -171,7 +179,7 @@
                 <div class="block-title">
                     <h2><strong>Danh mục Hàng</strong></h2>
                     <div class="block-options pull-right">
-                        <a onclick="jobs.startadd_jobgood();" class="btn btn-sm btn-success" data-toggle="tooltip" title="Thêm mới"><i class="gi gi-plus"></i></a>
+                        <a id="btn-info-add-jobgoods" onclick="jobs.startadd_jobgood();" class="btn btn-sm btn-success" data-toggle="tooltip" title="Thêm mới"><i class="gi gi-plus"></i></a>
                     </div>
                 </div>
                 <div class="form-horizontal">
@@ -232,7 +240,7 @@
                                 <thead>
                                     <tr id="tr-quotation-customs-controls" class="row-header-filter">
                                         <th colspan="4" class="text-left" style="font-weight: normal !important; font-style: italic;">(<b>Lưu ý:</b> mọi thao tác <b>Thêm/Sửa/Xóa</b> danh sách báo giá TTHQ chỉ có hiệu lực khi thực hiện <b>Lưu</b> dữ liệu! Hãy đảm bảo đã tiến hành <b>Lưu</b> khi muốn áp dụng thay đổi thông tin TTHQ!)</th>
-                                        <th class="text-right"><a onclick="jobs.startAdd_quotation_customs_detail();" class="btn btn-sm btn-warning" data-toggle="tooltip" title="Thêm mới"><i class="gi gi-plus"></i></a></th>
+                                        <th class="text-right"><a id="btn-do-add-quotationcustoms" onclick="jobs.startAdd_quotation_customs_detail();" class="btn btn-sm btn-warning" data-toggle="tooltip" title="Thêm mới"><i class="gi gi-plus"></i></a></th>
                                     </tr>
                                     <tr>
                                         <th class="text-center">Loại phí</th>
@@ -264,7 +272,7 @@
                 <div class="block-title">
                     <h2>Báo giá <strong>Vận chuyển</strong></h2>
                     <div class="block-options pull-right">
-                        <a onclick="jobs.startAdd_quotation_route();" class="btn btn-sm btn-success" data-toggle="tooltip" title="Thêm mới"><i class="gi gi-plus"></i></a>
+                        <a id="btn-do-add-quotationroute" onclick="jobs.startAdd_quotation_route();" class="btn btn-sm btn-success" data-toggle="tooltip" title="Thêm mới"><i class="gi gi-plus"></i></a>
                     </div>
                 </div>
                 <div class="form-horizontal">
@@ -276,7 +284,7 @@
                 <div class="block-title">
                     <h2><strong>Thu/Chi hộ</strong></h2>
                     <div class="block-options pull-right">
-                        <a onclick="jobs.startAdd_inoutfee();" class="btn btn-sm btn-success" data-toggle="tooltip" title="Thêm mới"><i class="gi gi-plus"></i></a>
+                        <a id="btn-do-add-inoutfee" onclick="jobs.startAdd_inoutfee();" class="btn btn-sm btn-success" data-toggle="tooltip" title="Thêm mới"><i class="gi gi-plus"></i></a>
                     </div>
                 </div>
                 <div class="form-horizontal">
@@ -288,7 +296,7 @@
                 <div class="block-title">
                     <h2>Tạm ứng cho <strong>Nhân viên</strong></h2>
                     <div class="block-options pull-right">
-                        <a onclick="jobs.startAdd_agentprepaid();" class="btn btn-sm btn-success" data-toggle="tooltip" title="Thêm mới"><i class="gi gi-plus"></i></a>
+                        <a id="btn-do-add-agentprepaid" onclick="jobs.startAdd_agentprepaid();" class="btn btn-sm btn-success" data-toggle="tooltip" title="Thêm mới"><i class="gi gi-plus"></i></a>
                     </div>
                 </div>
                 <div class="form-horizontal">
@@ -815,6 +823,93 @@
         </div>
     </div>
 </div>
+<div id="modal-flow-requestconfirm" class="modal fade" tabindex="-1" role="dialog" aria-hidden="true" style="display: none;">
+    <div class="modal-dialog modal-lg">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal" aria-hidden="true">×</button>
+                <h3 class="modal-title">Chuyển Giám đốc duyệt</h3>
+            </div>
+            <div class="modal-body">
+                <div class="form-horizontal form-bordered">
+
+                    <div class="form-group">
+                        <div class="col-md-12">
+                            <div class="alert alert-info">
+                                <p><i class="fa fa-fw fa-info-circle"></i><b>&nbsp;Lưu ý:</b></p>
+                                <ul class="fa-ul list-li-push" style="margin-top: 10px;">
+                                    <li><i class="fa fa-li fa-bolt text-warning"></i>&nbsp;Khi tiến hành chuyển Giám đốc duyệt, các đơn vận chuyển sẽ được tự động chuyển sang Đã hoàn tất (nếu có)</li>
+                                    <li><i class="fa fa-li fa-bolt text-warning"></i>&nbsp;Mặc định, hệ thống sẽ căn cứ vào tỉ giá USD ở từng nội dung để tính toán giá trị JOB, nếu muốn đồng nhất tỉ giá - chuyển sang chế độ <b>Đồng nhất tỉ giá</b></li>
+                                </ul>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label class="col-md-3 control-label">Đồng nhất tỉ giá?</label>
+                        <div class="col-md-9">
+                            <label class='switch switch-success'>
+                                <input id="flow-requestconfirm-isuniform" type='checkbox' onchange="jobs.onchange_flow_requestconfirm_isuniform(this);"><span></span>
+                            </label>
+                        </div>
+                    </div>
+                    <div id="div-flow-requestconfirm-isuniform" class="form-group" style="display: none;">
+                        <label class="col-md-3 control-label">Tỉ giá USD</label>
+                        <div class="col-md-9">
+                            <input type="text" id="flow-requestconfirm-usdrate" class="form-control" placeholder="1 USD = ? VND" style="width: auto;" value="0" onkeyup="globalhelpers.On_InputMoney_KeyPress(this);">
+                            <span class="help-block">(Dùng dấm chấm '.' để xác định số thập phân! Đây là tỉ giá USD tạm thời, được sử dụng để tính toán trong quá trình xử lý JOB. Nếu trong JOB có sử dụng đồng USD (ở các tính năng: Thu/Chi hộ, ...) thì phải cung cấp tỉ giá này!)</span>
+                        </div>
+                    </div>
+                    <div id="divModalAlert-flow-requestconfirm" class="form-group" style="display: none;">
+                        <div class="col-md-3">
+                        </div>
+                        <div id="divModalAlert-content-flow-requestconfirm" class="col-md-9">
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <a id="btn-modal-cancel-flow-requestconfirm-jobgood" class="btn btn-sm btn-default" data-dismiss="modal">Hủy</a>
+                <a id="btn-modal-do-save-flow-requestconfirm-jobgood" onclick="jobs.doflow_requestconfirm();" class="btn btn-sm btn-primary">Chuyển</a>
+            </div>
+        </div>
+    </div>
+</div>
+<div id="modal-flow-sendback" class="modal fade" tabindex="-1" role="dialog" aria-hidden="true" style="display: none;">
+    <div class="modal-dialog modal-xs">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal" aria-hidden="true">×</button>
+                <h3 class="modal-title">Chuyển trả chờ bổ sung?</h3>
+            </div>
+            <div class="modal-body">
+                Bạn chắc chắn muốn chuyển lại yêu cầu bổ sung thông tin?<br />
+                <%--<i class="text-danger">(Điều này đồng nghĩa việc xóa kèm theo lịch sử hoạt động!!!)</i>--%>
+            </div>
+            <div class="modal-footer">
+                <a id="btn-modal-flow-close-sendback" class="btn btn-sm btn-default" data-dismiss="modal">Hủy</a>
+                <a id="btn-modal-flow-do-sendback" onclick="jobs.doflow_sendback();" class="btn btn-sm btn-danger">Yêu cầu bổ sung</a>
+            </div>
+        </div>
+    </div>
+</div>
+<div id="modal-flow-finishjob" class="modal fade" tabindex="-1" role="dialog" aria-hidden="true" style="display: none;">
+    <div class="modal-dialog modal-xs">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal" aria-hidden="true">×</button>
+                <h3 class="modal-title">Xác nhận hoàn tất JOB?</h3>
+            </div>
+            <div class="modal-body">
+                Bạn chắc chắn muốn xác nhận hoàn tất JOB này?<br />
+                <%--<i class="text-danger">(Điều này đồng nghĩa việc xóa kèm theo lịch sử hoạt động!!!)</i>--%>
+            </div>
+            <div class="modal-footer">
+                <a id="btn-modal-flow-close-finishjob" class="btn btn-sm btn-default" data-dismiss="modal">Hủy</a>
+                <a id="btn-modal-flow-do-finishjob" onclick="jobs.doflow_finishjob();" class="btn btn-sm btn-danger">Xác nhận</a>
+            </div>
+        </div>
+    </div>
+</div>
 <script type="text/javascript">
     var jobs =
         {
@@ -822,6 +917,7 @@
             mode: 'create',
             mode_quotationroute: 'create',
             mode_quotationcustoms_detail: 'create',
+            permissions: null,
             currentobj: null,
             currentobj_quotation_route: null,
             currentjobID: '',
@@ -832,6 +928,8 @@
 
             allCustomsFeeTypes: null,
             allQuotationCustoms_BySmiles: null,
+
+            allowEmployeeEdit: true,
 
             alert_quotation_route: function (content) {
                 $('#divModalAlert').show();
@@ -855,6 +953,18 @@
                     );
             },
 
+            alert_flow_requestconfirm: function (content) {
+                $('#divModalAlert-flow-requestconfirm').show();
+                $('#divModalAlert-content-flow-requestconfirm').html(
+                    '<div class="alert alert-danger alert-dismissable">' +
+                        '<button type="button" class="close" data-dismiss="alert" aria-hidden="true">×</button>' +
+                        '<h4><i class="fa fa-times-circle"></i>&nbsp;Lỗi</h4>' +
+                        content +
+                    '</div>'
+                    );
+            },
+
+            permissionCanEditAll: 'Job_Nghiepvu_XacnhanHoantat',
             init: function () {
                 var sQuotation = $("#clickable-wizard-quotation-infos");
                 sQuotation.formwizard({ disableUIStyles: !0, inDuration: 0, outDuration: 0 });
@@ -871,6 +981,225 @@
                     this.currentobj = null;
                 else
                     this.currentobj = JSON.parse(sObj);
+
+                this.allowEmployeeEdit = this.currentobj.Status == 0 || this.currentobj.Status == 3;
+
+                //----- PERMISSIONS -----
+
+                var sPermissions = '<%= _RolePermissions %>';
+                if (sPermissions != '')
+                    this.permissions = JSON.parse(sPermissions);
+
+                if (!jobs.allowEmployeeEdit) {
+                    if (globalhelpers.HasPermission(jobs.permissionCanEditAll, jobs.permissions))
+                        $('#btn-do-save-info').show();
+                    else
+                        $('#btn-do-save-info').hide();
+                }
+                else {
+                    if (!globalhelpers.HasPermission("edit", jobs.permissions))
+                        $('#btn-do-save-info').hide();
+                    else
+                        $('#btn-do-save-info').show();
+                }
+
+
+                if (!jobs.allowEmployeeEdit) {
+                    if (globalhelpers.HasPermission(jobs.permissionCanEditAll, jobs.permissions))
+                        $('#btn-do-save-status').show();
+                    else
+                        $('#btn-do-save-status').hide();
+                }
+                else {
+                    if (!globalhelpers.HasPermission("Job_Trangthai_Capnhat", jobs.permissions))
+                        $('#btn-do-save-status').hide();
+                    else
+                        $('#btn-do-save-status').show();
+                }
+
+                //Job status
+                if (this.currentobj.Status == 0 || this.currentobj.Status == 3) {
+                    if (!jobs.allowEmployeeEdit) {
+                        if (globalhelpers.HasPermission(jobs.permissionCanEditAll, jobs.permissions))
+                            $('#btn-job-status-requestconfirm').show();
+                        else
+                            $('#btn-job-status-requestconfirm').hide();
+                    }
+                    else {
+                        if (globalhelpers.HasPermission("Job_Nghiepvu_GiamdocDuyet", jobs.permissions))
+                            $('#btn-job-status-requestconfirm').show();
+                        else
+                            $('#btn-job-status-requestconfirm').hide();
+                    }
+                }
+                else $('#btn-job-status-requestconfirm').hide();
+
+                if (this.currentobj.Status == 2) {
+                    if (!jobs.allowEmployeeEdit) {
+                        if (globalhelpers.HasPermission(jobs.permissionCanEditAll, jobs.permissions))
+                            $('#btn-job-status-requestaccountant').show();
+                        else
+                            $('#btn-job-status-requestaccountant').hide();
+                    }
+                    else {
+                        if (globalhelpers.HasPermission("Job_Nghiepvu_ChuyenKetoan", jobs.permissions))
+                            $('#btn-job-status-requestaccountant').show();
+                        else
+                            $('#btn-job-status-requestaccountant').hide();
+                    }
+                }
+                else $('#btn-job-status-requestaccountant').hide();
+
+                if (this.currentobj.Status == 2) {
+                    if (!jobs.allowEmployeeEdit) {
+                        if (globalhelpers.HasPermission(jobs.permissionCanEditAll, jobs.permissions))
+                            $('#btn-job-status-requestaccountant').show();
+                        else
+                            $('#btn-job-status-requestaccountant').hide();
+                    }
+                    else {
+                        if (globalhelpers.HasPermission("Job_Nghiepvu_ChuyenNhanvien", jobs.permissions))
+                            $('#btn-job-status-requestaccountant').show();
+                        else
+                            $('#btn-job-status-requestaccountant').hide();
+                    }
+                }
+                else $('#btn-job-status-requestaccountant').hide();
+
+                if (this.currentobj.Status == 2) {
+                    if (!jobs.allowEmployeeEdit) {
+                        if (globalhelpers.HasPermission(jobs.permissionCanEditAll, jobs.permissions))
+                            $('#btn-job-status-finish').show();
+                        else
+                            $('#btn-job-status-finish').hide();
+                    }
+                    else {
+                        if (globalhelpers.HasPermission("Job_Nghiepvu_XacnhanHoantat", jobs.permissions))
+                            $('#btn-job-status-finish').show();
+                        else
+                            $('#btn-job-status-finish').hide();
+                    }
+                }
+                else $('#btn-job-status-finish').hide();
+
+
+                //Permission: Tạm ứng KH
+
+                if (!jobs.allowEmployeeEdit) {
+                    if (globalhelpers.HasPermission(jobs.permissionCanEditAll, jobs.permissions))
+                        $('#btn-do-add-customerpayment').show();
+                    else
+                        $('#btn-do-add-customerpayment').hide();
+                }
+                else {
+                    if (!globalhelpers.HasPermission("Job_TamungKH_Them", jobs.permissions))
+                        $('#btn-do-add-customerpayment').hide();
+                    else
+                        $('#btn-do-add-customerpayment').show();
+                }
+
+                if (!jobs.allowEmployeeEdit) {
+                    if (globalhelpers.HasPermission(jobs.permissionCanEditAll, jobs.permissions))
+                        $('#btn-do-save-customerpayment').show();
+                    else
+                        $('#btn-do-save-customerpayment').hide();
+                }
+                else {
+                    if (!globalhelpers.HasPermission("Job_TamungKH_Capnhat", jobs.permissions))
+                        $('#btn-do-save-customerpayment').hide();
+                    else
+                        $('#btn-do-save-customerpayment').show();
+                }
+
+                //Permission: Hàng hóa
+
+                if (!jobs.allowEmployeeEdit) {
+                    if (globalhelpers.HasPermission(jobs.permissionCanEditAll, jobs.permissions))
+                        $('#btn-info-add-jobgoods').show();
+                    else
+                        $('#btn-info-add-jobgoods').hide();
+                }
+                else {
+                    if (!globalhelpers.HasPermission("Job_DMHanghoa_Them", jobs.permissions))
+                        $('#btn-info-add-jobgoods').hide();
+                    else
+                        $('#btn-info-add-jobgoods').show();
+                }
+
+                //Permission: TTHQ
+
+                if (!jobs.allowEmployeeEdit) {
+                    if (globalhelpers.HasPermission(jobs.permissionCanEditAll, jobs.permissions))
+                        $('#btn-do-add-quotationcustoms').show();
+                    else
+                        $('#btn-do-add-quotationcustoms').hide();
+                }
+                else {
+                    if (!globalhelpers.HasPermission("Job_TTHQ_Them", jobs.permissions))
+                        $('#btn-do-add-quotationcustoms').hide();
+                    else
+                        $('#btn-do-add-quotationcustoms').show();
+                }
+
+                if (!jobs.allowEmployeeEdit) {
+                    if (globalhelpers.HasPermission(jobs.permissionCanEditAll, jobs.permissions))
+                        $('#btn-do-save-quotationcustoms').show();
+                    else
+                        $('#btn-do-save-quotationcustoms').hide();
+                }
+                else {
+                    if (!globalhelpers.HasPermission("Job_TTHQ_Capnhat", jobs.permissions))
+                        $('#btn-do-save-quotationcustoms').hide();
+                    else
+                        $('#btn-do-save-quotationcustoms').show();
+                }
+
+                //Permission: Routes
+
+                if (!jobs.allowEmployeeEdit) {
+                    if (globalhelpers.HasPermission(jobs.permissionCanEditAll, jobs.permissions))
+                        $('#btn-do-add-quotationroute').show();
+                    else
+                        $('#btn-do-add-quotationroute').hide();
+                }
+                else {
+                    if (!globalhelpers.HasPermission("Job_Vanchuyen_Them", jobs.permissions))
+                        $('#btn-do-add-quotationroute').hide();
+                    else
+                        $('#btn-do-add-quotationroute').show();
+                }
+
+                //Permission: InOutFees
+
+                if (!jobs.allowEmployeeEdit) {
+                    if (globalhelpers.HasPermission(jobs.permissionCanEditAll, jobs.permissions))
+                        $('#btn-do-add-inoutfee').show();
+                    else
+                        $('#btn-do-add-inoutfee').hide();
+                }
+                else {
+                    if (!globalhelpers.HasPermission("Job_Thuchi_Them", jobs.permissions))
+                        $('#btn-do-add-inoutfee').hide();
+                    else
+                        $('#btn-do-add-inoutfee').show();
+                }
+
+                //Permission: AgentPrepaids
+
+                if (!jobs.allowEmployeeEdit) {
+                    if (globalhelpers.HasPermission(jobs.permissionCanEditAll, jobs.permissions))
+                        $('#btn-do-add-agentprepaid').show();
+                    else
+                        $('#btn-do-add-agentprepaid').hide();
+                }
+                else {
+                    if (!globalhelpers.HasPermission("Job_TamungNV_Them_Yeucau", jobs.permissions))
+                        $('#btn-do-add-agentprepaid').hide();
+                    else
+                        $('#btn-do-add-agentprepaid').show();
+                }
+
+                //-------------------------------------------------
 
                 if (this.currentobj != null) {
                     this.currentjobID = this.currentobj.JobID;
@@ -914,6 +1243,164 @@
 
             //-----------------------------------------------------------------------------------------------
 
+            doflow_start_finishjob: function () {
+                $('#btn-modal-flow-do-finishjob').html('Hoàn tất');
+                $('#modal-flow-finishjob').modal('show');
+            },
+
+            doflow_finishjob: function () {
+                var postdata = jobs.validateform_flow_finishjob();
+                if (postdata == null)
+                    return;
+
+                NProgress.start();
+                $('#btn-modal-flow-do-finishjob').addClass('disabled');
+                $('#btn-modal-flow-do-finishjob').html('Đang xử lý...');
+
+                var xhr = new XMLHttpRequest();
+                xhr.open('POST', jobs.ajaxPath + '?ts=' + new Date().getTime().toString());
+                xhr.onload = function () {
+                    NProgress.done();
+
+                    var result = JSON.parse(xhr.responseText);
+                    $('#btn-modal-flow-do-finishjob').removeClass('disabled');
+                    $('#btn-modal-flow-do-finishjob').html('Xác nhận');
+                    alert(result.Message);
+
+                    if (result.ErrorCode == 0) {
+                        jobs.reloadpage();
+                    }
+                };
+
+                var form = new FormData();
+                form.append('mod', 'flow_finishjob');
+                form.append('data', JSON.stringify(postdata));
+
+                xhr.send(form);
+            },
+
+            validateform_flow_finishjob: function () {
+                var message = '';
+                var data = new Object();
+
+                data.jobid = jobs.currentobj.ID;
+
+                return data;
+            },
+
+            //-----------------------------------------------------------------------------------------------
+            doflow_start_sendback: function () {
+                $('#btn-modal-flow-do-sendback').html('Yêu cầu bổ sung');
+                $('#modal-flow-sendback').modal('show');
+            },
+
+            doflow_sendback: function () {
+                var postdata = jobs.validateform_flow_sendback();
+                if (postdata == null)
+                    return;
+
+                NProgress.start();
+                $('#btn-modal-flow-do-sendback').addClass('disabled');
+                $('#btn-modal-flow-do-sendback').html('Đang xử lý...');
+
+                var xhr = new XMLHttpRequest();
+                xhr.open('POST', jobs.ajaxPath + '?ts=' + new Date().getTime().toString());
+                xhr.onload = function () {
+                    NProgress.done();
+
+                    var result = JSON.parse(xhr.responseText);
+                    $('#btn-modal-flow-do-sendback').removeClass('disabled');
+                    $('#btn-modal-flow-do-sendback').html('Yêu cầu bổ sung');
+                    alert(result.Message);
+
+                    if (result.ErrorCode == 0) {
+                        jobs.reloadpage();
+                    }
+                };
+
+                var form = new FormData();
+                form.append('mod', 'flow_sendback');
+                form.append('data', JSON.stringify(postdata));
+
+                xhr.send(form);
+            },
+
+            validateform_flow_sendback: function () {
+                var message = '';
+                var data = new Object();
+
+                data.jobid = jobs.currentobj.ID;
+
+                return data;
+            },
+
+            //-----------------------------------------------------------------------------------------------
+
+            doflow_start_requestConfirm: function () {
+                $('#btn-modal-do-save-flow-requestconfirm-jobgood').html('Chuyển');
+                $('#modal-flow-requestconfirm').modal('show');
+                //$('#btn-do-confirm-jobgood').hide();
+            },
+
+            onchange_flow_requestconfirm_isuniform: function (ctrl) {
+                if ($(ctrl).prop('checked'))
+                    $('#div-flow-requestconfirm-isuniform').show();
+                else
+                    $('#div-flow-requestconfirm-isuniform').hide();
+            },
+
+            doflow_requestconfirm: function () {
+                var postdata = jobs.validateform_flow_requestconfirm();
+                if (postdata == null)
+                    return;
+
+                NProgress.start();
+                $('#btn-modal-do-save-flow-requestconfirm-jobgood').addClass('disabled');
+                $('#btn-modal-do-save-flow-requestconfirm-jobgood').html('Đang xử lý...');
+
+                var xhr = new XMLHttpRequest();
+                xhr.open('POST', jobs.ajaxPath + '?ts=' + new Date().getTime().toString());
+                xhr.onload = function () {
+                    NProgress.done();
+
+                    var result = JSON.parse(xhr.responseText);
+                    $('#btn-modal-do-save-flow-requestconfirm-jobgood').removeClass('disabled');
+                    $('#btn-modal-do-save-flow-requestconfirm-jobgood').html('Chuyển');
+                    alert(result.Message);
+
+                    if (result.ErrorCode == 0) {
+                        jobs.reloadpage();
+                    }
+                };
+
+                var form = new FormData();
+                form.append('mod', 'flow_requestconfirm');
+                form.append('data', JSON.stringify(postdata));
+
+                xhr.send(form);
+            },
+
+            validateform_flow_requestconfirm: function () {
+                var message = '';
+                var data = new Object();
+
+                data.jobid = jobs.currentobj.ID;
+
+                data.isuniform = $('#flow-requestconfirm-isuniform').prop('checked');
+                data.usdrate = Number(globalhelpers.Convert_FromMoney($('#flow-requestconfirm-usdrate').val()));
+                if (data.isuniform && (isNaN(data.usdrate) || data.usdrate <= 0))
+                    message += '- Tỉ giá USD không hợp lệ!<br/>';
+
+                if (message != '') {
+                    jobs.alert_flow_requestconfirm(message);
+                    return null;
+                }
+
+                return data;
+            },
+
+            //-----------------------------------------------------------------------------------------------
+
             mode_jobgood: 'create',
             currentobj_jobgood: null,
             loadlist_jobgoods: function () {
@@ -949,8 +1436,8 @@
                                 "<td class=\"text-center\">" + obj.Code + "</td>" +
                                 "<td class=\"text-center\">" + obj.Name + "</td>" +
                                 "<td class=\"text-center\">" +
-                                        "<a onclick=\"jobs.startedit_jobgood('" + obj.ID + "');\" href=\"javascript:void(0)\" data-toggle=\"tooltip\" title=\"Sửa\" class=\"btn btn-xs btn-default\"><i class=\"fa fa-pencil\"></i></a>" +
-                                        "<a onclick=\"jobs.startdelete_jobgood('" + obj.ID + "');\" href=\"javascript:void(0)\" data-toggle=\"tooltip\" title=\"Xóa\" class=\"btn btn-xs btn-danger\"><i class=\"fa fa-times\"></i></a>" +
+                                        (!globalhelpers.HasPermission("Job_DMHanghoa_Sua", jobs.permissions) ? "" : "<a onclick=\"jobs.startedit_jobgood('" + obj.ID + "');\" href=\"javascript:void(0)\" data-toggle=\"tooltip\" title=\"Sửa\" class=\"btn btn-xs btn-default\"><i class=\"fa fa-pencil\"></i></a>") +
+                                        (!globalhelpers.HasPermission("Job_DMHanghoa_Xoa", jobs.permissions) ? "" : "<a onclick=\"jobs.startdelete_jobgood('" + obj.ID + "');\" href=\"javascript:void(0)\" data-toggle=\"tooltip\" title=\"Xóa\" class=\"btn btn-xs btn-danger\"><i class=\"fa fa-times\"></i></a>") +
                                 "</td>" +
                             "</tr>";
                     }
@@ -1032,7 +1519,7 @@
 
                 $('#info-jobgood-code').val(jobs.currentobj_jobgood.Code);
                 $('#info-jobgood-name').val(jobs.currentobj_jobgood.Name);
-                                
+
                 $('#modal-info-jobgood .modal-header .modal-title').html('Cập nhật Danh mục Hàng hóa');
                 $('#btn-do-save-jobgood').html('Lưu');
                 $('#modal-info-jobgood').modal('show');
@@ -1095,8 +1582,8 @@
                                 "<td class=\"text-center\">" + globalhelpers.Format_Money(obj.Money.toFixed(2)) + "</td>" +
                                 "<td class=\"text-center\">" + obj.Description + "</td>" +
                                 "<td class=\"text-center\">" +
-                                    "<a onclick=\"jobs.startedit_jobprepaid('" + obj.ID + "');\" href=\"javascript:void(0)\" data-toggle=\"tooltip\" title=\"Sửa\" class=\"btn btn-xs btn-default\"><i class=\"fa fa-pencil\"></i></a>" +
-                                    "<a onclick=\"jobs.startdelete_jobprepaid('" + obj.ID + "');\" href=\"javascript:void(0)\" data-toggle=\"tooltip\" title=\"Xóa\" class=\"btn btn-xs btn-danger\"><i class=\"fa fa-times\"></i></a>" +
+                                    (!globalhelpers.HasPermission("Job_TamungKH_Sua", jobs.permissions) ? "" : "<a onclick=\"jobs.startedit_jobprepaid('" + obj.ID + "');\" href=\"javascript:void(0)\" data-toggle=\"tooltip\" title=\"Sửa\" class=\"btn btn-xs btn-default\"><i class=\"fa fa-pencil\"></i></a>") +
+                                    (!globalhelpers.HasPermission("Job_TamungKH_Xoa", jobs.permissions) ? "" : "<a onclick=\"jobs.startdelete_jobprepaid('" + obj.ID + "');\" href=\"javascript:void(0)\" data-toggle=\"tooltip\" title=\"Xóa\" class=\"btn btn-xs btn-danger\"><i class=\"fa fa-times\"></i></a>") +
                                 "</td>" +
                             "</tr>";
                     }
@@ -1364,10 +1851,25 @@
 
                 if (this.currentobj_agentprepaid.Status == 0) {
                     $('#div-agentprepaid-result').hide();
-                    $('#btn-do-confirm-agentprepaid').show();
+                    if (!globalhelpers.HasPermission("Job_TamungNV_Duyetchi", jobs.permissions))
+                        $('#btn-do-confirm-agentprepaid').hide();
+                    else
+                        $('#btn-do-confirm-agentprepaid').show();
                 }
                 else {
+                    $('#div-agentprepaid-result').show();
                     $('#btn-do-confirm-agentprepaid').hide();
+                }
+
+                if (!globalhelpers.HasPermission("Job_TamungNV_Sua_Yecau", jobs.permissions)) {
+                    $('#info-agentprepaid-employee').attr('disabled', 'disabled');
+                    $('#info-agentprepaid-money').attr('disabled', 'disabled');
+                    $('#info-agentprepaid-description').attr('disabled', 'disabled');
+                }
+                else {
+                    $('#info-agentprepaid-employee').removeAttr('disabled');
+                    $('#info-agentprepaid-money').removeAttr('disabled');
+                    $('#info-agentprepaid-description').removeAttr('disabled');
                 }
             },
 
@@ -1460,8 +1962,8 @@
                                 "<td class=\"text-center\">" + globalhelpers.Format_Money((obj.TotalRequest - obj.TotalPaid)) + "</td>" +
                                 "<td class=\"text-center\">" + obj.sStatus + "</td>" +
                                 "<td class=\"text-center\">" +
-                                        "<a onclick=\"jobs.startedit_agentprepaid('" + obj.ID + "');\" href=\"javascript:void(0)\" data-toggle=\"tooltip\" title=\"Sửa\" class=\"btn btn-xs btn-default\"><i class=\"fa fa-pencil\"></i></a>" +
-                                        "<a onclick=\"jobs.startdelete_agentprepaid('" + obj.ID + "');\" href=\"javascript:void(0)\" data-toggle=\"tooltip\" title=\"Xóa\" class=\"btn btn-xs btn-danger\"><i class=\"fa fa-times\"></i></a>" +
+                                        (!globalhelpers.HasPermission("Job_TamungNV_Capnhat", jobs.permissions) ? "" : "<a onclick=\"jobs.startedit_agentprepaid('" + obj.ID + "');\" href=\"javascript:void(0)\" data-toggle=\"tooltip\" title=\"Sửa\" class=\"btn btn-xs btn-default\"><i class=\"fa fa-pencil\"></i></a>") +
+                                        (!globalhelpers.HasPermission("Job_TamungNV_Xoa_Yeucau", jobs.permissions) ? "" : "<a onclick=\"jobs.startdelete_agentprepaid('" + obj.ID + "');\" href=\"javascript:void(0)\" data-toggle=\"tooltip\" title=\"Xóa\" class=\"btn btn-xs btn-danger\"><i class=\"fa fa-times\"></i></a>") +
                                 "</td>" +
                             "</tr>";
                     }
@@ -1556,6 +2058,11 @@
                 $('#modal-info-agentprepaid').modal('show');
                 $('#div-agentprepaid-result').hide();
                 $('#btn-do-confirm-agentprepaid').hide();
+
+                $('#info-agentprepaid-employee').removeAttr('disabled');
+                $('#info-agentprepaid-money').removeAttr('disabled');
+                $('#info-agentprepaid-description').removeAttr('disabled');
+
                 //$('#info-prepaid-employee').val('<%= CurrentSys_User.ID %>');
                 this.agentprepaid_attacheds = null;
             },
@@ -1672,8 +2179,8 @@
                                         "<a target=\"_blank\" href=\"" + obj.AttachedFiles.replace('~', '') + "\" data-toggle=\"tooltip\" title=\"Xem tệp đính kèm\" class=\"btn btn-xs btn-success\"><i class=\"hi hi-paperclip\"></i></a>" +
                                 "</td>" +
                                 "<td class=\"text-center\">" +
-                                        "<a onclick=\"jobs.startedit_inoutfee('" + obj.ID + "');\" href=\"javascript:void(0)\" data-toggle=\"tooltip\" title=\"Sửa\" class=\"btn btn-xs btn-default\"><i class=\"fa fa-pencil\"></i></a>" +
-                                        "<a onclick=\"jobs.startdelete_inoutfee('" + obj.ID + "');\" href=\"javascript:void(0)\" data-toggle=\"tooltip\" title=\"Xóa\" class=\"btn btn-xs btn-danger\"><i class=\"fa fa-times\"></i></a>" +
+                                        (!globalhelpers.HasPermission("Job_Thuchi_Sua", jobs.permissions) ? "" : "<a onclick=\"jobs.startedit_inoutfee('" + obj.ID + "');\" href=\"javascript:void(0)\" data-toggle=\"tooltip\" title=\"Sửa\" class=\"btn btn-xs btn-default\"><i class=\"fa fa-pencil\"></i></a>") +
+                                        (!globalhelpers.HasPermission("Job_Thuchi_Xoa", jobs.permissions) ? "" : "<a onclick=\"jobs.startdelete_inoutfee('" + obj.ID + "');\" href=\"javascript:void(0)\" data-toggle=\"tooltip\" title=\"Xóa\" class=\"btn btn-xs btn-danger\"><i class=\"fa fa-times\"></i></a>") +
                                 "</td>" +
                             "</tr>";
                     }
@@ -1965,7 +2472,7 @@
                                 "0" +
                             "</td>" +
                             "<td class=\"text-center\">" +
-                                "<a onclick=\"jobs.doDelete_quotation_customs_detail(this);\" href=\"javascript:void(0)\" data-toggle=\"tooltip\" title=\"Xóa\" class=\"btn btn-xs btn-danger\"><i class=\"fa fa-times\"></i></a>" +
+                                (!globalhelpers.HasPermission("Job_TTHQ_Xoa", jobs.permissions) ? "" : "<a onclick=\"jobs.doDelete_quotation_customs_detail(this);\" href=\"javascript:void(0)\" data-toggle=\"tooltip\" title=\"Xóa\" class=\"btn btn-xs btn-danger\"><i class=\"fa fa-times\"></i></a>") +
                                 "<a href=\"javascript:void(0)\" data-toggle=\"tooltip\" title=\"" + feeType.Description + "\" class=\"btn btn-xs btn-default\"><i class=\"hi hi-question-sign\"></i></a>" +
                             "</td>" +
                         "</tr>";
@@ -1978,14 +2485,19 @@
 
             generate_quotationcustoms_values: function () {
                 if (this.currentobj == null) {
-                    $('#divQuotation-customs-settings').show();
+                    $('#divQuotation-customs-settings').hide();
                     $('#divQuotation-customs-details').hide();
                     $('#divQuotation-customs-controls').hide();
                     return;
                 }
 
                 if (this.currentobj.QuotationCustoms == null) {
-                    $('#divQuotation-customs-settings').show();
+                    if (!globalhelpers.HasPermission("Job_TTHQ_Capnhat", jobs.permissions))
+                        $('#divQuotation-customs-settings').hide();
+                    else
+                        $('#divQuotation-customs-settings').show();
+
+                    //$('#divQuotation-customs-settings').show();
                     $('#divQuotation-customs-details').hide();
                     $('#divQuotation-customs-controls').hide();
                     return;
@@ -2127,8 +2639,8 @@
                                 "</td>" +
                                 "<td class=\"text-center\"><span class=\"" + (statusClassName == "" ? "" : ("text-" + statusClassName)) + "\">" + route.sStatus + "</span></td>" +
                                 "<td class=\"text-center\">" +
-                                    "<a onclick=\"jobs.startedit_quotation_route('" + route.ID + "');\" href=\"javascript:void(0)\" data-toggle=\"tooltip\" title=\"Sửa\" class=\"btn btn-xs btn-default\"><i class=\"fa fa-pencil\"></i></a>" +
-                                    "<a onclick=\"jobs.startdelete_quotation_route('" + route.ID + "');\" href=\"javascript:void(0)\" data-toggle=\"tooltip\" title=\"Xóa\" class=\"btn btn-xs btn-danger\"><i class=\"fa fa-times\"></i></a>" +
+                                    (!globalhelpers.HasPermission("Job_Vanchuyen_Sua", jobs.permissions) ? "" : "<a onclick=\"jobs.startedit_quotation_route('" + route.ID + "');\" href=\"javascript:void(0)\" data-toggle=\"tooltip\" title=\"Sửa\" class=\"btn btn-xs btn-default\"><i class=\"fa fa-pencil\"></i></a>") +
+                                    (!globalhelpers.HasPermission("Job_Vanchuyen_Xoa", jobs.permissions) ? "" : "<a onclick=\"jobs.startdelete_quotation_route('" + route.ID + "');\" href=\"javascript:void(0)\" data-toggle=\"tooltip\" title=\"Xóa\" class=\"btn btn-xs btn-danger\"><i class=\"fa fa-times\"></i></a>") +
                                     "<a href=\"#\" data-toggle=\"tooltip\" title=\"Ghi chú: " + route.Description + "\" class=\"btn btn-xs btn-default\"><i class=\"hi hi-question-sign\"></i></a>" +
                                 "</td>" +
                             "</tr>";

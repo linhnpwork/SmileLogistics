@@ -9,13 +9,14 @@
             <div class="row">
                 <!-- Main Title (hidden on small devices for the statistics to fit) -->
                 <div class="col-md-4 col-lg-6 hidden-xs hidden-sm">
-                    <h1>Welcome <strong>Admin</strong><br>
+                    <h1>Welcome
+                        <br>
                         <small>You Look Awesome!</small></h1>
                 </div>
                 <!-- END Main Title -->
 
                 <!-- Top Stats -->
-                <div class="col-md-8 col-lg-6">
+                <%--<div class="col-md-8 col-lg-6">
                     <div class="row text-center">
                         <div class="col-xs-4 col-sm-3">
                             <h2 class="animation-hatch">$<strong>93.7k</strong><br>
@@ -42,7 +43,7 @@
                             </h2>
                         </div>
                     </div>
-                </div>
+                </div>--%>
                 <!-- END Top Stats -->
             </div>
         </div>
@@ -51,17 +52,52 @@
     </div>
     <!-- END Dashboard Header -->
 
+    <%--<div class="row text-center">
+        <div class="col-sm-6 col-lg-3">
+            <a href="javascript:void(0)" class="widget widget-hover-effect2">
+                <div class="widget-extra themed-background">
+                    <h4 class="widget-content-light"><strong>Pending</strong> Orders</h4>
+                </div>
+                <div class="widget-extra-full"><span class="h2 animation-expandOpen">3</span></div>
+            </a>
+        </div>
+        <div class="col-sm-6 col-lg-3">
+            <a href="javascript:void(0)" class="widget widget-hover-effect2">
+                <div class="widget-extra themed-background-dark">
+                    <h4 class="widget-content-light"><strong>Conversion</strong> Rate</h4>
+                </div>
+                <div class="widget-extra-full"><span class="h2 themed-color-dark animation-expandOpen">4.7%</span></div>
+            </a>
+        </div>
+        <div class="col-sm-6 col-lg-3">
+            <a href="javascript:void(0)" class="widget widget-hover-effect2">
+                <div class="widget-extra themed-background-dark">
+                    <h4 class="widget-content-light"><strong>Orders</strong> Today</h4>
+                </div>
+                <div class="widget-extra-full"><span class="h2 themed-color-dark animation-expandOpen">120</span></div>
+            </a>
+        </div>
+        <div class="col-sm-6 col-lg-3">
+            <a href="javascript:void(0)" class="widget widget-hover-effect2">
+                <div class="widget-extra themed-background-dark">
+                    <h4 class="widget-content-light"><strong>Earnings</strong> Today</h4>
+                </div>
+                <div class="widget-extra-full"><span class="h2 themed-color-dark animation-expandOpen">$ 4.250</span></div>
+            </a>
+        </div>
+    </div>--%>
+
     <!-- Mini Top Stats Row -->
-    <div class="row">
+    <div id="divMiniTopStats" runat="server" class="row">
         <div class="col-sm-6 col-lg-3">
             <!-- Widget -->
             <a href="page_ready_article.html" class="widget widget-hover-effect1">
                 <div class="widget-simple">
                     <div class="widget-icon pull-left themed-background-autumn animation-fadeIn">
-                        <i class="fa fa-file-text"></i>
+                        <i class="hi hi-file"></i>
                     </div>
-                    <h3 class="widget-content text-right animation-pullDown">New <strong>Article</strong><br>
-                        <small>Mountain Trip</small>
+                    <h3 class="widget-content text-right animation-pullDown"><strong id="htmlDashboard_MiniTopStats_OpeningJobs" runat="server">...</strong><br>
+                        <small>Opening JOBs</small>
                     </h3>
                 </div>
             </a>
@@ -72,10 +108,10 @@
             <a href="page_comp_charts.html" class="widget widget-hover-effect1">
                 <div class="widget-simple">
                     <div class="widget-icon pull-left themed-background-spring animation-fadeIn">
-                        <i class="gi gi-usd"></i>
+                        <i class="hi hi-download-alt"></i>
                     </div>
-                    <h3 class="widget-content text-right animation-pullDown">+ <strong>250%</strong><br>
-                        <small>Sales Today</small>
+                    <h3 class="widget-content text-right animation-pullDown"><strong id="htmlDashboard_MiniTopStats_FinishedJobs" runat="server">...</strong><br>
+                        <small>Finished JOBs</small>
                     </h3>
                 </div>
             </a>
@@ -86,10 +122,10 @@
             <a href="page_ready_inbox.html" class="widget widget-hover-effect1">
                 <div class="widget-simple">
                     <div class="widget-icon pull-left themed-background-fire animation-fadeIn">
-                        <i class="gi gi-envelope"></i>
+                        <i class="gi gi-notes_2"></i>
                     </div>
-                    <h3 class="widget-content text-right animation-pullDown">5 <strong>Messages</strong>
-                        <small>Support Center</small>
+                    <h3 class="widget-content text-right animation-pullDown"><strong id="htmlDashboard_MiniTopStats_TotalJobs" runat="server">...</strong>
+                        <small>Total JOBs</small>
                     </h3>
                 </div>
             </a>
@@ -102,14 +138,14 @@
                     <div class="widget-icon pull-left themed-background-amethyst animation-fadeIn">
                         <i class="gi gi-picture"></i>
                     </div>
-                    <h3 class="widget-content text-right animation-pullDown">+30 <strong>Photos</strong>
-                        <small>Gallery</small>
+                    <h3 class="widget-content text-right animation-pullDown"><strong id="htmlDashboard_MiniTopStats_TotalCustomers" runat="server">...</strong>
+                        <small>Customers</small>
                     </h3>
                 </div>
             </a>
             <!-- END Widget -->
         </div>
-        <div class="col-sm-6">
+        <%--<div class="col-sm-6">
             <!-- Widget -->
             <a href="page_comp_charts.html" class="widget widget-hover-effect1">
                 <div class="widget-simple">
@@ -144,12 +180,12 @@
                 </div>
             </a>
             <!-- END Widget -->
-        </div>
+        </div>--%>
     </div>
     <!-- END Mini Top Stats Row -->
 
     <!-- Widgets Row -->
-    <div class="row">
+    <%--<div class="row">
         <div class="col-md-6">
             <!-- Timeline Widget -->
             <div class="widget">
@@ -426,7 +462,7 @@
             </div>
             <!-- END Advanced Gallery Widget -->
         </div>
-    </div>
+    </div>--%>
     <!-- END Widgets Row -->
 </div>
 

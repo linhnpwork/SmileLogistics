@@ -17,6 +17,7 @@ namespace SmileLogistics.Web.modules.functions
         {
             if (!IsPostBack)
             {
+                CheckPermissionAccess();
             }
         }
     }

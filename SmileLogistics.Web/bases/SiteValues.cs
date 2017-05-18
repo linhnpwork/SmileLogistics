@@ -16,6 +16,7 @@ namespace SmileLogistics.Web.bases
         #region commonpages
 
         public static string Page_503 = "~/pages/503.html";
+        public static string Page_403 = "~/pages/403.html";
 
         #endregion
 

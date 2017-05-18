@@ -28,7 +28,7 @@
         <div class="block-title">
             <h2>Danh sách <strong>Hãng vận chuyển</strong></h2>
             <div class="block-options pull-right">
-                <a onclick="transportcompanies.startAdd();" class="btn btn-sm btn-success" data-toggle="tooltip" title="Thêm mới"><i class="gi gi-plus"></i></a>
+                <a id="btn-controls-add" onclick="transportcompanies.startAdd();" class="btn btn-sm btn-success" data-toggle="tooltip" title="Thêm mới"><i class="gi gi-plus"></i></a>
             </div>
         </div>
         <div class="form-horizontal">
@@ -145,6 +145,7 @@
             mode: 'create',
             currentpage: 0,
             currentobj: null,
+            permissions: null,
 
             alert: function (content) {
                 $('#divModalAlert').show();
@@ -163,6 +164,15 @@
                     transportcompanies.currentpage = 0;
                 else
                     transportcompanies.currentpage = Number(page);
+
+                var sPermissions = '<%= _RolePermissions %>';
+                if (sPermissions != '')
+                    this.permissions = JSON.parse(sPermissions);
+
+                if (!globalhelpers.HasPermission("create", transportcompanies.permissions))
+                    $('#btn-controls-add').hide();
+                else
+                    $('#btn-controls-add').show();
 
                 var sTypes = '<%= _VehicleTypes %>';
                 transportcompanies.allTypes = sTypes == '' ? null : JSON.parse(sTypes);
@@ -505,8 +515,8 @@
                                                     "<td class=\"text-center\">" + obj.StatusName + "</td>" +
                                                     "<td class=\"text-center\">" +
                                                         //"<div class=\"btn-group\">" +
-                                                            "<a onclick=\"transportcompanies.startedit('" + obj.ID + "');\" href=\"javascript:void(0)\" data-toggle=\"tooltip\" title=\"Sửa\" class=\"btn btn-xs btn-default\"><i class=\"fa fa-pencil\"></i></a>" +
-                                                            "<a onclick=\"transportcompanies.startdelete('" + obj.ID + "');\" href=\"javascript:void(0)\" data-toggle=\"tooltip\" title=\"Xóa\" class=\"btn btn-xs btn-danger\"><i class=\"fa fa-times\"></i></a>" +
+                                                            (!globalhelpers.HasPermission("edit", transportcompanies.permissions) ? "" :"<a onclick=\"transportcompanies.startedit('" + obj.ID + "');\" href=\"javascript:void(0)\" data-toggle=\"tooltip\" title=\"Sửa\" class=\"btn btn-xs btn-default\"><i class=\"fa fa-pencil\"></i></a>") +
+                                                            (!globalhelpers.HasPermission("edit", transportcompanies.permissions) ? "" :"<a onclick=\"transportcompanies.startdelete('" + obj.ID + "');\" href=\"javascript:void(0)\" data-toggle=\"tooltip\" title=\"Xóa\" class=\"btn btn-xs btn-danger\"><i class=\"fa fa-times\"></i></a>") +
                                                         //"</div>" +
                                                     "</td>" +
                                                 "</tr>";
